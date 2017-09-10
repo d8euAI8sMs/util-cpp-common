@@ -860,7 +860,14 @@ namespace plot
 			std::ostringstream oss;
 			oss.precision(precision);
 			oss << std::fixed << tick;
-			return std::move(oss.str());
+            std::string str = oss.str();
+            if (str.length() > 10)
+            {
+                oss = std::ostringstream();
+                oss << tick;
+                return std::move(oss.str());
+            }
+			return std::move(str);
 		};
 	}
 
