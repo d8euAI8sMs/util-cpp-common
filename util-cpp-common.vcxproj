@@ -91,6 +91,7 @@
     <ClInclude Include="include\util\common\plot\shape.h" />
     <ClInclude Include="include\util\common\plot\tick_drawable.h" />
     <ClInclude Include="include\util\common\plot\tick_factory.h" />
+    <ClInclude Include="include\util\common\plot\utility.h" />
     <ClInclude Include="include\util\common\plot\viewport.h" />
     <ClInclude Include="include\util\common\plot\viewporter.h" />
     <ClInclude Include="stdafx.h" />
