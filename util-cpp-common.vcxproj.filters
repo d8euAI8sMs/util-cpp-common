@@ -51,6 +51,9 @@
     <ClInclude Include="include\util\common\plot\common.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\plot\shape.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
