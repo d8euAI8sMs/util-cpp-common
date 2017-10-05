@@ -81,6 +81,9 @@
     <ClInclude Include="include\util\common\plot\points_source.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\plot\list_drawable.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
     <ClInclude Include="include\util\common\plot\utility.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
