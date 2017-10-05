@@ -5,12 +5,9 @@
 namespace plot
 {
 
-    // coordinate_translator
-
-
-
-
-
+    /*****************************************************/
+    /*                     coordinate_translator         */
+    /*****************************************************/
 
     template
     <
@@ -80,20 +77,9 @@ namespace plot
         }
     };
 
-
-
-
-
-
-
-
-    // viewport
-
-
-
-
-
-
+    /*****************************************************/
+    /*                     viewport                      */
+    /*****************************************************/
 
     class viewport
     {
@@ -136,23 +122,11 @@ namespace plot
         }
     };
 
-
-
-
-
-
-
-    // viewport mapper
-
-
-
-
-
-
+    /*****************************************************/
+    /*                     viewport_mapper               */
+    /*****************************************************/
 
     using viewport_mapper_t = std::function < viewport (const viewport &) > ;
-
-
 
     static inline viewport_mapper_t create_viewport_mapper(const viewport & vp)
     {
