@@ -23,6 +23,10 @@ namespace plot
         {
         }
 
+        virtual ~custom_drawable()
+        {
+        }
+
     public:
 
         virtual void draw(CDC &dc, const viewport &bounds) override

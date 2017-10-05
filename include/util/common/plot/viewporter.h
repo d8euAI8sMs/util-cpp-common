@@ -25,6 +25,10 @@ namespace plot
         {
         }
 
+        virtual ~viewporter()
+        {
+        }
+
         virtual void draw(CDC &dc, const viewport &bounds) override
         {
             layer->draw(dc, mapper(bounds));

@@ -22,6 +22,10 @@ namespace plot
             return *this;
         }
 
+        virtual ~layer_drawable()
+        {
+        }
+
         virtual void draw(CDC &dc, const viewport &bounds) override
         {
             for each (auto &layer in layers)

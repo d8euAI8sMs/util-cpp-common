@@ -101,6 +101,10 @@ namespace plot
         {
         }
 
+        virtual ~const_interval_tick_factory()
+        {
+        }
+
         virtual std::shared_ptr < std::vector < tick_t > >
             produce(const viewport &bounds) override
         {
@@ -159,6 +163,10 @@ namespace plot
             : tick_factory(std::move(fmt))
             , origin(origin)
             , n_intervals(n_intervals)
+        {
+        }
+
+        virtual ~const_n_tick_factory()
         {
         }
 

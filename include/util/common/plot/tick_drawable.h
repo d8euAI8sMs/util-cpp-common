@@ -31,6 +31,10 @@ namespace plot
         {
         }
 
+        virtual ~tick_drawable()
+        {
+        }
+
         virtual void draw(CDC &dc, const viewport &bounds) override
         {
             if (pen)
