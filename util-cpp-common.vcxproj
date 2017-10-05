@@ -81,7 +81,9 @@
     <ClInclude Include="include\util\common\math\mhj.h" />
     <ClInclude Include="include\util\common\math\rpoly.h" />
     <ClInclude Include="include\util\common\math\svd_hest.h" />
+    <ClInclude Include="include\util\common\plot\custom_drawable.h" />
     <ClInclude Include="include\util\common\plot\drawable.h" />
+    <ClInclude Include="include\util\common\plot\layer_drawable.h" />
     <ClInclude Include="include\util\common\plot\palette.h" />
     <ClInclude Include="include\util\common\plot\plot.h" />
     <ClInclude Include="include\util\common\plot\PlotStatic.h" />
