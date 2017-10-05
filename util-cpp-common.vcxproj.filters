@@ -75,6 +75,9 @@
     <ClInclude Include="include\util\common\plot\tick_factory.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\plot\tick_drawable.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
