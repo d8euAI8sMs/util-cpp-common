@@ -23,7 +23,7 @@ namespace plot
     /*                  -tick formatters-                */
     /*****************************************************/
 
-    static inline tick_formatter_t create_simple_tick_formatter
+    static inline tick_formatter_t make_simple_tick_formatter
     (
         int precision, int max_symbols = 10
     )
