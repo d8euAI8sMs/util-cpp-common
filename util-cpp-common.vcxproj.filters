@@ -57,6 +57,9 @@
     <ClInclude Include="include\util\common\plot\viewport.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\plot\palette.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
     <ClInclude Include="include\util\common\plot\drawable.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>

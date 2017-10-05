@@ -82,6 +82,7 @@
     <ClInclude Include="include\util\common\math\rpoly.h" />
     <ClInclude Include="include\util\common\math\svd_hest.h" />
     <ClInclude Include="include\util\common\plot\drawable.h" />
+    <ClInclude Include="include\util\common\plot\palette.h" />
     <ClInclude Include="include\util\common\plot\plot.h" />
     <ClInclude Include="include\util\common\plot\PlotStatic.h" />
     <ClInclude Include="include\util\common\plot\shape.h" />
