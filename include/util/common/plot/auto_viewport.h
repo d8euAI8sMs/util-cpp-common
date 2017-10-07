@@ -7,6 +7,30 @@
 namespace plot
 {
 
+    /*****************************************************/
+    /*               auto_viewport_params                */
+    /*****************************************************/
+
+    struct auto_viewport_params
+    {
+        using ptr_t = plot::ptr_t < auto_viewport_params > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+        rect < bool >   enabled;
+
+        rect < double > factors;
+
+        rect < double > paddings;
+
+        world_t upper_bound,
+                lower_bound;
+    };
+
+    /*****************************************************/
+    /*                 auto_viewport                     */
+    /*****************************************************/
+
     template < typename _points_t >
     class auto_viewport
     {
@@ -18,6 +42,7 @@ namespace plot
     protected:
 
         viewport::ptr_t vp;
+        auto_viewport_params params;
 
     public:
 
@@ -57,6 +82,16 @@ namespace plot
         {
             this->vp = vp;
             if (!vp) this->vp = viewport::create();
+        }
+
+        virtual const auto_viewport_params & get_params() const
+        {
+            return params;
+        }
+
+        virtual void set_params(const auto_viewport_params & params)
+        {
+            this->params = params;
         }
 
         virtual void clear()
