@@ -115,6 +115,11 @@ namespace plot
         {
         }
 
+        viewport()
+            : viewport({ }, { })
+        {
+        }
+
         viewport(const viewport &other)
             : viewport(other.screen, other.world)
         {
@@ -128,6 +133,11 @@ namespace plot
         const w_to_s_t & world_to_screen() const
         {
             return w_to_s;
+        }
+
+        bool empty() const
+        {
+            return screen.empty();
         }
     };
 

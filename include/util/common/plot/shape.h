@@ -39,6 +39,11 @@ namespace plot
         {
             return{ x, y };
         }
+
+        bool empty() const
+        {
+            return ((x == 0) && (y == 0));
+        }
     };
 
     /*****************************************************/
@@ -77,6 +82,11 @@ namespace plot
         N height() const
         {
             return ymax - ymin;
+        }
+
+        bool empty() const
+        {
+            return ((xmin == 0) && (xmax == 0) && (ymin == 0) && (ymax == 0));
         }
 
         operator RECT () const
