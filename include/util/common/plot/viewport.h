@@ -84,6 +84,14 @@ namespace plot
     class viewport
     {
 
+    public:
+
+        using ptr_t = std::shared_ptr < viewport > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    private:
+
         using s_to_w_t = coordinate_translator < screen_t::value_type, world_t::value_type > ;
         using w_to_s_t = coordinate_translator < world_t::value_type, screen_t::value_type > ;
 

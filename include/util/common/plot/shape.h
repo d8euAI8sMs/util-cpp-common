@@ -15,6 +15,10 @@ namespace plot
     >
     struct point
     {
+        using ptr_t = std::shared_ptr < point > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
         using value_type = N;
 
         N x, y;
@@ -45,6 +49,10 @@ namespace plot
     >
     struct rect
     {
+        using ptr_t = std::shared_ptr < rect > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
         using value_type = N;
 
         N xmin, xmax, ymin, ymax;
