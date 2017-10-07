@@ -105,7 +105,22 @@ namespace plot
             clear();
             return adjust(data);
         }
+
+        virtual viewport_mapper_t make_viewport_mapper()
+        {
+            return [this] (const viewport &) { return *this->vp; };
+        }
     };
+
+    /*****************************************************/
+    /*                 viewport_mapper                   */
+    /*****************************************************/
+
+    template < typename _points_t >
+    static inline viewport_mapper_t make_viewport_mapper(const auto_viewport < _points_t > & vp)
+    {
+        return [&vp] (const viewport &) { return *vp.get(); };
+    }
 
     /*****************************************************/
     /*               min_max_auto_viewport               */
