@@ -16,8 +16,14 @@ namespace plot
 
     public:
 
+        using ptr_t = std::shared_ptr < list_drawable > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    public:
+
         points_source_t  data_factory;
-        drawable_ptr     point_painter;
+        drawable::ptr_t  point_painter;
         palette::pen_ptr line_pen;
 
     public:
@@ -29,7 +35,7 @@ namespace plot
         list_drawable
         (
             points_source_t  data_factory,
-            drawable_ptr     point_painter = std::make_shared < custom_drawable > (circle_painter()),
+            drawable::ptr_t  point_painter = custom_drawable::create(circle_painter()),
             palette::pen_ptr line_pen = palette::pen()
         )
             : data_factory(std::move(data_factory))

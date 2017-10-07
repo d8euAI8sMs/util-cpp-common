@@ -51,6 +51,10 @@ namespace plot
     class tick_factory
     {
 
+    public:
+
+        using ptr_t = std::shared_ptr < tick_factory > ;
+
     protected:
 
         tick_formatter_t fmt;
@@ -86,6 +90,14 @@ namespace plot
     template < axe x_or_y >
     class const_interval_tick_factory : public tick_factory
     {
+
+    public:
+
+        using ptr_t = std::shared_ptr < const_interval_tick_factory > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    private:
 
         double origin;
         double interval;
@@ -151,6 +163,14 @@ namespace plot
     template < axe x_or_y >
     class const_n_tick_factory : public tick_factory
     {
+
+    public:
+
+        using ptr_t = std::shared_ptr < const_n_tick_factory > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    private:
 
         double origin;
         int n_intervals;

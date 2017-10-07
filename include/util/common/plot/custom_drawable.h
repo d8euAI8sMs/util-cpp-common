@@ -14,6 +14,12 @@ namespace plot
 
     public:
 
+        using ptr_t = std::shared_ptr < custom_drawable > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    public:
+
         painter_t painter;
 
     public:

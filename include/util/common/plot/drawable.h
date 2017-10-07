@@ -16,6 +16,10 @@ namespace plot
 
     public:
 
+        using ptr_t = std::shared_ptr < drawable > ;
+
+    public:
+
         virtual void draw(CDC &dc, const viewport &bounds) = 0;
 
         virtual void draw_at(CDC &dc, const viewport &bounds, const point < double > origin)
@@ -30,6 +34,4 @@ namespace plot
         {
         }
     };
-
-    using drawable_ptr = std::shared_ptr < drawable > ;
 }

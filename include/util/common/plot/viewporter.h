@@ -14,7 +14,13 @@ namespace plot
 
     public:
 
-        drawable_ptr      layer;
+        using ptr_t = std::shared_ptr < viewporter > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    public:
+
+        drawable::ptr_t   layer;
         viewport_mapper_t mapper;
 
     public:
@@ -23,7 +29,7 @@ namespace plot
         {
         }
 
-        viewporter(drawable_ptr layer, viewport_mapper_t mapper)
+        viewporter(drawable::ptr_t layer, viewport_mapper_t mapper)
             : layer(std::move(layer))
             , mapper(std::move(mapper))
         {

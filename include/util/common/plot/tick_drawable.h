@@ -12,9 +12,15 @@ namespace plot
 
     public:
 
-        std::shared_ptr < tick_factory > xtf, ytf;
+        using ptr_t = std::shared_ptr < tick_drawable > ;
 
-        drawable_ptr content;
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+
+    public:
+
+        tick_factory::ptr_t xtf, ytf;
+
+        drawable::ptr_t  content;
         palette::pen_ptr pen;
 
     public:
@@ -25,9 +31,9 @@ namespace plot
 
         tick_drawable
         (
-            drawable_ptr content,
-            std::shared_ptr < tick_factory > xtf,
-            std::shared_ptr < tick_factory > ytf,
+            drawable::ptr_t content,
+            tick_factory::ptr_t xtf,
+            tick_factory::ptr_t ytf,
             palette::pen_ptr pen = {}
         )
             : content(std::move(content))

@@ -12,11 +12,17 @@ namespace plot
 
     public:
 
-        std::vector < drawable_ptr > layers;
+        using ptr_t = std::shared_ptr < layer_drawable > ;
+
+        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     public:
 
-        layer_drawable & with(drawable_ptr layer)
+        std::vector < drawable::ptr_t > layers;
+
+    public:
+
+        layer_drawable & with(drawable::ptr_t layer)
         {
             layers.emplace_back(std::move(layer));
             return *this;
