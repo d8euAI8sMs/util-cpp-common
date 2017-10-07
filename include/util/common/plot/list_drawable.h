@@ -11,6 +11,7 @@
 namespace plot
 {
 
+    template < typename _points_t >
     class list_drawable : public drawable
     {
 
@@ -22,7 +23,7 @@ namespace plot
 
     public:
 
-        points_source_t  data_factory;
+        points_source_t < _points_t > data_factory;
         drawable::ptr_t  point_painter;
         palette::pen_ptr line_pen;
 
@@ -34,7 +35,7 @@ namespace plot
 
         list_drawable
         (
-            points_source_t  data_factory,
+            points_source_t < _points_t > data_factory,
             drawable::ptr_t  point_painter = custom_drawable::create(circle_painter()),
             palette::pen_ptr line_pen = palette::pen()
         )
@@ -53,7 +54,7 @@ namespace plot
             if (!data_factory) return;
             auto data = data_factory(bounds);
             if (data->empty()) return;
-            dc.MoveTo(bounds.world_to_screen().xy((*data)[0]));
+            dc.MoveTo(bounds.world_to_screen().xy(*data->begin()));
             for each (auto &p in *data)
             {
                 if (line_pen)
