@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include <util/common/plot/ptr.h>
 #include <util/common/plot/drawable.h>
 
 namespace plot
@@ -14,9 +15,9 @@ namespace plot
 
     public:
 
-        using ptr_t = std::shared_ptr < custom_drawable > ;
+        using ptr_t = plot::ptr_t < custom_drawable > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     public:
 

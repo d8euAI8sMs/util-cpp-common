@@ -1,5 +1,6 @@
 #pragma once
 
+#include <util/common/plot/ptr.h>
 #include <util/common/plot/drawable.h>
 #include <util/common/plot/layer_drawable.h>
 #include <util/common/plot/tick_factory.h>
@@ -12,9 +13,9 @@ namespace plot
 
     public:
 
-        using ptr_t = std::shared_ptr < tick_drawable > ;
+        using ptr_t = plot::ptr_t < tick_drawable > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     public:
 
@@ -54,12 +55,12 @@ namespace plot
                 dc.SelectObject(pen.get());
             }
 
-            std::shared_ptr < std::vector < tick_t > > x_ticks;
+            plot::ptr_t < std::vector < tick_t > > x_ticks;
             if (xtf)
             {
                 x_ticks = xtf->produce(bounds);
             }
-            std::shared_ptr < std::vector < tick_t > > y_ticks;
+            plot::ptr_t < std::vector < tick_t > > y_ticks;
             if (ytf)
             {
                 y_ticks = ytf->produce(bounds);

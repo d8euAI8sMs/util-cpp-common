@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include <util/common/plot/ptr.h>
 #include <util/common/plot/palette.h>
 #include <util/common/plot/drawable.h>
 #include <util/common/plot/points_source.h>
@@ -17,9 +18,9 @@ namespace plot
 
     public:
 
-        using ptr_t = std::shared_ptr < list_drawable > ;
+        using ptr_t = plot::ptr_t < list_drawable > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     public:
 

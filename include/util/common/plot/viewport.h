@@ -1,5 +1,6 @@
 #pragma once
 
+#include <util/common/plot/ptr.h>
 #include <util/common/plot/shape.h>
 
 namespace plot
@@ -86,9 +87,9 @@ namespace plot
 
     public:
 
-        using ptr_t = std::shared_ptr < viewport > ;
+        using ptr_t = plot::ptr_t < viewport > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return std::make_shared < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     private:
 
@@ -151,17 +152,17 @@ namespace plot
         return [s] (const viewport & vp) { return viewport(s, vp.world); };
     }
 
-    static inline viewport_mapper_t make_viewport_mapper(std::shared_ptr < viewport > vp)
+    static inline viewport_mapper_t make_viewport_mapper(plot::ptr_t < viewport > vp)
     {
         return [vp] (const viewport &) { return *vp; };
     }
 
-    static inline viewport_mapper_t make_viewport_mapper(std::shared_ptr < world_t > w)
+    static inline viewport_mapper_t make_viewport_mapper(plot::ptr_t < world_t > w)
     {
         return [w] (const viewport & vp) { return viewport(vp.screen, *w); };
     }
 
-    static inline viewport_mapper_t make_viewport_mapper(std::shared_ptr < screen_t > s)
+    static inline viewport_mapper_t make_viewport_mapper(plot::ptr_t < screen_t > s)
     {
         return [s] (const viewport & vp) { return viewport(*s, vp.world); };
     }
