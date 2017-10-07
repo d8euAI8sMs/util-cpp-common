@@ -96,7 +96,7 @@ namespace plot
 
         virtual void clear()
         {
-            *this->vp = { this->vp->screen, { } };
+            this->vp->world = { };
         }
 
         virtual viewport::ptr_t adjust(const _points_t & data) = 0;
