@@ -87,6 +87,9 @@
     <ClInclude Include="include\util\common\plot\utility.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\plot\auto_viewport.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
     <ClInclude Include="include\util\common\plot\ptr.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
