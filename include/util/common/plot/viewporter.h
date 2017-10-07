@@ -12,12 +12,16 @@ namespace plot
     class viewporter : public drawable
     {
 
-    private:
+    public:
 
         drawable_ptr      layer;
         viewport_mapper_t mapper;
 
     public:
+
+        viewporter()
+        {
+        }
 
         viewporter(drawable_ptr layer, viewport_mapper_t mapper)
             : layer(std::move(layer))
@@ -31,7 +35,17 @@ namespace plot
 
         virtual void draw(CDC &dc, const viewport &bounds) override
         {
-            layer->draw(dc, mapper(bounds));
+            if (layer)
+            {
+                if (mapper)
+                {
+                    layer->draw(dc, mapper(bounds));
+                }
+                else
+                {
+                    layer->draw(dc, bounds);
+                }
+            }
         }
     };
 };

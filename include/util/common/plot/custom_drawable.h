@@ -12,11 +12,15 @@ namespace plot
     class custom_drawable : public drawable
     {
 
-    private:
+    public:
 
         painter_t painter;
 
     public:
+
+        custom_drawable()
+        {
+        }
 
         custom_drawable(painter_t painter)
             : painter(std::move(painter))

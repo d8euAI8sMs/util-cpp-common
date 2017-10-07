@@ -14,13 +14,17 @@ namespace plot
     class list_drawable : public drawable
     {
 
-    protected:
+    public:
 
         points_source_t  data_factory;
         drawable_ptr     point_painter;
         palette::pen_ptr line_pen;
 
     public:
+
+        list_drawable()
+        {
+        }
 
         list_drawable
         (
@@ -40,6 +44,7 @@ namespace plot
 
         virtual void draw(CDC &dc, const viewport &bounds) override
         {
+            if (!data_factory) return;
             auto data = data_factory(bounds);
             if (data->empty()) return;
             dc.MoveTo(bounds.world_to_screen().xy((*data)[0]));
