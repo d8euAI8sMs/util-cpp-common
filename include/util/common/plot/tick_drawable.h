@@ -45,7 +45,7 @@ namespace plot
             std::shared_ptr < std::vector < tick_t > > x_ticks
                 = xtf->produce(bounds);
             std::shared_ptr < std::vector < tick_t > > y_ticks
-                = xtf->produce(bounds);
+                = ytf->produce(bounds);
 
             CString str;
             CSize tbounds;
