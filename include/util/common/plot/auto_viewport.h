@@ -2,7 +2,6 @@
 
 #include <util/common/plot/ptr.h>
 #include <util/common/plot/viewport.h>
-#include <util/common/plot/points_source.h>
 
 namespace plot
 {
