@@ -10,21 +10,23 @@
 namespace plot
 {
 
-    using points_t = std::vector < point < double > > ;
-    using points_source_t = std::function < std::shared_ptr < points_t > (const viewport &) > ;
+    template < typename _points_t >
+    using points_source_t = std::function < std::shared_ptr < _points_t > (const viewport &) > ;
 
-    static inline points_source_t make_points_source
+    template < typename _points_t >
+    static inline points_source_t < _points_t > make_points_source
     (
-        const points_t & points
+        const _points_t & points
     )
     {
-        std::shared_ptr < points_t > copy = std::make_shared < points_t > (points);
+        std::shared_ptr < _points_t > copy = std::make_shared < _points_t > (points);
         return [copy] (const viewport &) { return std::move(copy); };
     }
 
-    static inline points_source_t make_points_source
+    template < typename _points_t >
+    static inline points_source_t < _points_t > make_points_source
     (
-        std::shared_ptr < points_t > points
+        std::shared_ptr < _points_t > points
     )
     {
         return [points] (const viewport &) { return std::move(points); };
