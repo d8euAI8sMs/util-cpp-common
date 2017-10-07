@@ -98,8 +98,8 @@ namespace plot
 
     public:
 
-        const screen_t screen;
-        const world_t  world;
+        screen_t screen;
+        world_t  world;
 
     private:
 
