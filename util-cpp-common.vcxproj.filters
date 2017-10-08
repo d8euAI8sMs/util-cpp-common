@@ -93,6 +93,9 @@
     <ClInclude Include="include\util\common\plot\ptr.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\plot\simple_list_plot.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
