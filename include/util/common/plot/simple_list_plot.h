@@ -37,7 +37,7 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_view_point_painter(drawable::ptr_t point_painter)
+        simple_list_plot & with_view_point_painter(drawable::ptr_t point_painter = custom_drawable::create(circle_painter()))
         {
             if (this->view) this->view->point_painter = std::move(point_painter);
             return *this;
