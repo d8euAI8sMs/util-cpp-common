@@ -42,25 +42,20 @@ namespace plot
 
     protected:
 
-        viewport::ptr_t vp;
+        world_t::ptr_t       world;
         auto_viewport_params params;
 
     public:
 
         auto_viewport()
-            : vp(viewport::create())
+            : world(world_t::create())
         {
         }
 
-        auto_viewport(const viewport & vp)
-            : vp(viewport::create(vp))
+        auto_viewport(world_t::ptr_t world)
+            : world(std::move(world))
         {
-        }
-
-        auto_viewport(viewport::ptr_t vp)
-            : vp(std::move(vp))
-        {
-            if (!vp) this->vp = viewport::create();
+            if (!world) this->world = world_t::create();
         }
 
         virtual ~auto_viewport()
@@ -69,20 +64,19 @@ namespace plot
 
     public:
 
-        virtual viewport::ptr_t get()
+        virtual const world_t::ptr_t get_world() const
         {
-            return vp;
+            return world;
         }
 
-        virtual void set(const viewport & vp)
+        virtual void set_world(const world_t & world)
         {
-            *this->vp = vp;
+            *this->world = world;
         }
 
-        virtual void set(viewport::ptr_t vp)
+        virtual void set_world(world_t::ptr_t world)
         {
-            this->vp = vp;
-            if (!vp) this->vp = viewport::create();
+            this->world = std::move(world);
         }
 
         virtual const auto_viewport_params & get_params() const
@@ -97,12 +91,12 @@ namespace plot
 
         virtual void clear()
         {
-            this->vp->world = { };
+            *this->world = { };
         }
 
-        virtual viewport::ptr_t adjust(const _points_t & data) = 0;
+        virtual world_t::ptr_t adjust(const _points_t & data) = 0;
 
-        virtual viewport::ptr_t setup(const _points_t & data)
+        virtual world_t::ptr_t setup(const _points_t & data)
         {
             clear();
             return adjust(data);
@@ -116,7 +110,7 @@ namespace plot
     template < typename _points_t >
     static inline viewport_mapper_t make_viewport_mapper(const auto_viewport < _points_t > & vp)
     {
-        return [&vp] (const viewport &) { return *vp.get(); };
+        return [&vp] (const viewport & v) { return { v.screen, *vp.get_world() }; };
     }
 
     /*****************************************************/
@@ -140,12 +134,12 @@ namespace plot
         {
         }
 
-        min_max_auto_viewport(const viewport & vp)
+        min_max_auto_viewport(const world_t & vp)
             : auto_viewport(vp)
         {
         }
 
-        min_max_auto_viewport(viewport::ptr_t vp)
+        min_max_auto_viewport(world_t::ptr_t vp)
             : auto_viewport(std::move(vp))
         {
         }
@@ -159,23 +153,20 @@ namespace plot
         virtual void set_params(const auto_viewport_params & params) override
         {
             this->params = params;
-
-            if (this->vp->empty()) return;
-
-            world_t current = this->vp->world;
-
-            ensure_bounded(current, get_enabled_flags_with_defaults());
-
-            this->vp->world = current;
+            ensure_bounded(*this->world, get_enabled_flags_with_defaults());
         }
 
-        virtual viewport::ptr_t adjust(const _points_t & data) override
+        virtual world_t::ptr_t adjust(const _points_t & data) override
         {
-            if ((this->vp->empty()) || data.empty()) return this->vp;
-
             rect < bool > enabled = get_enabled_flags_with_defaults();
 
-            world_t & current = this->vp->world;
+            if (data.empty())
+            {
+                ensure_bounded(*this->world, enabled);
+                return this->world;
+            }
+
+            world_t & current = *this->world;
             world_t enclosing =
             {
                 (std::numeric_limits < double > :: max)   (),
@@ -202,7 +193,7 @@ namespace plot
 
             ensure_bounded(current, enabled);
 
-            return this->vp;
+            return this->world;
         }
 
     private:
