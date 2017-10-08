@@ -70,7 +70,7 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_auto_viewport(typename auto_viewport < _points_t > ::ptr_t vp)
+        simple_list_plot & with_auto_viewport(typename auto_viewport < _points_t > ::ptr_t vp = min_max_auto_viewport < _points_t > ::create())
         {
             this->custom_manager = vp;
             this->viewport_mapper = make_world_mapper < _points_t > (std::move(vp));
