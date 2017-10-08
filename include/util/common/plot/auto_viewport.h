@@ -176,7 +176,7 @@ namespace plot
             ensure_bounded(this->world, get_enabled_flags_with_defaults());
         }
 
-        virtual world_t::ptr_t adjust(const _points_t & data) override
+        virtual world_t adjust(const _points_t & data) override
         {
             rect < bool > enabled = get_enabled_flags_with_defaults();
 
