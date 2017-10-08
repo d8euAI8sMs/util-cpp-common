@@ -76,7 +76,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\util\common\plot\auto_viewport.h" />
-    <ClInclude Include="include\util\common\plot\common.h" />
     <ClInclude Include="include\util\common\math\common.h" />
     <ClInclude Include="include\util\common\math\fft.h" />
     <ClInclude Include="include\util\common\math\mhj.h" />
