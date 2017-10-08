@@ -14,7 +14,7 @@ namespace plot
     using screen_t = rect < int > ;
 
     /*****************************************************/
-    /*                     coordinate_translator         */
+    /*               coordinate_translator               */
     /*****************************************************/
 
     template
@@ -149,7 +149,7 @@ namespace plot
     };
 
     /*****************************************************/
-    /*                     viewport_mapper               */
+    /*                  viewport_mapper                  */
     /*****************************************************/
 
     using viewport_mapper_t = std::function < viewport (const viewport &) > ;
