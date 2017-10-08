@@ -49,28 +49,28 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_viewport(world_t::ptr_t vp)
+        simple_list_plot & with_static_viewport(world_t::ptr_t vp)
         {
             this->custom_world = vp;
             this->viewport_mapper = make_world_mapper(std::move(vp));
             return *this;
         }
 
-        simple_list_plot & with_viewport(const world_t & vp)
+        simple_list_plot & with_static_viewport(const world_t & vp)
         {
             this->custom_world = world_t::create(vp);
             this->viewport_mapper = make_world_mapper(this->custom_world);
             return *this;
         }
 
-        simple_list_plot & with_viewport(world_mapper_t vp)
+        simple_list_plot & with_mapped_viewport(world_mapper_t vp)
         {
             this->custom_mapper = vp;
             this->viewport_mapper = std::move(vp);
             return *this;
         }
 
-        simple_list_plot & with_viewport(typename auto_viewport < _points_t > ::ptr_t vp)
+        simple_list_plot & with_auto_viewport(typename auto_viewport < _points_t > ::ptr_t vp)
         {
             this->custom_manager = vp;
             this->viewport_mapper = make_world_mapper < _points_t > (std::move(vp));
