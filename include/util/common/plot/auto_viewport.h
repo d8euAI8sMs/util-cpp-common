@@ -113,6 +113,12 @@ namespace plot
         return [&vp] (const viewport & v) { return { v.screen, *vp.get_world() }; };
     }
 
+    template < typename _points_t >
+    static inline viewport_mapper_t make_viewport_mapper(auto_viewport < _points_t > ::ptr_t vp)
+    {
+        return [vp] (const viewport & v) { return { v.screen, *vp->get_world() }; };
+    }
+
     /*****************************************************/
     /*               min_max_auto_viewport               */
     /*****************************************************/
