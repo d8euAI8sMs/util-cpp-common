@@ -99,8 +99,20 @@ namespace plot
     };
 
     /*****************************************************/
-    /*                 viewport_mapper                   */
+    /*                -viewport mappers-                 */
     /*****************************************************/
+
+    template < typename _points_t >
+    static inline world_mapper_t make_world_mapper(const auto_viewport < _points_t > & vp)
+    {
+        return [&vp] (const world_t & w) { return vp.get_world(); };
+    }
+
+    template < typename _points_t >
+    static inline world_mapper_t make_world_mapper(auto_viewport < _points_t > ::ptr_t vp)
+    {
+        return [vp] (const world_t & w) { return vp->get_world(); };
+    }
 
     template < typename _points_t >
     static inline viewport_mapper_t make_viewport_mapper(const auto_viewport < _points_t > & vp)
