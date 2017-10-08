@@ -23,6 +23,16 @@ namespace plot
 
     public:
 
+        layer_drawable(const std::vector < drawable::ptr_t > & layers)
+            : layers(layers)
+        {
+        }
+
+        layer_drawable(std::vector < drawable::ptr_t > && layers)
+            : layers(std::move(layers))
+        {
+        }
+
         layer_drawable & with(drawable::ptr_t layer)
         {
             layers.emplace_back(std::move(layer));
