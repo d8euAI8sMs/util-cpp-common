@@ -105,7 +105,4 @@ namespace plot
             return *this;
         }
     };
-
-    using world_t  = rect < double > ;
-    using screen_t = rect < int > ;
 }
