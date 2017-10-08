@@ -158,6 +158,18 @@ namespace plot
 
     public:
 
+        virtual void set_world(const world_t & world) override
+        {
+            this->world = world;
+            ensure_bounded(this->world, get_enabled_flags_with_defaults());
+        }
+
+        virtual void clear() override
+        {
+            this->world = { };
+            ensure_bounded(this->world, get_enabled_flags_with_defaults());
+        }
+
         virtual void set_params(const auto_viewport_params & params) override
         {
             this->params = params;
