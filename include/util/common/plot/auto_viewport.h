@@ -26,8 +26,13 @@ namespace plot
 
         screen_t        screen;
 
-        world_t upper_bound,
-                lower_bound;
+        rect < bool >   upper,
+                        lower,
+                        fixed;
+
+        world_t::ptr_t  upper_bound,
+                        lower_bound,
+                        fixed_bound;
     };
 
     /*****************************************************/
@@ -233,15 +238,20 @@ namespace plot
         {
             bool initially_empty = current.empty();
 
-            if (enabled.xmin && (!this->params.upper_bound.empty()) && ((current.xmin < this->params.upper_bound.xmin) || initially_empty)) current.xmin = this->params.upper_bound.xmin;
-            if (enabled.xmax && (!this->params.upper_bound.empty()) && ((current.xmax > this->params.upper_bound.xmax) || initially_empty)) current.xmax = this->params.upper_bound.xmax;
-            if (enabled.ymin && (!this->params.upper_bound.empty()) && ((current.ymin < this->params.upper_bound.ymin) || initially_empty)) current.ymin = this->params.upper_bound.ymin;
-            if (enabled.ymax && (!this->params.upper_bound.empty()) && ((current.ymax > this->params.upper_bound.ymax) || initially_empty)) current.ymax = this->params.upper_bound.ymax;
+            if (enabled.xmin && this->params.upper_bound && (this->params.upper.xmin || this->params.upper.empty()) && (current.xmin < this->params.upper_bound->xmin) && (!initially_empty)) current.xmin = this->params.upper_bound->xmin;
+            if (enabled.xmax && this->params.upper_bound && (this->params.upper.xmax || this->params.upper.empty()) && (current.xmax > this->params.upper_bound->xmax) && (!initially_empty)) current.xmax = this->params.upper_bound->xmax;
+            if (enabled.ymin && this->params.upper_bound && (this->params.upper.ymin || this->params.upper.empty()) && (current.ymin < this->params.upper_bound->ymin) && (!initially_empty)) current.ymin = this->params.upper_bound->ymin;
+            if (enabled.ymax && this->params.upper_bound && (this->params.upper.ymax || this->params.upper.empty()) && (current.ymax > this->params.upper_bound->ymax) && (!initially_empty)) current.ymax = this->params.upper_bound->ymax;
 
-            if (enabled.xmin && (!this->params.lower_bound.empty()) && (current.xmin > this->params.lower_bound.xmin) && (!initially_empty)) current.xmin = this->params.lower_bound.xmin;
-            if (enabled.xmax && (!this->params.lower_bound.empty()) && (current.xmax < this->params.lower_bound.xmax) && (!initially_empty)) current.xmax = this->params.lower_bound.xmax;
-            if (enabled.ymin && (!this->params.lower_bound.empty()) && (current.ymin > this->params.lower_bound.ymin) && (!initially_empty)) current.ymin = this->params.lower_bound.ymin;
-            if (enabled.ymax && (!this->params.lower_bound.empty()) && (current.ymax < this->params.lower_bound.ymax) && (!initially_empty)) current.ymax = this->params.lower_bound.ymax;
+            if (enabled.xmin && this->params.lower_bound && (this->params.lower.xmin || this->params.lower.empty()) && ((current.xmin > this->params.lower_bound->xmin) || initially_empty)) current.xmin = this->params.lower_bound->xmin;
+            if (enabled.xmax && this->params.lower_bound && (this->params.lower.xmax || this->params.lower.empty()) && ((current.xmax < this->params.lower_bound->xmax) || initially_empty)) current.xmax = this->params.lower_bound->xmax;
+            if (enabled.ymin && this->params.lower_bound && (this->params.lower.ymin || this->params.lower.empty()) && ((current.ymin > this->params.lower_bound->ymin) || initially_empty)) current.ymin = this->params.lower_bound->ymin;
+            if (enabled.ymax && this->params.lower_bound && (this->params.lower.ymax || this->params.lower.empty()) && ((current.ymax < this->params.lower_bound->ymax) || initially_empty)) current.ymax = this->params.lower_bound->ymax;
+
+            if (enabled.xmin && this->params.fixed.xmin && this->params.fixed_bound) current.xmin = this->params.fixed_bound->xmin;
+            if (enabled.xmax && this->params.fixed.xmax && this->params.fixed_bound) current.xmax = this->params.fixed_bound->xmax;
+            if (enabled.ymin && this->params.fixed.ymin && this->params.fixed_bound) current.ymin = this->params.fixed_bound->ymin;
+            if (enabled.ymax && this->params.fixed.ymax && this->params.fixed_bound) current.ymax = this->params.fixed_bound->ymax;
         }
     };
 }
