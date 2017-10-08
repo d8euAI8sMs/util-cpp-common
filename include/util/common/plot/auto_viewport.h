@@ -109,7 +109,7 @@ namespace plot
     }
 
     template < typename _points_t >
-    static inline world_mapper_t make_world_mapper(auto_viewport < _points_t > ::ptr_t vp)
+    static inline world_mapper_t make_world_mapper(typename auto_viewport < _points_t > ::ptr_t vp)
     {
         return [vp] (const world_t & w) { return vp->get_world(); };
     }
@@ -121,7 +121,7 @@ namespace plot
     }
 
     template < typename _points_t >
-    static inline viewport_mapper_t make_viewport_mapper(auto_viewport < _points_t > ::ptr_t vp)
+    static inline viewport_mapper_t make_viewport_mapper(typename auto_viewport < _points_t > ::ptr_t vp)
     {
         return [vp] (const viewport & v) { return { v.screen, vp->get_world() }; };
     }

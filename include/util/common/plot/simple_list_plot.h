@@ -15,13 +15,13 @@ namespace plot
         ptr_t < _points_t >                 data;
         points_source_t < _points_t >       data_source;
 
-        list_drawable < _points_t > ::ptr_t view;
+        typename list_drawable < _points_t > ::ptr_t view;
 
         world_mapper_t                      viewport_mapper;
 
         world_mapper_t                      custom_mapper;
         world_t::ptr_t                      custom_world;
-        auto_viewport < _points_t > ::ptr_t custom_manager;
+        typename auto_viewport < _points_t > ::ptr_t custom_manager;
 
     public:
 
@@ -31,7 +31,7 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_view(list_drawable < _points_t > ::ptr_t view)
+        simple_list_plot & with_view(typename list_drawable < _points_t > ::ptr_t view)
         {
             this->view = std::move(view);
             return *this;
@@ -70,7 +70,7 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_viewport(auto_viewport < _points_t > ::ptr_t vp)
+        simple_list_plot & with_viewport(typename auto_viewport < _points_t > ::ptr_t vp)
         {
             this->custom_manager = vp;
             this->viewport_mapper = make_world_mapper(std::move(vp));
