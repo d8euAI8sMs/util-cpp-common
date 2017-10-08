@@ -209,10 +209,12 @@ namespace plot
             double width  = ((this->params.enabled.empty() || this->params.enabled.xmax) ? max(current.xmax, enclosing.xmax) : current.xmax) - ((this->params.enabled.empty() || this->params.enabled.xmin) ? min(current.xmin, enclosing.xmin) : current.xmin);
             double height = ((this->params.enabled.empty() || this->params.enabled.ymax) ? max(current.ymax, enclosing.ymax) : current.ymax) - ((this->params.enabled.empty() || this->params.enabled.ymin) ? min(current.ymin, enclosing.ymin) : current.ymin);
 
-            if ((this->params.enabled.empty() || this->params.enabled.xmin) && ((enclosing.xmin - this->params.paddings.xmin) < current.xmin)) current.xmin = enclosing.xmin - max(this->params.factors.xmin * width,  this->params.paddings.xmin);
-            if ((this->params.enabled.empty() || this->params.enabled.xmax) && ((enclosing.xmax + this->params.paddings.xmax) > current.xmax)) current.xmax = enclosing.xmax + max(this->params.factors.xmax * width,  this->params.paddings.xmax);
-            if ((this->params.enabled.empty() || this->params.enabled.ymin) && ((enclosing.ymin - this->params.paddings.ymin) < current.ymin)) current.ymin = enclosing.ymin - max(this->params.factors.ymin * height, this->params.paddings.ymin);
-            if ((this->params.enabled.empty() || this->params.enabled.ymax) && ((enclosing.ymax + this->params.paddings.ymax) > current.ymax)) current.ymax = enclosing.ymax + max(this->params.factors.ymax * height, this->params.paddings.ymax);
+            bool is_current_empty = current.empty();
+
+            if ((this->params.enabled.empty() || this->params.enabled.xmin) && (((enclosing.xmin - this->params.paddings.xmin) < current.xmin) || is_current_empty)) current.xmin = enclosing.xmin - max(this->params.factors.xmin * width,  this->params.paddings.xmin);
+            if ((this->params.enabled.empty() || this->params.enabled.xmax) && (((enclosing.xmax + this->params.paddings.xmax) > current.xmax) || is_current_empty)) current.xmax = enclosing.xmax + max(this->params.factors.xmax * width,  this->params.paddings.xmax);
+            if ((this->params.enabled.empty() || this->params.enabled.ymin) && (((enclosing.ymin - this->params.paddings.ymin) < current.ymin) || is_current_empty)) current.ymin = enclosing.ymin - max(this->params.factors.ymin * height, this->params.paddings.ymin);
+            if ((this->params.enabled.empty() || this->params.enabled.ymax) && (((enclosing.ymax + this->params.paddings.ymax) > current.ymax) || is_current_empty)) current.ymax = enclosing.ymax + max(this->params.factors.ymax * height, this->params.paddings.ymax);
 
             ensure_bounded();
 
