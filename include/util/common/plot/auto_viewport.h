@@ -24,6 +24,8 @@ namespace plot
 
         rect < double > paddings;
 
+        screen_t        screen;
+
         world_t upper_bound,
                 lower_bound;
     };
