@@ -166,7 +166,7 @@ namespace plot
         return [w] (const world_t & vp) { return *w; };
     }
 
-    static inline world_mapper_t make_maximizing_world_mapper(std::vector < world_t::ptr_t > ws, bool include_parameter = false)
+    static inline world_mapper_t make_maximizing_world_mapper(std::vector < world_mapper_t > ws, bool include_parameter = false)
     {
         return [ws, include_parameter] (const world_t & vp)
         {
@@ -180,16 +180,17 @@ namespace plot
                 (std::numeric_limits < double > :: lowest)()
             };
 
-            for each (auto & w in ws)
+            for each (auto & m in ws)
             {
-                if (w->empty()) continue;
+                world_t w = m(vp);
+                if (w.empty()) continue;
 
                 has_any = true;
 
-                if (resulting.xmin > w->xmin) resulting.xmin = w->xmin;
-                if (resulting.xmax < w->xmax) resulting.xmax = w->xmax;
-                if (resulting.ymin > w->ymin) resulting.ymin = w->ymin;
-                if (resulting.ymax < w->ymax) resulting.ymax = w->ymax;
+                if (resulting.xmin > w.xmin) resulting.xmin = w.xmin;
+                if (resulting.xmax < w.xmax) resulting.xmax = w.xmax;
+                if (resulting.ymin > w.ymin) resulting.ymin = w.ymin;
+                if (resulting.ymax < w.ymax) resulting.ymax = w.ymax;
             }
 
             if (include_parameter && (!vp.empty()))
