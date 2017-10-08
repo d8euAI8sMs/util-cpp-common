@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <util/common/plot/ptr.h>
 #include <util/common/plot/shape.h>
 
@@ -162,6 +164,46 @@ namespace plot
     static inline world_mapper_t make_world_mapper(world_t::ptr_t w)
     {
         return [w] (const world_t & vp) { return *w; };
+    }
+
+    static inline world_mapper_t make_maximizing_world_mapper(std::vector < world_t::ptr_t > ws, bool include_parameter = false)
+    {
+        return [ws, include_parameter] (const world_t & vp)
+        {
+            bool has_any = false;
+
+            world_t resulting =
+            {
+                (std::numeric_limits < double > :: max)   (),
+                (std::numeric_limits < double > :: lowest)(),
+                (std::numeric_limits < double > :: max)   (),
+                (std::numeric_limits < double > :: lowest)()
+            };
+
+            for each (auto & w in ws)
+            {
+                if (w->empty()) continue;
+
+                has_any = true;
+
+                if (resulting.xmin > w->xmin) resulting.xmin = w->xmin;
+                if (resulting.xmax < w->xmax) resulting.xmax = w->xmax;
+                if (resulting.ymin > w->ymin) resulting.ymin = w->ymin;
+                if (resulting.ymax < w->ymax) resulting.ymax = w->ymax;
+            }
+
+            if (include_parameter && (!vp.empty()))
+            {
+                has_any = true;
+
+                if (resulting.xmin > vp.xmin) resulting.xmin = vp.xmin;
+                if (resulting.xmax < vp.xmax) resulting.xmax = vp.xmax;
+                if (resulting.ymin > vp.ymin) resulting.ymin = vp.ymin;
+                if (resulting.ymax < vp.ymax) resulting.ymax = vp.ymax;
+            }
+
+            return (has_any ? resulting : world_t());
+        };
     }
 
     /*****************************************************/
