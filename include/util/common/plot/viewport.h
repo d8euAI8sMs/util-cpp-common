@@ -149,6 +149,22 @@ namespace plot
     };
 
     /*****************************************************/
+    /*                   world_mapper                    */
+    /*****************************************************/
+
+    using world_mapper_t = std::function < world_t (const world_t &) > ;
+
+    static inline world_mapper_t make_world_mapper(const world_t & w)
+    {
+        return [w] (const world_t & vp) { return w; };
+    }
+
+    static inline world_mapper_t make_world_mapper(world_t::ptr_t w)
+    {
+        return [w] (const world_t & vp) { return *w; };
+    }
+
+    /*****************************************************/
     /*                  viewport_mapper                  */
     /*****************************************************/
 
@@ -182,5 +198,10 @@ namespace plot
     static inline viewport_mapper_t make_viewport_mapper(plot::ptr_t < screen_t > s)
     {
         return [s] (const viewport & vp) { return viewport(*s, vp.world); };
+    }
+
+    static inline viewport_mapper_t make_viewport_mapper(world_mapper_t wm)
+    {
+        return [wm] (const viewport & vp) { return viewport(vp.screen, wm(vp.world)); };
     }
 }
