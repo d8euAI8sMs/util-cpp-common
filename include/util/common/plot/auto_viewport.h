@@ -107,11 +107,6 @@ namespace plot
             clear();
             return adjust(data);
         }
-
-        virtual viewport_mapper_t make_viewport_mapper()
-        {
-            return [this] (const viewport &) { return *this->vp; };
-        }
     };
 
     /*****************************************************/
