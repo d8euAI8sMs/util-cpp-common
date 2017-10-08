@@ -85,6 +85,7 @@
     <ClInclude Include="include\util\common\plot\drawable.h" />
     <ClInclude Include="include\util\common\plot\layer_drawable.h" />
     <ClInclude Include="include\util\common\plot\list_drawable.h" />
+    <ClInclude Include="include\util\common\plot\math.h" />
     <ClInclude Include="include\util\common\plot\palette.h" />
     <ClInclude Include="include\util\common\plot\plot.h" />
     <ClInclude Include="include\util\common\plot\PlotStatic.h" />
