@@ -23,6 +23,10 @@ namespace plot
 
     public:
 
+        layer_drawable()
+        {
+        }
+
         layer_drawable(const std::vector < drawable::ptr_t > & layers)
             : layers(layers)
         {
