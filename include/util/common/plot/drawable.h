@@ -25,9 +25,18 @@ namespace plot
         virtual void draw_at(CDC &dc, const viewport &bounds, const point < double > origin)
         {
             point < int > origin_at_screen = bounds.world_to_screen().xy(origin);
-            dc.OffsetViewportOrg(origin_at_screen.x, origin_at_screen.y);
-            draw(dc, bounds);
-            dc.OffsetViewportOrg(-origin_at_screen.x, -origin_at_screen.y);
+            /* don't change scale and screen size, only position */
+            viewport other =
+            {
+                {
+                    origin_at_screen.x,
+                    origin_at_screen.x + bounds.screen.width(),
+                    origin_at_screen.y,
+                    origin_at_screen.y + bounds.screen.height(),
+                },
+                bounds.world
+            };
+            draw(dc, other);
         }
 
         virtual ~drawable()
