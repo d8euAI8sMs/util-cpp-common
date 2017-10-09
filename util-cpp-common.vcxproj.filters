@@ -99,6 +99,9 @@
     <ClInclude Include="include\util\common\math\vec.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\math\dsolve.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
