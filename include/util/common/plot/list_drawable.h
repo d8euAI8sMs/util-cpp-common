@@ -50,7 +50,9 @@ namespace plot
         {
         }
 
-        virtual void draw(CDC &dc, const viewport &bounds) override
+    protected:
+
+        virtual void do_draw(CDC &dc, const viewport &bounds) override
         {
             if (!data_factory) return;
             auto data = data_factory(bounds);

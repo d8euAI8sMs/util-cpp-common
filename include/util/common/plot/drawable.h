@@ -20,7 +20,22 @@ namespace plot
 
     public:
 
-        virtual void draw(CDC &dc, const viewport &bounds) = 0;
+        bool visible;
+
+    public:
+
+        drawable()
+            : visible(true)
+        {
+        }
+
+    public:
+
+        virtual void draw(CDC &dc, const viewport &bounds)
+        {
+            if (!visible) return;
+            do_draw(dc, bounds);
+        }
 
         virtual void draw_at(CDC &dc, const viewport &bounds, const point < double > origin)
         {
@@ -42,5 +57,9 @@ namespace plot
         virtual ~drawable()
         {
         }
+
+    protected:
+
+        virtual void do_draw(CDC &dc, const viewport &bounds) = 0;
     };
 }

@@ -40,7 +40,9 @@ namespace plot
         {
         }
 
-        virtual void draw(CDC &dc, const viewport &bounds) override
+    protected:
+
+        virtual void do_draw(CDC &dc, const viewport &bounds) override
         {
             if (layer)
             {

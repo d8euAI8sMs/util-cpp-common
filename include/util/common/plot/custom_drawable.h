@@ -38,9 +38,9 @@ namespace plot
         {
         }
 
-    public:
+    protected:
 
-        virtual void draw(CDC &dc, const viewport &bounds) override
+        virtual void do_draw(CDC &dc, const viewport &bounds) override
         {
             painter(dc, bounds);
         }
