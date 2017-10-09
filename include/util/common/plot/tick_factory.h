@@ -26,7 +26,7 @@ namespace plot
 
     static inline tick_formatter_t make_simple_tick_formatter
     (
-        int precision, int max_symbols = 10
+        int precision, size_t max_symbols = 10
     )
     {
         return [precision, max_symbols] (double tick)
