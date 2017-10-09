@@ -19,9 +19,9 @@ namespace plot
 
         world_mapper_t                      viewport_mapper;
 
-        world_mapper_t                      custom_mapper;
-        world_t::ptr_t                      custom_world;
-        typename auto_viewport < _points_t > ::ptr_t custom_manager;
+        world_mapper_t                      mapped_world;
+        world_t::ptr_t                      static_world;
+        typename auto_viewport < _points_t > ::ptr_t auto_world;
 
     public:
 
@@ -51,28 +51,28 @@ namespace plot
 
         simple_list_plot & with_static_viewport(world_t::ptr_t vp)
         {
-            this->custom_world = vp;
+            this->static_world = vp;
             this->viewport_mapper = make_world_mapper(std::move(vp));
             return *this;
         }
 
         simple_list_plot & with_static_viewport(const world_t & vp)
         {
-            this->custom_world = world_t::create(vp);
-            this->viewport_mapper = make_world_mapper(this->custom_world);
+            this->static_world = world_t::create(vp);
+            this->viewport_mapper = make_world_mapper(this->static_world);
             return *this;
         }
 
         simple_list_plot & with_mapped_viewport(world_mapper_t vp)
         {
-            this->custom_mapper = vp;
+            this->mapped_world = vp;
             this->viewport_mapper = std::move(vp);
             return *this;
         }
 
         simple_list_plot & with_auto_viewport(typename auto_viewport < _points_t > ::ptr_t vp = min_max_auto_viewport < _points_t > ::create())
         {
-            this->custom_manager = vp;
+            this->auto_world = vp;
             this->viewport_mapper = make_world_mapper < _points_t > (std::move(vp));
             return *this;
         }
@@ -102,9 +102,9 @@ namespace plot
 
         void refresh()
         {
-            if (this->custom_manager && this->data)
+            if (this->auto_world && this->data)
             {
-                this->custom_manager->setup(*this->data);
+                this->auto_world->setup(*this->data);
             }
         }
     };
