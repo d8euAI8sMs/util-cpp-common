@@ -206,10 +206,20 @@ namespace plot
                 if ((this->params.enabled.empty() || this->params.enabled.ymax) && (enclosing.ymax < p.y)) enclosing.ymax = p.y;
             }
 
-            double width  = ((this->params.enabled.empty() || this->params.enabled.xmax) ? max(current.xmax, enclosing.xmax) : current.xmax) - ((this->params.enabled.empty() || this->params.enabled.xmin) ? min(current.xmin, enclosing.xmin) : current.xmin);
-            double height = ((this->params.enabled.empty() || this->params.enabled.ymax) ? max(current.ymax, enclosing.ymax) : current.ymax) - ((this->params.enabled.empty() || this->params.enabled.ymin) ? min(current.ymin, enclosing.ymin) : current.ymin);
-
             bool is_current_empty = current.empty();
+
+            double width, height;
+
+            if (current.empty())
+            {
+                width  = enclosing.width();
+                height = enclosing.height();
+            }
+            else
+            {
+                width  = ((this->params.enabled.empty() || this->params.enabled.xmax) ? max(current.xmax, enclosing.xmax) : current.xmax) - ((this->params.enabled.empty() || this->params.enabled.xmin) ? min(current.xmin, enclosing.xmin) : current.xmin);
+                height = ((this->params.enabled.empty() || this->params.enabled.ymax) ? max(current.ymax, enclosing.ymax) : current.ymax) - ((this->params.enabled.empty() || this->params.enabled.ymin) ? min(current.ymin, enclosing.ymin) : current.ymin);
+            }
 
             if ((this->params.enabled.empty() || this->params.enabled.xmin) && (((enclosing.xmin - this->params.paddings.xmin) < current.xmin) || is_current_empty)) current.xmin = enclosing.xmin - max(this->params.factors.xmin * width,  this->params.paddings.xmin);
             if ((this->params.enabled.empty() || this->params.enabled.xmax) && (((enclosing.xmax + this->params.paddings.xmax) > current.xmax) || is_current_empty)) current.xmax = enclosing.xmax + max(this->params.factors.xmax * width,  this->params.paddings.xmax);
