@@ -96,6 +96,9 @@
     <ClInclude Include="include\util\common\plot\math.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\math\vec.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
