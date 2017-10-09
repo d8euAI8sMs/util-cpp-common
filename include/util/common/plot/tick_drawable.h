@@ -23,6 +23,8 @@ namespace plot
 
         drawable::ptr_t  content;
         palette::pen_ptr pen;
+        COLORREF         text_color;
+        palette::brush_ptr background;
 
     public:
 
@@ -35,12 +37,16 @@ namespace plot
             drawable::ptr_t content,
             tick_factory::ptr_t xtf,
             tick_factory::ptr_t ytf,
-            palette::pen_ptr pen = {}
+            palette::pen_ptr pen = {},
+            COLORREF text_color = 0x000000,
+            palette::brush_ptr background = {}
         )
             : content(std::move(content))
             , xtf(std::move(xtf))
             , ytf(std::move(ytf))
             , pen(std::move(pen))
+            , text_color(text_color)
+            , background(std::move(background))
         {
         }
 
@@ -52,9 +58,15 @@ namespace plot
 
         virtual void do_draw(CDC &dc, const viewport &bounds) override
         {
+            dc.SetTextColor(text_color);
             if (pen)
             {
                 dc.SelectObject(pen.get());
+            }
+            if (background)
+            {
+                RECT screen = bounds.screen;
+                dc.FillRect(&screen, background.get());
             }
 
             plot::ptr_t < std::vector < tick_t > > x_ticks;
