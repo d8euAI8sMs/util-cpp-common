@@ -136,10 +136,13 @@ namespace plot
                 max = bounds.world.ymax;
             }
 
-            int n = int(size / interval);
-
             plot::ptr_t < std::vector < tick_t > > ticks
                 = create < std::vector < tick_t > > ();
+
+            if (size < 1e-15) return ticks;
+
+            int n = int(size / interval);
+
             ticks->reserve(n + 2);
 
             int d = (int) std::ceil((origin - min) / interval);
@@ -210,9 +213,12 @@ namespace plot
             }
 
             double interval = size / n_intervals;
-            
+
             plot::ptr_t < std::vector < tick_t > > ticks
                 = std::make_shared < std::vector < tick_t > > ();
+
+            if (size < 1e-15) return ticks;
+
             ticks->reserve(n_intervals + 2);
 
             int d = (int) std::ceil((origin - min) / interval);
