@@ -94,12 +94,15 @@ namespace plot
             this->world = { };
         }
 
-        virtual world_t adjust(const _points_t & data) = 0;
+        virtual void adjust(const _points_t & data) = 0;
 
-        virtual world_t setup(const _points_t & data)
+        virtual const world_t & flush() = 0;
+
+        virtual const world_t & setup(const _points_t & data)
         {
             clear();
-            return adjust(data);
+            adjust(data);
+            return flush();
         }
     };
 
@@ -145,6 +148,10 @@ namespace plot
 
         template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
+    protected:
+
+        world_t enclosing;
+
     public:
 
         min_max_auto_viewport()
@@ -166,45 +173,51 @@ namespace plot
         virtual void set_world(const world_t & world) override
         {
             this->world = world;
-            ensure_bounded();
-        }
-
-        virtual void clear() override
-        {
-            this->world = { };
-            ensure_bounded();
-        }
-
-        virtual void set_params(const auto_viewport_params & params) override
-        {
-            this->params = params;
-            ensure_bounded();
-        }
-
-        virtual world_t adjust(const _points_t & data) override
-        {
-            if (data.empty())
-            {
-                ensure_bounded();
-                return this->world;
-            }
-
-            world_t & current = this->world;
-            world_t enclosing =
+            this->enclosing =
             {
                 (std::numeric_limits < double > :: max)   (),
                 (std::numeric_limits < double > :: lowest)(),
                 (std::numeric_limits < double > :: max)   (),
                 (std::numeric_limits < double > :: lowest)()
             };
+        }
+
+        virtual void clear() override
+        {
+            this->world = { };
+            this->enclosing =
+            {
+                (std::numeric_limits < double > :: max)   (),
+                (std::numeric_limits < double > :: lowest)(),
+                (std::numeric_limits < double > :: max)   (),
+                (std::numeric_limits < double > :: lowest)()
+            };
+        }
+
+        virtual void set_params(const auto_viewport_params & params) override
+        {
+            this->params = params;
+        }
+
+        virtual void adjust(const _points_t & data) override
+        {
+            if (data.empty())
+            {
+                return;
+            }
 
             for each (auto & p in data)
             {
-                if ((this->params.enabled.empty() || this->params.enabled.xmin) && (enclosing.xmin > p.x)) enclosing.xmin = p.x;
-                if ((this->params.enabled.empty() || this->params.enabled.xmax) && (enclosing.xmax < p.x)) enclosing.xmax = p.x;
-                if ((this->params.enabled.empty() || this->params.enabled.ymin) && (enclosing.ymin > p.y)) enclosing.ymin = p.y;
-                if ((this->params.enabled.empty() || this->params.enabled.ymax) && (enclosing.ymax < p.y)) enclosing.ymax = p.y;
+                if ((this->params.enabled.empty() || this->params.enabled.xmin) && (this->enclosing.xmin > p.x)) this->enclosing.xmin = p.x;
+                if ((this->params.enabled.empty() || this->params.enabled.xmax) && (this->enclosing.xmax < p.x)) this->enclosing.xmax = p.x;
+                if ((this->params.enabled.empty() || this->params.enabled.ymin) && (this->enclosing.ymin > p.y)) this->enclosing.ymin = p.y;
+                if ((this->params.enabled.empty() || this->params.enabled.ymax) && (this->enclosing.ymax < p.y)) this->enclosing.ymax = p.y;
             }
+        }
+
+        virtual const world_t & flush() override
+        {
+            world_t & current = this->world;
 
             bool is_current_empty = current.empty();
 
@@ -212,19 +225,19 @@ namespace plot
 
             if (current.empty())
             {
-                width  = enclosing.width();
-                height = enclosing.height();
+                width  = this->enclosing.width();
+                height = this->enclosing.height();
             }
             else
             {
-                width  = ((this->params.enabled.empty() || this->params.enabled.xmax) ? max(current.xmax, enclosing.xmax) : current.xmax) - ((this->params.enabled.empty() || this->params.enabled.xmin) ? min(current.xmin, enclosing.xmin) : current.xmin);
-                height = ((this->params.enabled.empty() || this->params.enabled.ymax) ? max(current.ymax, enclosing.ymax) : current.ymax) - ((this->params.enabled.empty() || this->params.enabled.ymin) ? min(current.ymin, enclosing.ymin) : current.ymin);
+                width  = ((this->params.enabled.empty() || this->params.enabled.xmax) ? max(current.xmax, this->enclosing.xmax) : current.xmax) - ((this->params.enabled.empty() || this->params.enabled.xmin) ? min(current.xmin, this->enclosing.xmin) : current.xmin);
+                height = ((this->params.enabled.empty() || this->params.enabled.ymax) ? max(current.ymax, this->enclosing.ymax) : current.ymax) - ((this->params.enabled.empty() || this->params.enabled.ymin) ? min(current.ymin, this->enclosing.ymin) : current.ymin);
             }
 
-            if ((this->params.enabled.empty() || this->params.enabled.xmin) && (((enclosing.xmin - this->params.paddings.xmin) < current.xmin) || is_current_empty)) current.xmin = enclosing.xmin - max(this->params.factors.xmin * width,  this->params.paddings.xmin);
-            if ((this->params.enabled.empty() || this->params.enabled.xmax) && (((enclosing.xmax + this->params.paddings.xmax) > current.xmax) || is_current_empty)) current.xmax = enclosing.xmax + max(this->params.factors.xmax * width,  this->params.paddings.xmax);
-            if ((this->params.enabled.empty() || this->params.enabled.ymin) && (((enclosing.ymin - this->params.paddings.ymin) < current.ymin) || is_current_empty)) current.ymin = enclosing.ymin - max(this->params.factors.ymin * height, this->params.paddings.ymin);
-            if ((this->params.enabled.empty() || this->params.enabled.ymax) && (((enclosing.ymax + this->params.paddings.ymax) > current.ymax) || is_current_empty)) current.ymax = enclosing.ymax + max(this->params.factors.ymax * height, this->params.paddings.ymax);
+            if ((this->params.enabled.empty() || this->params.enabled.xmin) && (((this->enclosing.xmin - this->params.paddings.xmin) < current.xmin) || is_current_empty)) current.xmin = this->enclosing.xmin - max(this->params.factors.xmin * width,  this->params.paddings.xmin);
+            if ((this->params.enabled.empty() || this->params.enabled.xmax) && (((this->enclosing.xmax + this->params.paddings.xmax) > current.xmax) || is_current_empty)) current.xmax = this->enclosing.xmax + max(this->params.factors.xmax * width,  this->params.paddings.xmax);
+            if ((this->params.enabled.empty() || this->params.enabled.ymin) && (((this->enclosing.ymin - this->params.paddings.ymin) < current.ymin) || is_current_empty)) current.ymin = this->enclosing.ymin - max(this->params.factors.ymin * height, this->params.paddings.ymin);
+            if ((this->params.enabled.empty() || this->params.enabled.ymax) && (((this->enclosing.ymax + this->params.paddings.ymax) > current.ymax) || is_current_empty)) current.ymax = this->enclosing.ymax + max(this->params.factors.ymax * height, this->params.paddings.ymax);
 
             ensure_bounded();
 
