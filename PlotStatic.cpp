@@ -11,12 +11,15 @@ IMPLEMENT_DYNAMIC(PlotStatic, CStatic)
 
 PlotStatic::PlotStatic()
     : buffer(nullptr)
+    , buffer2(nullptr)
+    , triple_buffered(false)
 {
 }
 
 PlotStatic::~PlotStatic()
 {
     delete buffer;
+    delete buffer2;
 }
 
 
@@ -37,24 +40,22 @@ void PlotStatic::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 }
 
 
-void PlotStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+void PlotStatic::RedrawBuffer()
 {
-    CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
-    CDC dc; dc.CreateCompatibleDC(pDC);
+    CDC dc; dc.CreateCompatibleDC(NULL);
 
     dc.SetBkMode(TRANSPARENT);
 
     RECT bounds;  GetClientRect(&bounds);
     plot::screen_t screen(0, bounds.right, 0, bounds.bottom);
 
-    if (buffer == nullptr)
+    if (buffer2 == nullptr)
     {
-        RECT bounds;  GetClientRect(&bounds);
-        buffer = new CBitmap;
-        buffer->CreateCompatibleBitmap(pDC, bounds.right, bounds.bottom);
+        buffer2 = new CBitmap;
+        buffer2->CreateBitmap(bounds.right, bounds.bottom, 1, 32, NULL);
     }
 
-    auto old = dc.SelectObject(buffer);
+    auto old = dc.SelectObject(buffer2);
 
     if (symmetric)
     {
@@ -67,10 +68,41 @@ void PlotStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
     plot::viewport vp(screen, {});
 
-    CBrush white(RGB(255, 255, 255));
-    dc.FillRect(&bounds, &white);
+    dc.FillRect(&bounds, background.get());
 
     this->plot_layer.draw(dc, vp);
+
+    dc.SelectObject(old);
+}
+
+
+void PlotStatic::SwapBuffers()
+{
+    std::swap(buffer, buffer2);
+}
+
+
+
+void PlotStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+    CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
+
+    RECT bounds;  GetClientRect(&bounds);
+
+    if (!triple_buffered)
+    {
+        SwapBuffers();
+        RedrawBuffer();
+        SwapBuffers();
+    }
+
+    if (!buffer)
+    {
+        return;
+    }
+
+    CDC dc; dc.CreateCompatibleDC(pDC);
+    auto old = dc.SelectObject(buffer);
 
     pDC->BitBlt(0, 0, bounds.right, bounds.bottom, &dc, 0, 0, SRCCOPY);
 
