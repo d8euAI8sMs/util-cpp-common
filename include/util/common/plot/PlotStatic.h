@@ -21,6 +21,7 @@ public:
     virtual void RedrawBuffer();
     virtual void SwapBuffers();
     plot::layer_drawable plot_layer;
+    plot::palette::brush_ptr background;
     bool symmetric;
     bool triple_buffered;
 private:

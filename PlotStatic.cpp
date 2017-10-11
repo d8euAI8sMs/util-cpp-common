@@ -12,6 +12,7 @@ IMPLEMENT_DYNAMIC(PlotStatic, CStatic)
 PlotStatic::PlotStatic()
     : buffer(nullptr)
     , buffer2(nullptr)
+    , background(plot::palette::brush(0xffffff))
     , triple_buffered(false)
 {
 }
@@ -98,6 +99,7 @@ void PlotStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
     if (!buffer)
     {
+        pDC->FillRect(&bounds, background.get());
         return;
     }
 
