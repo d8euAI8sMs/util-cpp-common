@@ -6,7 +6,11 @@
 namespace plot
 {
 
-    template < typename _container_t >
+    template
+    <
+        typename _container_t,
+        typename _mapped_t = point < double >
+    >
     class simple_list_plot
     {
 
@@ -14,8 +18,9 @@ namespace plot
 
         util::ptr_t < _container_t >      data;
         data_source_t < _container_t >    data_source;
+        data_mapper_t < typename _container_t::iterator, _mapped_t > data_mapper;
 
-        typename list_drawable < _container_t > ::ptr_t view;
+        typename list_drawable < _container_t, _mapped_t > ::ptr_t view;
 
         world_mapper_t                      viewport_mapper;
 
@@ -27,11 +32,11 @@ namespace plot
 
         simple_list_plot & with_view()
         {
-            this->view = list_drawable < _container_t > ::create();
+            this->view = list_drawable < _container_t, _mapped_t > ::create();
             return *this;
         }
 
-        simple_list_plot & with_view(typename list_drawable < _container_t > ::ptr_t view)
+        simple_list_plot & with_view(typename list_drawable < _container_t, _mapped_t > ::ptr_t view)
         {
             this->view = std::move(view);
             return *this;
@@ -97,6 +102,13 @@ namespace plot
         {
             this->data_source = std::move(data);
             if (this->view) this->view->data_source = this->data_source;
+            return *this;
+        }
+
+        simple_list_plot & with_data_mapper(data_mapper_t < typename _container_t::iterator, _mapped_t > mapper)
+        {
+            this->data_mapper = std::move(mapper);
+            if (this->view) this->view->data_mapper = this->data_mapper;
             return *this;
         }
 
