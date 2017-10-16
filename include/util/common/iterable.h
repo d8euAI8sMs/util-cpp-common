@@ -173,17 +173,17 @@ namespace util
 
         using container_type      = _container_t;
         using iterator            = _iterator_t;
-        using value_accessor_t    = std::function < reference (const container_type &, const iterator &, size_t) > ;
-        using pointer_accessor_t  = std::function < pointer (const container_type &, const iterator &, size_t) > ;
-        using iterator_accessor_t = std::function < iterator (const container_type &) > ;
+        using value_mapper_t      = data_mapper_t < container_type, iterator, reference > ;
+        using pointer_mapper_t    = data_mapper_t < container_type, iterator, pointer > ;
+        using iterator_source_t   = iterator_source_t < container_type, iterator > ;
 
     private:
 
         const container_type     * container;
         iterator                   position;
         size_t                     index;
-        const value_accessor_t   * value_accessor;
-        const pointer_accessor_t * pointer_accessor;
+        const value_mapper_t     * value_mapper;
+        const pointer_mapper_t   * pointer_mapper;
 
     public:
 
@@ -191,8 +191,8 @@ namespace util
             : container(nullptr)
             , position()
             , index(0)
-            , value_accessor(nullptr)
-            , pointer_accessor(nullptr)
+            , value_mapper(nullptr)
+            , pointer_mapper(nullptr)
         {
         }
 
@@ -201,8 +201,8 @@ namespace util
             : container(it.container)
             , position(it.position)
             , index(it.index)
-            , value_accessor(it.value_accessor)
-            , pointer_accessor(it.pointer_accessor)
+            , value_mapper(it.value_mapper)
+            , pointer_mapper(it.pointer_mapper)
         {
         }
 
@@ -210,13 +210,13 @@ namespace util
             const container_type     * container,
             iterator                   position,
             size_t                     index,
-            const value_accessor_t   * value_accessor,
-            const pointer_accessor_t * pointer_accessor)
+            const value_mapper_t     * value_mapper,
+            const pointer_mapper_t   * pointer_mapper)
             : container(container)
             , position(position)
             , index(index)
-            , value_accessor(value_accessor)
-            , pointer_accessor(pointer_accessor)
+            , value_mapper(value_mapper)
+            , pointer_mapper(pointer_mapper)
         {
         }
 
@@ -226,8 +226,8 @@ namespace util
             this->container = it.container;
             this->position = it.position;
             this->index = it.index;
-            this->value_accessor = it.value_accessor;
-            this->pointer_accessor = it.pointer_accessor;
+            this->value_mapper = it.value_mapper;
+            this->pointer_mapper = it.pointer_mapper;
         }
 
         ~forward_const_iterator()
@@ -241,20 +241,20 @@ namespace util
             const container_type       * c  = this->container;
             iterator                     p  = this->position;
             size_t                       i  = this->index;
-            const value_accessor_t     * va = this->value_accessor;
-            const pointer_accessor_t   * pa = this->pointer_accessor;
+            const value_mapper_t       * va = this->value_mapper;
+            const pointer_mapper_t     * pa = this->pointer_mapper;
 
             this->container                 = it.container;
             this->position                  = it.position;
             this->index                     = it.index;
-            this->value_accessor            = it.value_accessor;
-            this->pointer_accessor          = it.pointer_accessor;
+            this->value_mapper              = it.value_mapper;
+            this->pointer_mapper            = it.pointer_mapper;
 
             it.container                    = c;
             it.position                     = p;
             it.index                        = i;
-            it.value_accessor               = va;
-            it.pointer_accessor             = pa;
+            it.value_mapper                 = va;
+            it.pointer_mapper               = pa;
         }
 
     public:
@@ -273,12 +273,12 @@ namespace util
 
         reference operator * () const
         {
-            return (*value_accessor)(*this->container, position, index);
+            return (*value_mapper)(*this->container, position, index);
         }
 
         pointer operator -> () const
         {
-            return (*pointer_accessor)(*this->container, position, index);
+            return (*pointer_mapper)(*this->container, position, index);
         }
 
         forward_const_iterator & operator ++ ()
@@ -339,9 +339,9 @@ namespace util
         using const_iterator      = _iterator_t;
         using container_type      = typename iterator::container_type;
         using value_type          = typename iterator::value_type;
-        using value_accessor_t    = typename iterator::value_accessor_t;
-        using pointer_accessor_t  = typename iterator::pointer_accessor_t;
-        using iterator_accessor_t = typename iterator::iterator_accessor_t;
+        using value_mapper_t      = typename iterator::value_mapper_t;
+        using pointer_mapper_t    = typename iterator::pointer_mapper_t;
+        using iterator_source_t   = typename iterator::iterator_source_t;
     };
 
     /*****************************************************/
@@ -365,10 +365,10 @@ namespace util
     public:
 
         util::ptr_t < container_type > container;
-        value_accessor_t               value_accessor;
-        pointer_accessor_t             pointer_accessor;
-        iterator_accessor_t            begin_accessor;
-        iterator_accessor_t            end_accessor;
+        value_mapper_t                 value_mapper;
+        pointer_mapper_t               pointer_mapper;
+        iterator_source_t              begin_source;
+        iterator_source_t              end_source;
 
     public:
 
@@ -379,16 +379,16 @@ namespace util
         forward_iterable
         (
             util::ptr_t < container_type > container,
-            iterator_accessor_t            begin_accessor,
-            iterator_accessor_t            end_accessor,
-            value_accessor_t               value_accessor,
-            pointer_accessor_t             pointer_accessor
+            iterator_source_t            begin_source,
+            iterator_source_t            end_source,
+            value_mapper_t               value_mapper,
+            pointer_mapper_t             pointer_mapper
         )
             : container(std::move(container))
-            , begin_accessor(std::move(begin_accessor))
-            , end_accessor(std::move(end_accessor))
-            , value_accessor(std::move(value_accessor))
-            , pointer_accessor(std::move(pointer_accessor))
+            , begin_source(std::move(begin_source))
+            , end_source(std::move(end_source))
+            , value_mapper(std::move(value_mapper))
+            , pointer_mapper(std::move(pointer_mapper))
         {
         }
 
@@ -397,10 +397,10 @@ namespace util
             return const_iterator
             (
                 container.get(),
-                begin_accessor(*container),
+                begin_source(*container),
                 0,
-                &value_accessor,
-                &pointer_accessor
+                &value_mapper,
+                &pointer_mapper
             );
         }
 
@@ -409,10 +409,10 @@ namespace util
             return const_iterator
             (
                 container.get(),
-                end_accessor(*container),
+                end_source(*container),
                 SIZE_T_MAX /* undefined for past-the-end iterator */,
-                &value_accessor,
-                &pointer_accessor
+                &value_mapper,
+                &pointer_mapper
             );
         }
     };
