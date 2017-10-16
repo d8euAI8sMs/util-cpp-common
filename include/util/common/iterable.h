@@ -415,5 +415,15 @@ namespace util
                 &pointer_mapper
             );
         }
+
+        const_iterator cbegin() const
+        {
+            return begin();
+        }
+
+        const_iterator cend() const
+        {
+            return end();
+        }
     };
 }
