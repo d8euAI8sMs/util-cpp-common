@@ -6,32 +6,32 @@
 namespace plot
 {
 
-    template < typename _points_t >
+    template < typename _container_t >
     class simple_list_plot
     {
 
     public:
 
-        util::ptr_t < _points_t >           data;
-        points_source_t < _points_t >       data_source;
+        util::ptr_t < _container_t >      data;
+        data_source_t < _container_t >    data_source;
 
-        typename list_drawable < _points_t > ::ptr_t view;
+        typename list_drawable < _container_t > ::ptr_t view;
 
         world_mapper_t                      viewport_mapper;
 
         world_mapper_t                      mapped_world;
         world_t::ptr_t                      static_world;
-        typename auto_viewport < _points_t > ::ptr_t auto_world;
+        typename auto_viewport < _container_t > ::ptr_t auto_world;
 
     public:
 
         simple_list_plot & with_view()
         {
-            this->view = list_drawable < _points_t > ::create();
+            this->view = list_drawable < _container_t > ::create();
             return *this;
         }
 
-        simple_list_plot & with_view(typename list_drawable < _points_t > ::ptr_t view)
+        simple_list_plot & with_view(typename list_drawable < _container_t > ::ptr_t view)
         {
             this->view = std::move(view);
             return *this;
@@ -70,30 +70,30 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_auto_viewport(typename auto_viewport < _points_t > ::ptr_t vp = min_max_auto_viewport < _points_t > ::create())
+        simple_list_plot & with_auto_viewport(typename auto_viewport < _container_t > ::ptr_t vp = min_max_auto_viewport < _container_t > ::create())
         {
             this->auto_world = vp;
-            this->viewport_mapper = make_world_mapper < _points_t > (std::move(vp));
+            this->viewport_mapper = make_world_mapper < _container_t > (std::move(vp));
             return *this;
         }
 
         simple_list_plot & with_data()
         {
-            this->data = util::create < _points_t > ();
-            this->data_source = make_points_source(this->data);
+            this->data = util::create < _container_t > ();
+            this->data_source = make_data_source(this->data);
             if (this->view) this->view->data_factory = this->data_source;
             return *this;
         }
 
-        simple_list_plot & with_data(util::ptr_t < _points_t > data)
+        simple_list_plot & with_data(util::ptr_t < _container_t > data)
         {
             this->data = data;
-            this->data_source = make_points_source(std::move(data));
+            this->data_source = make_data_source(std::move(data));
             if (this->view) this->view->data_factory = this->data_source;
             return *this;
         }
 
-        simple_list_plot & with_data(points_source_t < _points_t > data)
+        simple_list_plot & with_data(data_source_t < _container_t > data)
         {
             this->data_source = std::move(data);
             if (this->view) this->view->data_factory = this->data_source;

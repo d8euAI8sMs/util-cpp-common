@@ -78,9 +78,6 @@
     <ClInclude Include="include\util\common\plot\tick_drawable.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
-    <ClInclude Include="include\util\common\plot\points_source.h">
-      <Filter>Header Files\plot</Filter>
-    </ClInclude>
     <ClInclude Include="include\util\common\plot\list_drawable.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
@@ -107,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="include\util\common\ptr.h">
       <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\common\plot\data_source.h">
+      <Filter>Header Files\plot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

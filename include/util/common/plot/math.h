@@ -6,9 +6,9 @@
 namespace plot
 {
 
-    template < typename _points_t >
+    template < typename _container_t >
     static inline void sampled_t_to_data(math::sampled_t sampled,
-                                         _points_t & points,
+                                         _container_t & points,
                                          double origin = 0,
                                          math::un_op_t mapper = common::identity_un_op())
     {

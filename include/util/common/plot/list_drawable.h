@@ -12,7 +12,7 @@
 namespace plot
 {
 
-    template < typename _points_t >
+    template < typename _container_t >
     class list_drawable : public drawable
     {
 
@@ -24,7 +24,7 @@ namespace plot
 
     public:
 
-        points_source_t < _points_t > data_factory;
+        data_source_t < _container_t > data_source;
         drawable::ptr_t  point_painter;
         palette::pen_ptr line_pen;
 
@@ -36,11 +36,11 @@ namespace plot
 
         list_drawable
         (
-            points_source_t < _points_t > data_factory,
+            data_source_t < _container_t > data_source,
             drawable::ptr_t  point_painter = custom_drawable::create(circle_painter()),
             palette::pen_ptr line_pen = palette::pen()
         )
-            : data_factory(std::move(data_factory))
+            : data_source(std::move(data_source))
             , point_painter(std::move(point_painter))
             , line_pen(line_pen)
         {
@@ -54,8 +54,8 @@ namespace plot
 
         virtual void do_draw(CDC &dc, const viewport &bounds) override
         {
-            if (!data_factory) return;
-            auto data = data_factory(bounds);
+            if (!data_source) return;
+            auto data = data_source(bounds);
             if (data->empty()) return;
             dc.MoveTo(bounds.world_to_screen().xy(*data->begin()));
             for each (auto &p in *data)

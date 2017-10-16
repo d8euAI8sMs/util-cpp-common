@@ -39,7 +39,7 @@ namespace plot
     /*                 auto_viewport                     */
     /*****************************************************/
 
-    template < typename _points_t >
+    template < typename _container_t >
     class auto_viewport
     {
 
@@ -94,11 +94,11 @@ namespace plot
             this->world = { };
         }
 
-        virtual void adjust(const _points_t & data) = 0;
+        virtual void adjust(const _container_t & data) = 0;
 
         virtual const world_t & flush() = 0;
 
-        virtual const world_t & setup(const _points_t & data)
+        virtual const world_t & setup(const _container_t & data)
         {
             clear();
             adjust(data);
@@ -110,26 +110,26 @@ namespace plot
     /*                -viewport mappers-                 */
     /*****************************************************/
 
-    template < typename _points_t >
-    static inline world_mapper_t make_world_mapper(const auto_viewport < _points_t > & vp)
+    template < typename _container_t >
+    static inline world_mapper_t make_world_mapper(const auto_viewport < _container_t > & vp)
     {
         return [&vp] (const world_t & w) { return vp.get_world(); };
     }
 
-    template < typename _points_t >
-    static inline world_mapper_t make_world_mapper(typename auto_viewport < _points_t > ::ptr_t vp)
+    template < typename _container_t >
+    static inline world_mapper_t make_world_mapper(typename auto_viewport < _container_t > ::ptr_t vp)
     {
         return [vp] (const world_t & w) { return vp->get_world(); };
     }
 
-    template < typename _points_t >
-    static inline viewport_mapper_t make_viewport_mapper(const auto_viewport < _points_t > & vp)
+    template < typename _container_t >
+    static inline viewport_mapper_t make_viewport_mapper(const auto_viewport < _container_t > & vp)
     {
         return [&vp] (const viewport & v) { return { v.screen, vp.get_world() }; };
     }
 
-    template < typename _points_t >
-    static inline viewport_mapper_t make_viewport_mapper(typename auto_viewport < _points_t > ::ptr_t vp)
+    template < typename _container_t >
+    static inline viewport_mapper_t make_viewport_mapper(typename auto_viewport < _container_t > ::ptr_t vp)
     {
         return [vp] (const viewport & v) { return { v.screen, vp->get_world() }; };
     }
@@ -138,8 +138,8 @@ namespace plot
     /*               min_max_auto_viewport               */
     /*****************************************************/
 
-    template < typename _points_t >
-    class min_max_auto_viewport : public auto_viewport < _points_t >
+    template < typename _container_t >
+    class min_max_auto_viewport : public auto_viewport < _container_t >
     {
 
     public:
@@ -199,7 +199,7 @@ namespace plot
             this->params = params;
         }
 
-        virtual void adjust(const _points_t & data) override
+        virtual void adjust(const _container_t & data) override
         {
             if (data.empty())
             {
