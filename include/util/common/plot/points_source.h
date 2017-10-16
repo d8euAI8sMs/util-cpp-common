@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <vector>
 
 #include <util/common/ptr.h>
 #include <util/common/plot/shape.h>
