@@ -54,12 +54,16 @@ namespace plot
 
     protected:
 
+        using _iterator_t = typename _container_t::const_iterator;
+
+    protected:
+
         world_t              world;
         auto_viewport_params params;
 
     public:
 
-        util::data_mapper_t < _container_t, typename _container_t::const_iterator, _mapped_t > data_mapper;
+        util::data_mapper_t < _container_t, _iterator_t, _mapped_t > data_mapper;
 
     public:
 
@@ -214,16 +218,16 @@ namespace plot
 
         virtual void adjust(const _container_t & data) override
         {
-            if ((!data_mapper) && !(util::is_identity_mappable < typename _container_t::const_iterator > ()) || data.empty())
+            if ((!data_mapper) && !(util::is_identity_mappable < _iterator_t, _mapped_t > ()) || data.empty())
             {
                 return;
             }
 
             size_t idx = 0;
-            auto end = data.end();
-            for (typename _container_t::const_iterator it = data.begin(); it != end; ++it, ++idx)
+            _iterator_t end = data.end();
+            for (_iterator_t it = data.begin(); it != end; ++it, ++idx)
             {
-                _mapped_t p = util::get_mapped_value_or_default < _container_t, typename _container_t::const_iterator, _mapped_t > (data_mapper, data, it, idx);
+                _mapped_t p = util::get_mapped_value_or_default(data_mapper, data, it, idx);
                 if ((this->params.enabled.empty() || this->params.enabled.xmin) && (this->enclosing.xmin > p.x)) this->enclosing.xmin = p.x;
                 if ((this->params.enabled.empty() || this->params.enabled.xmax) && (this->enclosing.xmax < p.x)) this->enclosing.xmax = p.x;
                 if ((this->params.enabled.empty() || this->params.enabled.ymin) && (this->enclosing.ymin > p.y)) this->enclosing.ymin = p.y;

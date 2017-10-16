@@ -27,6 +27,10 @@ namespace plot
 
         template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
+    protected:
+
+        using _iterator_t = typename _container_t::const_iterator;
+
     public:
 
         data_source_t < _container_t > data_source;
@@ -60,20 +64,20 @@ namespace plot
 
         virtual void do_draw(CDC &dc, const viewport &bounds) override
         {
-            if ((!data_source) || (!data_mapper) && (!util::is_identity_mappable < typename _container_t::const_iterator, _mapped_t > ())) return;
+            if ((!data_source) || (!data_mapper) && (!util::is_identity_mappable < _iterator_t, _mapped_t > ())) return;
             auto data = data_source(bounds);
             if (data->empty()) return;
 
             point < double > p;
 
-            dc.MoveTo(bounds.world_to_screen().xy(util::get_mapped_value_or_default < _container_t, typename _container_t::const_iterator, _mapped_t > (data_mapper, *data, data->begin(), 0)));
+            dc.MoveTo(bounds.world_to_screen().xy(util::get_mapped_value_or_default(data_mapper, *data, (_iterator_t)data->begin(), 0)));
 
             size_t idx = 0;
-            auto end = data->end();
+            _iterator_t end = data->end();
 
-            for (auto it = data->begin(); it != end; ++it, ++idx)
+            for (_iterator_t it = data->begin(); it != end; ++it, ++idx)
             {
-                p = util::get_mapped_value_or_default < _container_t, typename _container_t::const_iterator, _mapped_t > (data_mapper, *data, it, idx);
+                p = util::get_mapped_value_or_default(data_mapper, *data, it, idx);
                 if (line_pen)
                 {
                     auto _old = dc.SelectObject(*line_pen);
