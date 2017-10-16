@@ -130,7 +130,7 @@ namespace util
         return [] (const _container_t & c) -> typename _iterator_t
         {
             return c.begin();
-        }
+        };
     }
 
     template
@@ -143,7 +143,7 @@ namespace util
         return [] (const _container_t & c) -> typename _iterator_t
         {
             return c.end();
-        }
+        };
     }
 
     /*****************************************************/
