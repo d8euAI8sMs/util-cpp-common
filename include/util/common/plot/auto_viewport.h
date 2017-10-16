@@ -3,6 +3,7 @@
 #include <limits>
 
 #include <util/common/ptr.h>
+#include <util/common/iterable.h>
 #include <util/common/plot/viewport.h>
 
 namespace plot
@@ -39,7 +40,11 @@ namespace plot
     /*                 auto_viewport                     */
     /*****************************************************/
 
-    template < typename _container_t >
+    template
+    <
+        typename _container_t,
+        typename _mapped_t = point < double >
+    >
     class auto_viewport
     {
 
@@ -51,6 +56,10 @@ namespace plot
 
         world_t              world;
         auto_viewport_params params;
+
+    public:
+
+        util::data_mapper_t < _container_t, typename _container_t::const_iterator, _mapped_t > data_mapper;
 
     public:
 
@@ -138,8 +147,12 @@ namespace plot
     /*               min_max_auto_viewport               */
     /*****************************************************/
 
-    template < typename _container_t >
-    class min_max_auto_viewport : public auto_viewport < _container_t >
+    template
+    <
+        typename _container_t,
+        typename _mapped_t = point < double >
+    >
+    class min_max_auto_viewport : public auto_viewport < _container_t, _mapped_t >
     {
 
     public:
@@ -201,13 +214,16 @@ namespace plot
 
         virtual void adjust(const _container_t & data) override
         {
-            if (data.empty())
+            if ((!data_mapper) && !(util::is_identity_mappable < typename _container_t::const_iterator > ()) || data.empty())
             {
                 return;
             }
 
-            for each (auto & p in data)
+            size_t idx = 0;
+            auto end = data.end();
+            for (typename _container_t::const_iterator it = data.begin(); it != end; ++it, ++idx)
             {
+                _mapped_t p = util::get_mapped_value_or_default < _container_t, typename _container_t::const_iterator, _mapped_t > (data_mapper, data, it, idx);
                 if ((this->params.enabled.empty() || this->params.enabled.xmin) && (this->enclosing.xmin > p.x)) this->enclosing.xmin = p.x;
                 if ((this->params.enabled.empty() || this->params.enabled.xmax) && (this->enclosing.xmax < p.x)) this->enclosing.xmax = p.x;
                 if ((this->params.enabled.empty() || this->params.enabled.ymin) && (this->enclosing.ymin > p.y)) this->enclosing.ymin = p.y;
