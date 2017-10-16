@@ -9,6 +9,107 @@ namespace util
 {
 
     /*****************************************************/
+    /*                   data_mapper                     */
+    /*****************************************************/
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator,
+        typename _mapped_t   = typename _iterator_t::value_type
+    >
+    using data_mapper_t = std::function < _mapped_t (const _container_t &, const _iterator_t & pos, size_t idx) > ;
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline data_mapper_t < _container_t, _iterator_t, typename _iterator_t::reference > make_identity_data_mapper()
+    {
+        return [] (const _container_t &, const _iterator_t & it, size_t) -> typename _iterator_t::reference
+        {
+            return *it;
+        }
+    }
+
+    template < bool >
+    struct _get_mapped_value_helper;
+
+    template < >
+    struct _get_mapped_value_helper < false >
+    {
+
+        template
+        <
+            typename _container_t,
+            typename _iterator_t,
+            typename _mapped_t
+        >
+        static inline _mapped_t value
+        (
+            const data_mapper_t < _container_t, _iterator_t, _mapped_t > & mapper,
+            const _container_t & c,
+            const _iterator_t  & pos,
+            size_t               idx
+        )
+        {
+            return mapper(c, pos, idx);
+        }
+    };
+
+    template < >
+    struct _get_mapped_value_helper < true >
+    {
+
+        template
+        <
+            typename _container_t,
+            typename _iterator_t,
+            typename _mapped_t
+        >
+        static inline _mapped_t value
+        (
+            const data_mapper_t < _container_t, _iterator_t, _mapped_t > & mapper,
+            const _container_t & c,
+            const _iterator_t  & pos,
+            size_t               idx
+        )
+        {
+            return (!mapper) ? *pos : mapper(c, pos, idx);
+        }
+    };
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator,
+        typename _mapped_t   = typename _iterator_t::value_type
+    >
+    static inline _mapped_t get_mapped_value_or_default
+    (
+        const data_mapper_t < _container_t, _iterator_t, _mapped_t > & mapper,
+        const _container_t & c,
+        const _iterator_t  & pos,
+        size_t               idx
+    )
+    {
+        return _get_mapped_value_helper
+               < std::is_convertible < typename _iterator_t::reference, _mapped_t > ::value >
+               :: value < _container_t, _iterator_t, _mapped_t > (mapper, c, pos, idx);
+    }
+
+    template
+    <
+        typename _iterator_t,
+        typename _mapped_t = typename _iterator_t::value_type
+    >
+    static inline bool is_identity_mappable()
+    {
+        return std::is_convertible < typename _iterator_t::reference, _mapped_t > ::value;
+    }
+
+    /*****************************************************/
     /*              forward_const_iterator               */
     /*****************************************************/
 
