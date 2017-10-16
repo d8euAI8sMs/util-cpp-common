@@ -102,6 +102,9 @@
     <ClInclude Include="include\util\common\math\dsolve.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\iterable.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
     <ClInclude Include="include\util\common\ptr.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
