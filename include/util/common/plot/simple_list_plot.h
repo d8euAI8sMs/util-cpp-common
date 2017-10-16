@@ -81,7 +81,7 @@ namespace plot
         {
             this->data = util::create < _container_t > ();
             this->data_source = make_data_source(this->data);
-            if (this->view) this->view->data_factory = this->data_source;
+            if (this->view) this->view->data_source = this->data_source;
             return *this;
         }
 
@@ -89,14 +89,14 @@ namespace plot
         {
             this->data = data;
             this->data_source = make_data_source(std::move(data));
-            if (this->view) this->view->data_factory = this->data_source;
+            if (this->view) this->view->data_source = this->data_source;
             return *this;
         }
 
         simple_list_plot & with_data(data_source_t < _container_t > data)
         {
             this->data_source = std::move(data);
-            if (this->view) this->view->data_factory = this->data_source;
+            if (this->view) this->view->data_source = this->data_source;
             return *this;
         }
 
