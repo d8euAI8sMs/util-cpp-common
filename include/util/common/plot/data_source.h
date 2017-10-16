@@ -34,15 +34,4 @@ namespace plot
     {
         return [data] (const viewport &) { return std::move(data); };
     }
-
-    /*****************************************************/
-    /*                   data_mapper                     */
-    /*****************************************************/
-
-    template
-    <
-        typename _iterator_t,
-        typename _mapped_t = typename _iterator_t::value_type
-    >
-    using data_mapper_t = std::function < _mapped_t (const _iterator_t & pos, size_t idx) > ;
 }
