@@ -11,6 +11,7 @@ namespace math
 
 	struct dresult3
     {
+		double t;
 		v3 x, dx;
 	};
 
@@ -41,6 +42,7 @@ namespace math
 		rk4_coefs3 c = get_rk4_coefs(fn, t, dt, x, dx);
 		return
 		{
+			t + dt,
 			x + dx * dt + (c.k1 + c.k2 + c.k3) / 6 * dt,
 			dx + (c.k1 + 2 * c.k2 + 2 * c.k3 + c.k4) / 6
 		};
