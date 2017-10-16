@@ -110,6 +110,43 @@ namespace util
     }
 
     /*****************************************************/
+    /*                 iterator_source                   */
+    /*****************************************************/
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    using iterator_source_t = std::function < _iterator_t (const _container_t &) > ;
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline iterator_source_t < _container_t, _iterator_t > make_begin_iterator_source()
+    {
+        return [] (const _container_t & c) -> typename _iterator_t
+        {
+            return c.begin();
+        }
+    }
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline iterator_source_t < _container_t, _iterator_t > make_end_iterator_source()
+    {
+        return [] (const _container_t & c) -> typename _iterator_t
+        {
+            return c.end();
+        }
+    }
+
+    /*****************************************************/
     /*              forward_const_iterator               */
     /*****************************************************/
 
