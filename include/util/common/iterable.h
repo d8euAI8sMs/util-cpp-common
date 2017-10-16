@@ -392,6 +392,11 @@ namespace util
         {
         }
 
+        bool empty() const
+        {
+            return (begin() == end());
+        }
+
         const_iterator begin() const
         {
             return const_iterator
