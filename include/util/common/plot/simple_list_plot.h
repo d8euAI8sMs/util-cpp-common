@@ -18,7 +18,7 @@ namespace plot
 
         util::ptr_t < _container_t >      data;
         data_source_t < _container_t >    data_source;
-        data_mapper_t < typename _container_t::iterator, _mapped_t > data_mapper;
+        util::data_mapper_t < _container_t, typename _container_t::const_iterator, _mapped_t > data_mapper;
 
         typename list_drawable < _container_t, _mapped_t > ::ptr_t view;
 
@@ -26,7 +26,7 @@ namespace plot
 
         world_mapper_t                      mapped_world;
         world_t::ptr_t                      static_world;
-        typename auto_viewport < _container_t > ::ptr_t auto_world;
+        typename auto_viewport < _container_t, _mapped_t > ::ptr_t auto_world;
 
     public:
 
@@ -75,7 +75,7 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_auto_viewport(typename auto_viewport < _container_t > ::ptr_t vp = min_max_auto_viewport < _container_t > ::create())
+        simple_list_plot & with_auto_viewport(typename auto_viewport < _container_t, _mapped_t > ::ptr_t vp = min_max_auto_viewport < _container_t > ::create())
         {
             this->auto_world = vp;
             this->viewport_mapper = make_world_mapper < _container_t > (std::move(vp));
@@ -105,10 +105,11 @@ namespace plot
             return *this;
         }
 
-        simple_list_plot & with_data_mapper(data_mapper_t < typename _container_t::iterator, _mapped_t > mapper)
+        simple_list_plot & with_data_mapper(util::data_mapper_t < _container_t, typename _container_t::const_iterator, _mapped_t > mapper)
         {
             this->data_mapper = std::move(mapper);
             if (this->view) this->view->data_mapper = this->data_mapper;
+            if (this->auto_world) this->auto_world->data_mapper = this->data_mapper;
             return *this;
         }
 
