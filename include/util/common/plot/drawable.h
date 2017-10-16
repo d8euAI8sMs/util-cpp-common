@@ -4,7 +4,7 @@
 
 #include <functional>
 
-#include <util/common/plot/ptr.h>
+#include <util/common/ptr.h>
 #include <util/common/plot/viewport.h>
 #include <util/common/plot/shape.h>
 
@@ -16,7 +16,7 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < drawable > ;
+        using ptr_t = util::ptr_t < drawable > ;
 
     public:
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <util/common/plot/ptr.h>
+#include <util/common/ptr.h>
 #include <util/common/plot/drawable.h>
 #include <util/common/plot/layer_drawable.h>
 #include <util/common/plot/tick_factory.h>
@@ -13,9 +13,9 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < tick_drawable > ;
+        using ptr_t = util::ptr_t < tick_drawable > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     public:
 
@@ -69,12 +69,12 @@ namespace plot
                 dc.FillRect(&screen, background.get());
             }
 
-            plot::ptr_t < std::vector < tick_t > > x_ticks;
+            util::ptr_t < std::vector < tick_t > > x_ticks;
             if (xtf)
             {
                 x_ticks = xtf->produce(bounds);
             }
-            plot::ptr_t < std::vector < tick_t > > y_ticks;
+            util::ptr_t < std::vector < tick_t > > y_ticks;
             if (ytf)
             {
                 y_ticks = ytf->produce(bounds);

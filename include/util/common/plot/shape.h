@@ -2,7 +2,7 @@
 
 #include <afxwin.h>
 
-#include <util/common/plot/ptr.h>
+#include <util/common/ptr.h>
 
 namespace plot
 {
@@ -17,9 +17,9 @@ namespace plot
     >
     struct point
     {
-        using ptr_t = plot::ptr_t < point > ;
+        using ptr_t = util::ptr_t < point > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
         using value_type = N;
 
@@ -56,9 +56,9 @@ namespace plot
     >
     struct rect
     {
-        using ptr_t = plot::ptr_t < rect > ;
+        using ptr_t = util::ptr_t < rect > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
         using value_type = N;
 

@@ -2,7 +2,7 @@
 
 #include <limits>
 
-#include <util/common/plot/ptr.h>
+#include <util/common/ptr.h>
 #include <util/common/plot/viewport.h>
 
 namespace plot
@@ -14,9 +14,9 @@ namespace plot
 
     struct auto_viewport_params
     {
-        using ptr_t = plot::ptr_t < auto_viewport_params > ;
+        using ptr_t = util::ptr_t < auto_viewport_params > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
         rect < bool >   enabled;
 
@@ -45,7 +45,7 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < auto_viewport > ;
+        using ptr_t = util::ptr_t < auto_viewport > ;
 
     protected:
 
@@ -144,9 +144,9 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < min_max_auto_viewport > ;
+        using ptr_t = util::ptr_t < min_max_auto_viewport > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     protected:
 

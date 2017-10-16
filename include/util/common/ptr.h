@@ -3,7 +3,7 @@
 #include <memory>
 #include <functional>
 
-namespace plot
+namespace util
 {
 
     template < typename C >

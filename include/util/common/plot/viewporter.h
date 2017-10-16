@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 
-#include <util/common/plot/ptr.h>
+#include <util/common/ptr.h>
 #include <util/common/plot/viewport.h>
 #include <util/common/plot/drawable.h>
 
@@ -15,9 +15,9 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < viewporter > ;
+        using ptr_t = util::ptr_t < viewporter > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     public:
 

@@ -6,7 +6,7 @@
 #include <vector>
 #include <functional>
 
-#include <util/common/plot/ptr.h>
+#include <util/common/ptr.h>
 #include <util/common/plot/viewport.h>
 
 namespace plot
@@ -54,7 +54,7 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < tick_factory > ;
+        using ptr_t = util::ptr_t < tick_factory > ;
 
     protected:
 
@@ -67,7 +67,7 @@ namespace plot
         {
         }
 
-        virtual plot::ptr_t < std::vector < tick_t > >
+        virtual util::ptr_t < std::vector < tick_t > >
             produce(const viewport & bounds) = 0;
 
         virtual ~tick_factory()
@@ -94,9 +94,9 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < const_interval_tick_factory > ;
+        using ptr_t = util::ptr_t < const_interval_tick_factory > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     private:
 
@@ -118,7 +118,7 @@ namespace plot
         {
         }
 
-        virtual plot::ptr_t < std::vector < tick_t > >
+        virtual util::ptr_t < std::vector < tick_t > >
             produce(const viewport &bounds) override
         {
             double size, min, max;
@@ -136,8 +136,8 @@ namespace plot
                 max = bounds.world.ymax;
             }
 
-            plot::ptr_t < std::vector < tick_t > > ticks
-                = create < std::vector < tick_t > > ();
+            util::ptr_t < std::vector < tick_t > > ticks
+                = util::create < std::vector < tick_t > > ();
 
             if (size < 1e-15) return ticks;
 
@@ -170,9 +170,9 @@ namespace plot
 
     public:
 
-        using ptr_t = plot::ptr_t < const_n_tick_factory > ;
+        using ptr_t = util::ptr_t < const_n_tick_factory > ;
 
-        template < class ... T > static ptr_t create(T && ... t) { return plot::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
+        template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
     private:
 
@@ -194,7 +194,7 @@ namespace plot
         {
         }
 
-        virtual plot::ptr_t < std::vector < tick_t > >
+        virtual util::ptr_t < std::vector < tick_t > >
             produce(const viewport &bounds) override
         {
             double size, min, max;
@@ -214,7 +214,7 @@ namespace plot
 
             double interval = size / n_intervals;
 
-            plot::ptr_t < std::vector < tick_t > > ticks
+            util::ptr_t < std::vector < tick_t > > ticks
                 = std::make_shared < std::vector < tick_t > > ();
 
             if (size < 1e-15) return ticks;

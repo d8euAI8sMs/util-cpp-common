@@ -12,7 +12,7 @@ namespace plot
 
     public:
 
-        ptr_t < _points_t >                 data;
+        util::ptr_t < _points_t >           data;
         points_source_t < _points_t >       data_source;
 
         typename list_drawable < _points_t > ::ptr_t view;
@@ -79,13 +79,13 @@ namespace plot
 
         simple_list_plot & with_data()
         {
-            this->data = create < _points_t > ();
+            this->data = util::create < _points_t > ();
             this->data_source = make_points_source(this->data);
             if (this->view) this->view->data_factory = this->data_source;
             return *this;
         }
 
-        simple_list_plot & with_data(ptr_t < _points_t > data)
+        simple_list_plot & with_data(util::ptr_t < _points_t > data)
         {
             this->data = data;
             this->data_source = make_points_source(std::move(data));

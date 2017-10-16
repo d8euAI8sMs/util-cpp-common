@@ -19,6 +19,9 @@
     <Filter Include="Header Files\plot">
       <UniqueIdentifier>{4bd07504-5195-4f6f-8264-1668e5139a74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\util">
+      <UniqueIdentifier>{8a521ee1-92b2-4869-953f-2ba2458b764c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -87,9 +90,6 @@
     <ClInclude Include="include\util\common\plot\auto_viewport.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
-    <ClInclude Include="include\util\common\plot\ptr.h">
-      <Filter>Header Files\plot</Filter>
-    </ClInclude>
     <ClInclude Include="include\util\common\plot\simple_list_plot.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
@@ -101,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="include\util\common\math\dsolve.h">
       <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\common\ptr.h">
+      <Filter>Header Files\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

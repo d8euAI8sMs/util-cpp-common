@@ -92,7 +92,7 @@
     <ClInclude Include="include\util\common\plot\plot.h" />
     <ClInclude Include="include\util\common\plot\PlotStatic.h" />
     <ClInclude Include="include\util\common\plot\points_source.h" />
-    <ClInclude Include="include\util\common\plot\ptr.h" />
+    <ClInclude Include="include\util\common\ptr.h" />
     <ClInclude Include="include\util\common\plot\shape.h" />
     <ClInclude Include="include\util\common\plot\simple_list_plot.h" />
     <ClInclude Include="include\util\common\plot\tick_drawable.h" />
