@@ -5,14 +5,18 @@
 #include <util/common/ptr.h>
 #include <util/common/plot/palette.h>
 #include <util/common/plot/drawable.h>
-#include <util/common/plot/points_source.h>
+#include <util/common/plot/data_source.h>
 #include <util/common/plot/custom_drawable.h>
 #include <util/common/plot/utility.h>
 
 namespace plot
 {
 
-    template < typename _container_t >
+    template
+    <
+        typename _container_t,
+        typename _mapped_t = typename point < double >
+    >
     class list_drawable : public drawable
     {
 
@@ -25,6 +29,7 @@ namespace plot
     public:
 
         data_source_t < _container_t > data_source;
+        data_mapper_t < typename _container_t::iterator, _mapped_t > data_mapper;
         drawable::ptr_t  point_painter;
         palette::pen_ptr line_pen;
 
@@ -57,9 +62,33 @@ namespace plot
             if (!data_source) return;
             auto data = data_source(bounds);
             if (data->empty()) return;
-            dc.MoveTo(bounds.world_to_screen().xy(*data->begin()));
-            for each (auto &p in *data)
+
+            point < double > p;
+
+            if (data_mapper)
             {
+                p = data_mapper(data->begin(), 0);
+            }
+            else
+            {
+                p = *data->begin();
+            }
+
+            dc.MoveTo(bounds.world_to_screen().xy(p));
+
+            size_t idx = 0;
+            auto end = data->end();
+
+            for (auto it = data->begin(); it != end; ++it, ++idx)
+            {
+                if (data_mapper)
+                {
+                    p = data_mapper(it, idx);
+                }
+                else
+                {
+                    p = *it;
+                }
                 if (line_pen)
                 {
                     auto _old = dc.SelectObject(*line_pen);
