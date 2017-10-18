@@ -7,9 +7,9 @@
 namespace math
 {
 
-	using dfunc3_t = std::function < v3 (double t, const v3 &x, const v3 &dx) >;
+	using dfunc3s_t = std::function < v3 (double t, const v3 &x, const v3 &dx) >;
 
-	struct dresult3
+	struct dresult3s
     {
 		double t;
 		v3 x, dx;
@@ -20,7 +20,7 @@ namespace math
 		v3 k1, k2, k3, k4;
 	};
 
-	inline rk4_coefs3 get_rk4_coefs(const dfunc3_t &fn, double t, double dt, const v3 &x, const v3 &dx)
+	inline rk4_coefs3 _get_rk4_coefs3s(const dfunc3s_t &fn, double t, double dt, const v3 &x, const v3 &dx)
 	{
 		rk4_coefs3 c;
 		c.k1 = fn(t, x, dx) * dt;
@@ -37,9 +37,9 @@ namespace math
 	// dt - the scalar parameter step (time delta)
 	// x  - the initial condition
 	// dx - the initial condition for the derivative
-	inline dresult3 rk4_solve(dfunc3_t fn, double t, double dt, const v3 &x, const v3 &dx)
+	inline dresult3s rk4_solve3s(dfunc3s_t fn, double t, double dt, const v3 &x, const v3 &dx)
 	{
-		rk4_coefs3 c = get_rk4_coefs(fn, t, dt, x, dx);
+		rk4_coefs3 c = _get_rk4_coefs3s(fn, t, dt, x, dx);
 		return
 		{
 			t + dt,
