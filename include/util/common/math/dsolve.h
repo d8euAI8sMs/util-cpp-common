@@ -49,7 +49,7 @@ namespace math
     }
 
     // solves the passed vector differential equation
-    // using Runge-Kutta (4) method
+    // of 2nd order using Runge-Kutta (4) method
     // fn - the vector function
     // t  - the scalar parameter (time)
     // dt - the scalar parameter step (time delta)
