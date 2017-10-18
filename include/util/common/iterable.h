@@ -22,6 +22,20 @@ namespace util
 
     template
     <
+        typename _iterator_t,
+        typename _mapped_t = typename _iterator_t::value_type
+    >
+    using sequence_mapper_t = std::function < _mapped_t (const _iterator_t & pos, size_t idx) > ;
+
+    template
+    <
+        typename _source_t,
+        typename _mapped_t = typename _source_t
+    >
+    using value_mapper_t = std::function < _mapped_t (const _source_t & value, size_t idx) > ;
+
+    template
+    <
         typename _container_t,
         typename _iterator_t = typename _container_t::const_iterator
     >
@@ -30,6 +44,76 @@ namespace util
         return [] (const _container_t &, const _iterator_t & it, size_t) -> typename _iterator_t::reference
         {
             return *it;
+        };
+    }
+
+    template
+    <
+        typename _iterator_t
+    >
+    static inline sequence_mapper_t < _iterator_t, typename _iterator_t::reference > make_identity_sequence_mapper()
+    {
+        return [] (const _iterator_t & it, size_t) -> typename _iterator_t::reference
+        {
+            return *it;
+        };
+    }
+
+    template
+    <
+        typename _source_t
+    >
+    static inline value_mapper_t < _source_t, const _source_t & > make_identity_value_mapper()
+    {
+        return [] (const _source_t & value, size_t idx) -> const _source_t &
+        {
+            return value;
+        };
+    }
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t,
+        typename _mapped_t
+    >
+    static inline data_mapper_t < _container_t, _iterator_t, _mapped_t > make_data_mapper_from_sequence_mapper(sequence_mapper_t < _iterator_t, _mapped_t > mapper)
+    {
+        if (!mapper) return {};
+        return [mapper] (const _container_t &, const _iterator_t & it, size_t i) -> _mapped_t
+        {
+            return mapper(it, i);
+        };
+    }
+
+    template
+    <
+        typename _container_t,
+        typename _iterator_t = typename _container_t::const_iterator,
+        typename _source_t,
+        typename _mapped_t
+    >
+    static inline data_mapper_t < _container_t, _iterator_t, _mapped_t > make_data_mapper_from_value_mapper(value_mapper_t < _source_t, _mapped_t > mapper)
+    {
+        if (!mapper) return {};
+        return [mapper] (const _container_t &, const _iterator_t & it, size_t i) -> _mapped_t
+        {
+            return mapper(*it, i);
+        };
+    }
+
+    template
+    <
+        typename _iterator_t,
+        typename _source_t,
+        typename _mapped_t
+    >
+    static inline sequence_mapper_t < _iterator_t, _mapped_t > make_sequence_mapper(value_mapper_t < _source_t, _mapped_t > mapper)
+    {
+        if (!mapper) return {};
+        return [mapper] (const _iterator_t & it, size_t i) -> _mapped_t
+        {
+            return mapper(*it, i);
         };
     }
 
@@ -46,7 +130,7 @@ namespace util
             typename _iterator_t,
             typename _mapped_t
         >
-        static inline _mapped_t value
+        static inline _mapped_t data
         (
             const data_mapper_t < _container_t, _iterator_t, _mapped_t > & mapper,
             const _container_t & c,
@@ -55,6 +139,36 @@ namespace util
         )
         {
             return mapper(c, pos, idx);
+        }
+
+        template
+        <
+            typename _iterator_t,
+            typename _mapped_t
+        >
+        static inline _mapped_t sequence
+        (
+            const sequence_mapper_t < _iterator_t, _mapped_t > & mapper,
+            const _iterator_t & pos,
+            size_t              idx
+        )
+        {
+            return mapper(pos, idx);
+        }
+
+        template
+        <
+            typename _source_t,
+            typename _mapped_t
+        >
+        static inline _mapped_t value
+        (
+            const value_mapper_t < _source_t, _mapped_t > & mapper,
+            const _source_t & src,
+            size_t            idx
+        )
+        {
+            return mapper(src, idx);
         }
     };
 
@@ -68,7 +182,7 @@ namespace util
             typename _iterator_t,
             typename _mapped_t
         >
-        static inline _mapped_t value
+        static inline _mapped_t data
         (
             const data_mapper_t < _container_t, _iterator_t, _mapped_t > & mapper,
             const _container_t & c,
@@ -77,6 +191,36 @@ namespace util
         )
         {
             return (!mapper) ? *pos : mapper(c, pos, idx);
+        }
+
+        template
+        <
+            typename _iterator_t,
+            typename _mapped_t
+        >
+        static inline _mapped_t sequence
+        (
+            const sequence_mapper_t < _iterator_t, _mapped_t > & mapper,
+            const _iterator_t & pos,
+            size_t              idx
+        )
+        {
+            return (!mapper) ? *pos : mapper(pos, idx);
+        }
+
+        template
+        <
+            typename _source_t,
+            typename _mapped_t
+        >
+        static inline _mapped_t value
+        (
+            const value_mapper_t < _source_t, _mapped_t > & mapper,
+            const _source_t & src,
+            size_t            idx
+        )
+        {
+            return (!mapper) ? src : mapper(src, idx);
         }
     };
 
@@ -96,7 +240,41 @@ namespace util
     {
         return _get_mapped_value_helper
                < std::is_convertible < typename _iterator_t::reference, _mapped_t > ::value >
-               :: value < _container_t, _iterator_t, _mapped_t > (mapper, c, pos, idx);
+               :: data < _container_t, _iterator_t, _mapped_t > (mapper, c, pos, idx);
+    }
+
+    template
+    <
+        typename _iterator_t,
+        typename _mapped_t = typename _iterator_t::value_type
+    >
+    static inline _mapped_t get_mapped_value_or_default
+    (
+        const sequence_mapper_t < _iterator_t, _mapped_t > & mapper,
+        const _iterator_t  & pos,
+        size_t               idx
+    )
+    {
+        return _get_mapped_value_helper
+               < std::is_convertible < typename _iterator_t::reference, _mapped_t > ::value >
+               :: sequence < _iterator_t, _mapped_t > (mapper, pos, idx);
+    }
+
+    template
+    <
+        typename _source_t,
+        typename _mapped_t = typename _source_t
+    >
+    static inline _mapped_t get_mapped_value_or_identity
+    (
+        const value_mapper_t < _source_t, _mapped_t > & mapper,
+        const _source_t  & value,
+        size_t             idx
+    )
+    {
+        return _get_mapped_value_helper
+               < std::is_convertible < _source_t, _mapped_t > ::value >
+               :: value < _source_t, _mapped_t > (mapper, value, idx);
     }
 
     template
