@@ -147,7 +147,7 @@ namespace util
     }
 
     /*****************************************************/
-    /*              forward_const_iterator               */
+    /*              generic_proxy_iterator               */
     /*****************************************************/
 
     template
@@ -158,7 +158,7 @@ namespace util
         typename _pointer_t      = typename const _value_t *,
         typename _reference_t    = typename const _value_t &
     >
-    class forward_const_iterator
+    class generic_proxy_iterator
         : public std::iterator
         <
             std::input_iterator_tag,
@@ -187,7 +187,7 @@ namespace util
 
     public:
 
-        forward_const_iterator()
+        generic_proxy_iterator()
             : container(nullptr)
             , position()
             , index(0)
@@ -196,8 +196,8 @@ namespace util
         {
         }
 
-        forward_const_iterator(
-            const forward_const_iterator & it)
+        generic_proxy_iterator(
+            const generic_proxy_iterator & it)
             : container(it.container)
             , position(it.position)
             , index(it.index)
@@ -206,7 +206,7 @@ namespace util
         {
         }
 
-        forward_const_iterator(
+        generic_proxy_iterator(
             const container_type     * container,
             iterator                   position,
             size_t                     index,
@@ -220,8 +220,8 @@ namespace util
         {
         }
 
-        forward_const_iterator & operator = (
-            const forward_const_iterator & it)
+        generic_proxy_iterator & operator = (
+            const generic_proxy_iterator & it)
         {
             this->container = it.container;
             this->position = it.position;
@@ -230,13 +230,13 @@ namespace util
             this->pointer_mapper = it.pointer_mapper;
         }
 
-        ~forward_const_iterator()
+        ~generic_proxy_iterator()
         {
         }
 
     public:
 
-        void swap(forward_const_iterator & it)
+        void swap(generic_proxy_iterator & it)
         {
             const container_type       * c  = this->container;
             iterator                     p  = this->position;
@@ -259,12 +259,12 @@ namespace util
 
     public:
 
-        bool operator == (const forward_const_iterator & it) const
+        bool operator == (const generic_proxy_iterator & it) const
         {
             return ((this->container == it.container) && (this->position == it.position));
         }
 
-        bool operator != (const forward_const_iterator & it) const
+        bool operator != (const generic_proxy_iterator & it) const
         {
             return ((this->container != it.container) || (this->position != it.position));
         }
@@ -281,16 +281,16 @@ namespace util
             return (*pointer_mapper)(*this->container, position, index);
         }
 
-        forward_const_iterator & operator ++ ()
+        generic_proxy_iterator & operator ++ ()
         {
             ++this->position;
             ++this->index;
             return *this;
         }
 
-        forward_const_iterator operator ++ (int)
+        generic_proxy_iterator operator ++ (int)
         {
-            forward_const_iterator it = *this;
+            generic_proxy_iterator it = *this;
             ++this->position;
             ++this->index;
             return it;
@@ -305,8 +305,8 @@ namespace util
         typename _pointer_t,
         typename _reference_t
     >
-    void swap(forward_const_iterator < _container_t, _iterator_t, _value_t, _pointer_t, _reference_t > & it1,
-              forward_const_iterator < _container_t, _iterator_t, _value_t, _pointer_t, _reference_t > & it2)
+    void swap(generic_proxy_iterator < _container_t, _iterator_t, _value_t, _pointer_t, _reference_t > & it1,
+              generic_proxy_iterator < _container_t, _iterator_t, _value_t, _pointer_t, _reference_t > & it2)
     {
         it1.swap(it2);
     }
@@ -317,7 +317,7 @@ namespace util
         typename _iterator_t = typename _container_t::const_iterator,
         typename _value_t    = typename _container_t::value_type
     >
-    using mapping_iterator = forward_const_iterator
+    using mapping_iterator = generic_proxy_iterator
     <
         _container_t, _iterator_t, _value_t, util::ptr_t < _value_t >, _value_t
     > ;
@@ -345,20 +345,20 @@ namespace util
     };
 
     /*****************************************************/
-    /*             forward_iterator_iterable             */
+    /*                 generic_iterable                  */
     /*****************************************************/
 
     template
     <
         typename _iterator_t
     >
-    class forward_iterable
+    class generic_iterable
         : public iterable < _iterator_t >
     {
 
     public:
 
-        using ptr_t = util::ptr_t < forward_iterable > ;
+        using ptr_t = util::ptr_t < generic_iterable > ;
 
         template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
@@ -372,11 +372,11 @@ namespace util
 
     public:
 
-        forward_iterable()
+        generic_iterable()
         {
         }
 
-        forward_iterable
+        generic_iterable
         (
             util::ptr_t < container_type > container,
             iterator_source_t            begin_source,
