@@ -11,7 +11,7 @@ namespace plot
     static inline void sampled_t_to_data(math::sampled_t sampled,
                                          _container_t & points,
                                          double origin = 0,
-                                         math::un_op_t mapper = common::identity_un_op())
+                                         math::un_op_t mapper = math::identity_un_op())
     {
         points.clear();
         for (size_t i = 0; i < sampled.count; ++i)
