@@ -269,6 +269,16 @@ namespace util
             return ((this->container != it.container) || (this->position != it.position));
         }
 
+        bool operator == (const _iterator_t & it) const
+        {
+            return (this->position == it);
+        }
+
+        bool operator != (const _iterator_t & it) const
+        {
+            return (this->position != it);
+        }
+
     public:
 
         reference operator * () const
