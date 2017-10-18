@@ -55,7 +55,7 @@ namespace math
     // dt - the scalar parameter step (time delta)
     // x  - the initial condition
     // dx - the initial condition for the derivative
-    inline dresult3s rk4_solve3s(dfunc3s_t fn, double t, double dt, const v3 &x, const v3 &dx)
+    inline dresult3s rk4_solve3s(const dfunc3s_t & fn, double t, double dt, const v3 &x, const v3 &dx)
     {
         rk4_coefs3 c = _get_rk4_coefs3s(fn, t, dt, x, dx);
         return
@@ -72,7 +72,7 @@ namespace math
     // t  - the scalar parameter (time)
     // dt - the scalar parameter step (time delta)
     // x  - the initial condition
-    inline dresult3 rk4_solve3(dfunc3s_t fn, double t, double dt, const v3 &x)
+    inline dresult3 rk4_solve3(const dfunc3s_t & fn, double t, double dt, const v3 &x)
     {
         rk4_coefs3 c = _get_rk4_coefs3(fn, t, dt, x);
         return
