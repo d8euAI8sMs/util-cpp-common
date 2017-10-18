@@ -505,7 +505,7 @@ namespace util
         typename _iterator_t = typename _container_t::const_iterator,
         typename _value_t    = typename _container_t::value_type
     >
-    using mapping_iterator = generic_proxy_iterator
+    using mapping_iterator_t = generic_proxy_iterator
     <
         _container_t, _iterator_t, _value_t, util::ptr_t < _value_t >, _value_t
     > ;
@@ -639,7 +639,7 @@ namespace util
         typename _container_t,
         typename _value_t,
         typename _iterator_t = typename _container_t::const_iterator,
-        typename _generic_proxy_iterator = mapping_iterator
+        typename _generic_proxy_iterator = mapping_iterator_t
         <
             _container_t,
             _iterator_t,
