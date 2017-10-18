@@ -90,9 +90,6 @@
     <ClInclude Include="include\util\common\plot\simple_list_plot.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
-    <ClInclude Include="include\util\common\plot\math.h">
-      <Filter>Header Files\plot</Filter>
-    </ClInclude>
     <ClInclude Include="include\util\common\math\vec.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
       <Filter>Header Files\util</Filter>
     </ClInclude>
     <ClInclude Include="include\util\common\plot\data_source.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\common\plot\math_interop.h">
       <Filter>Header Files\plot</Filter>
     </ClInclude>
   </ItemGroup>
