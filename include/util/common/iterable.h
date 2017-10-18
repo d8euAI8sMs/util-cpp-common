@@ -30,7 +30,7 @@ namespace util
         return [] (const _container_t &, const _iterator_t & it, size_t) -> typename _iterator_t::reference
         {
             return *it;
-        }
+        };
     }
 
     template < bool >
