@@ -364,7 +364,7 @@ namespace util
 
     public:
 
-        util::ptr_t < container_type > container;
+        const container_type         * container;
         value_mapper_t                 value_mapper;
         pointer_mapper_t               pointer_mapper;
         iterator_source_t              begin_source;
@@ -378,13 +378,13 @@ namespace util
 
         generic_iterable
         (
-            util::ptr_t < container_type > container,
+            const container_type       & container,
             iterator_source_t            begin_source,
             iterator_source_t            end_source,
             value_mapper_t               value_mapper,
             pointer_mapper_t             pointer_mapper
         )
-            : container(std::move(container))
+            : container(&container)
             , begin_source(std::move(begin_source))
             , end_source(std::move(end_source))
             , value_mapper(std::move(value_mapper))
@@ -401,7 +401,7 @@ namespace util
         {
             return const_iterator
             (
-                container.get(),
+                container,
                 begin_source(*container),
                 0,
                 &value_mapper,
@@ -413,7 +413,7 @@ namespace util
         {
             return const_iterator
             (
-                container.get(),
+                container,
                 end_source(*container),
                 SIZE_T_MAX /* undefined for past-the-end iterator */,
                 &value_mapper,
