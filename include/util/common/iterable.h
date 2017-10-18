@@ -394,7 +394,7 @@ namespace util
 
         bool empty() const
         {
-            return (begin() == end());
+            return (begin_source(*container) == end_source(*container));
         }
 
         const_iterator begin() const
