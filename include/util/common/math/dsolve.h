@@ -81,4 +81,47 @@ namespace math
             x + (c.k1 + 2 * c.k2 + 2 * c.k3 + c.k4) / 6
         };
     }
+
+    // solves the passed vector differential equation
+    // at the given interval using Runge-Kutta (4) method
+    // fn - the vector function
+    // t1 - the scalar parameter (time) - interval start
+    // t2 - the scalar parameter (time) - interval end
+    // dt - the scalar parameter step (time delta), always positive
+    // x  - the initial condition
+    // note: t1 may be greater than t2, but dt must always be positive
+    inline dresult3 rk4_solve3i(const dfunc3_t & fn, double t1, double t2, double dt, const v3 &x)
+    {
+        size_t iters = (size_t)(abs(t1 - t2) / dt);
+        if (t1 > t2) { dt = -dt; }
+        dresult3 r = { t1, x };
+        for (size_t i = 0; i < iters; ++i)
+        {
+            r = rk4_solve3(fn, r.t, dt, r.x);
+            r.t = t1 + i * dt; // to minimize rounding errors
+        }
+        return r;
+    }
+
+    // solves the passed vector differential equation
+    // of 2nd order at the given interval using Runge-Kutta (4) method
+    // fn - the vector function
+    // t1 - the scalar parameter (time) - interval start
+    // t2 - the scalar parameter (time) - interval end
+    // dt - the scalar parameter step (time delta), always positive
+    // x  - the initial condition
+    // dx - the initial condition for the derivative
+    // note: t1 may be greater than t2, but dt must always be positive
+    inline dresult3s rk4_solve3si(const dfunc3s_t & fn, double t1, double t2, double dt, const v3 &x, const v3 &dx)
+    {
+        size_t iters = (size_t)(abs(t1 - t2) / dt);
+        if (t1 > t2) { dt = -dt; }
+        dresult3s r = { t1, x, dx };
+        for (size_t i = 0; i < iters; ++i)
+        {
+            r = rk4_solve3s(fn, r.t, dt, r.x, r.dx);
+            r.t = t1 + i * dt; // to minimize rounding errors
+        }
+        return r;
+    }
 }
