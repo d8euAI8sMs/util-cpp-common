@@ -619,4 +619,92 @@ namespace util
             return end();
         }
     };
+
+    template
+    <
+        typename _container_t,
+        typename _value_t,
+        typename _iterator_t = typename _container_t::const_iterator,
+        typename _generic_proxy_iterator = generic_proxy_iterator
+        <
+            _container_t,
+            _iterator_t,
+            _value_t
+        >
+    >
+    using container_iterable_t = generic_iterable < _generic_proxy_iterator > ;
+
+    template
+    <
+        typename _container_t,
+        typename _value_t,
+        typename _iterator_t = typename _container_t::const_iterator,
+        typename _generic_proxy_iterator = mapping_iterator
+        <
+            _container_t,
+            _iterator_t,
+            _value_t
+        >
+    >
+    using container_mapping_iterable_t = generic_iterable < _generic_proxy_iterator > ;
+
+    /*****************************************************/
+    /*                  make_iterable                    */
+    /*****************************************************/
+
+    template
+    <
+        typename _value_t,
+        typename _container_t,
+        typename _container_iterable_t = container_iterable_t < _container_t, _value_t >,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline typename _container_iterable_t::ptr_t make_container_iterable
+    (
+        const _container_t                                      & container,
+        const typename _container_iterable_t::value_mapper_t    & value_mapper,
+        const typename _container_iterable_t::iterator_source_t & begin_source = make_begin_iterator_source < _container_t, _iterator_t > (),
+        const typename _container_iterable_t::iterator_source_t & end_source   = make_end_iterator_source < _container_t, _iterator_t > ()
+    )
+    {
+        return _container_iterable_t::create
+        (
+            container,
+            begin_source,
+            end_source,
+            value_mapper,
+            [value_mapper] (const _container_t & c, const _iterator_t & pos, size_t idx)
+            {
+                return &value_mapper(c, pos, idx);
+            }
+        );
+    }
+
+    template
+    <
+        typename _value_t,
+        typename _container_t,
+        typename _container_iterable_t = container_mapping_iterable_t < _container_t, _value_t >,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline typename _container_iterable_t::ptr_t make_container_mapping_iterable
+    (
+        const _container_t                                      & container,
+        const typename _container_iterable_t::value_mapper_t    & value_mapper,
+        const typename _container_iterable_t::iterator_source_t & begin_source = make_begin_iterator_source < _container_t, _iterator_t > (),
+        const typename _container_iterable_t::iterator_source_t & end_source   = make_end_iterator_source < _container_t, _iterator_t > ()
+    )
+    {
+        return _container_iterable_t::create
+        (
+            container,
+            begin_source,
+            end_source,
+            value_mapper,
+            [value_mapper] (const _container_t & c, const _iterator_t & pos, size_t idx)
+            {
+                return util::create < _value_t > (value_mapper(c, pos, idx));
+            }
+        );
+    }
 }
