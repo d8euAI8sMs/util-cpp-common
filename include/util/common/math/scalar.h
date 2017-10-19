@@ -91,6 +91,34 @@ namespace math
         return first * n;
     }
 
+    template < typename _data_t, typename _second_t,
+               typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
+    inline complex < _data_t > operator+(const complex < _data_t > &first, _second_t n)
+    {
+        return{ n + first.re, first.im };
+    }
+
+    template < typename _data_t, typename _second_t,
+               typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
+    inline complex < _data_t > operator+(_second_t n, const complex < _data_t > &first)
+    {
+        return first + n;
+    }
+
+    template < typename _data_t, typename _second_t,
+               typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
+    inline complex < _data_t > operator-(const complex < _data_t > &first, _second_t n)
+    {
+        return{ n - first.re, first.im };
+    }
+
+    template < typename _data_t, typename _second_t,
+               typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
+    inline complex < _data_t > operator-(_second_t n, const complex < _data_t > &first)
+    {
+        return first - n;
+    }
+
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator*(const complex < _data_t > &first, const complex < _second_t > &second)
     {
@@ -127,6 +155,13 @@ namespace math
 
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator/(const complex < _data_t > &first, const complex < _second_t > &second)
+    {
+        return first * conjugate(second) / norm(second) / norm(second);
+    }
+
+    template < typename _data_t, typename _second_t,
+               typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
+    inline complex < _data_t > operator/(_second_t n, const complex < _data_t > &first)
     {
         return first * conjugate(second) / norm(second) / norm(second);
     }
