@@ -13,19 +13,19 @@ namespace math
     template < typename _data_t >
     inline double norm(const _data_t & d)
     {
-    	return std::abs(d);
+        return std::abs(d);
     }
 
     template < typename _data_t >
     inline double sqnorm(const _data_t & d)
     {
-    	return norm(d) * norm(d);
+        return norm(d) * norm(d);
     }
 
     template < typename _data_t >
     inline _data_t conjugate(const _data_t & d)
     {
-    	return d;
+        return d;
     }
 
     /*****************************************************/
@@ -36,7 +36,7 @@ namespace math
                typename = std::enable_if_t < std::is_arithmetic < _data_t > :: value > >
     struct complex
     {
-    	_data_t re, im;
+        _data_t re, im;
 
         template < typename _second_t >
         complex(complex < _second_t > other)
@@ -62,33 +62,33 @@ namespace math
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator+(const complex < _data_t > &first, const complex < _second_t > &second)
     {
-    	return{ first.re + second.re, first.im + second.im };
+        return{ first.re + second.re, first.im + second.im };
     }
 
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator-(const complex < _data_t > &first, const complex < _second_t > &second)
     {
-    	return{ first.re - second.re, first.im - second.im };
+        return{ first.re - second.re, first.im - second.im };
     }
 
     template < typename _data_t >
     inline complex < _data_t > operator-(const complex < _data_t > &first)
     {
-    	return{ -first.re, -first.im };
+        return{ -first.re, -first.im };
     }
 
     template < typename _data_t, typename _second_t,
                typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
     inline complex < _data_t > operator*(const complex < _data_t > &first, _second_t n)
     {
-    	return{ n * first.re, n * first.im };
+        return{ n * first.re, n * first.im };
     }
 
     template < typename _data_t, typename _second_t,
                typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
     inline complex < _data_t > operator*(_second_t n, const complex < _data_t > &first)
     {
-    	return first * n;
+        return first * n;
     }
 
     template < typename _data_t, typename _second_t >
@@ -104,19 +104,19 @@ namespace math
                typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
     inline complex < _data_t > operator/(const complex < _data_t > &first, _second_t n)
     {
-    	return{ first.re / n, first.im / n };
+        return{ first.re / n, first.im / n };
     }
 
     template < typename _data_t >
     inline double norm(const complex < _data_t > &first)
     {
-    	return std::sqrt(norm(first.re * first.re + first.im * first.im));
+        return std::sqrt(norm(first.re * first.re + first.im * first.im));
     }
 
     template < typename _data_t >
     inline double sqnorm(const complex < _data_t > &first)
     {
-    	return norm(first.re * first.re + first.im * first.im);
+        return norm(first.re * first.re + first.im * first.im);
     }
 
     template < typename _data_t >
@@ -128,6 +128,6 @@ namespace math
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator/(const complex < _data_t > &first, const complex < _second_t > &second)
     {
-    	return first * conjugate(second) / norm(second) / norm(second);
+        return first * conjugate(second) / norm(second) / norm(second);
     }
 }
