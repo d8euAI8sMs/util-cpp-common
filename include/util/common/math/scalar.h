@@ -60,6 +60,24 @@ namespace math
         }
     };
 
+    template < typename _data_t >
+    complex < _data_t > _re(_data_t re)
+    {
+        return { re, 0 };
+    }
+
+    template < typename _data_t >
+    complex < _data_t > _im(_data_t im)
+    {
+        return { 0, im };
+    }
+
+    template < typename _data_t >
+    complex < _data_t > _re_im(_data_t re, _data_t im)
+    {
+        return { re, im };
+    }
+
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator+(const complex < _data_t > &first, const complex < _second_t > &second)
     {
