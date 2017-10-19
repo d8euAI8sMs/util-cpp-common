@@ -287,9 +287,9 @@ namespace math
     inline m3 < _data_t > rotate_x(double angle)
     {
         return{
-                { 1, 0, 0 },
-                { 0, std::cos(angle), - std::sin(angle) },
-                { 0, std::sin(angle), std::cos(angle) }
+                { _data_t(1), _data_t(0),                 _data_t(0)               },
+                { _data_t(0), _data_t(std::cos(angle)), - _data_t(std::sin(angle)) },
+                { _data_t(0), _data_t(std::sin(angle)),   _data_t(std::cos(angle)) }
         };
     }
 
@@ -297,9 +297,9 @@ namespace math
     inline m3 < _data_t > rotate_y(double angle)
     {
         return{
-                { std::cos(angle), 0, std::sin(angle) },
-                { 0, 1, 0 },
-                { - std::sin(angle), 0, std::cos(angle) }
+                {   _data_t(std::cos(angle)), _data_t(0), _data_t(std::sin(angle)) },
+                {   _data_t(0),               _data_t(1), _data_t(0)               },
+                { - _data_t(std::sin(angle)), _data_t(0), _data_t(std::cos(angle)) }
         };
     }
 
@@ -307,9 +307,9 @@ namespace math
     inline m3 < _data_t > rotate_z(double angle)
     {
         return{
-                { std::cos(angle), - std::sin(angle), 0 },
-                { std::sin(angle), std::cos(angle), 0 },
-                { 0, 0, 1 }
+                { _data_t(std::cos(angle)), - _data_t(std::sin(angle)), _data_t(0) },
+                { _data_t(std::sin(angle)),   _data_t(std::cos(angle)), _data_t(0) },
+                { _data_t(0),                 _data_t(0),               _data_t(1) }
         };
     }
 
