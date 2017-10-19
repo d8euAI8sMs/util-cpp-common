@@ -33,8 +33,10 @@ namespace math
         {
         }
 
-        v3 ()
-            : x({}), y({}), z({})
+        v3 (_data_t x = {}, _data_t y = {}, _data_t z = {})
+            : x(x)
+            , y(y)
+            , z(z)
         {
         }
 

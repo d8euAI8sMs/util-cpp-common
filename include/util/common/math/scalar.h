@@ -53,8 +53,9 @@ namespace math
         {
         }
 
-        complex()
-            : re({}), im({})
+        complex(_data_t re = {}, _data_t im = {})
+            : re(re)
+            , im(im)
         {
         }
     };
