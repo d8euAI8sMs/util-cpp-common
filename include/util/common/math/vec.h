@@ -169,67 +169,61 @@ namespace math
     /*                       m3                          */
     /*****************************************************/
 
-    struct m3
-    {
-    	v3 c1, c2, c3; // Rows
-
-    	const v3& operator[](int i) const
-    	{
-    		return i == 0 ? c1 : i == 1 ? c2 : c3;
-    	}
-
-    	v3& operator[](int i)
-    	{
-    		return i == 0 ? c1 : i == 1 ? c2 : c3;
-    	}
-    };
+    template < typename _data_t = double >
+    using m3 = v3 < v3 < _data_t > > ;
 
     // Matrix * Vector
-    inline v3 operator*(const m3 &first, const v3 &second)
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator*(const m3 < _data_t > &first, const v3 < _second_t > &second)
     {
     	return
     	{
-    		first.c1.x * second.x + first.c1.y * second.y + first.c1.z * second.z,
-    		first.c2.x * second.x + first.c2.y * second.y + first.c2.z * second.z,
-    		first.c3.x * second.x + first.c3.y * second.y + first.c3.z * second.z
+    		first.at<0>().x * second.x + first.at<0>().y * second.y + first.at<0>().z * second.z,
+    		first.at<1>().x * second.x + first.at<1>().y * second.y + first.at<1>().z * second.z,
+    		first.at<2>().x * second.x + first.at<2>().y * second.y + first.at<2>().z * second.z
     	};
     }
 
     // Matrix */ Number
-    inline m3 operator*(const m3 &first, double a)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > operator*(const m3 < _data_t > &first, _second_t a)
     {
-    	return{ first.c1 * a, first.c2 * a, first.c3 * a };
+    	return{ first.at<0>() * a, first.at<1>() * a, first.at<2>() * a };
     }
 
-    inline m3 operator*(double a, const m3 &first)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > operator*(_second_t a, const m3 < _data_t > &first)
     {
     	return first * a;
     }
 
-    inline m3 operator/(const m3 &first, double a)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > operator/(const m3 < _data_t > &first, _second_t a)
     {
-    	return{ first.c1 / a, first.c2 / a, first.c3 / a };
+    	return{ first.at<0>() / a, first.at<1>() / a, first.at<2>() / a };
     }
 
     // transpose
-    inline m3 operator~(const m3 &first)
+    template < typename _data_t >
+    inline m3 < _data_t > operator~(const m3 < _data_t > &first)
     {
     	return
     	{
-    		{ first.c1.x, first.c2.x, first.c3.x },
-    		{ first.c1.y, first.c2.y, first.c3.y },
-    		{ first.c1.z, first.c2.z, first.c3.z },
+    		{ first.at<0>().x, first.at<1>().x, first.at<2>().x },
+    		{ first.at<0>().y, first.at<1>().y, first.at<2>().y },
+    		{ first.at<0>().z, first.at<1>().z, first.at<2>().z },
     	};
     }
 
     // invert
-    inline m3 operator!(const m3 &first)
+    template < typename _data_t >
+    inline m3 < _data_t > operator!(const m3 < _data_t > &first)
     {
     	// 0. Inverse matrix is given as A^-1 = adj(A) / det(A)
     	// where adj(A) is adjugate matrix:
     	// adj(A){j,i} = { [(-1)^(i+j)] * M{i,j} },
     	// M{i,j} is an (i,j) minor.
-    	m3 inv; double det = 0;
+    	m3 < _data_t > inv; double det = 0;
     	// 1. Calculate adj(A){j,i} and accumulate det(A)
     	for (int i = 0; i < 3; i++) // rows
     	{
@@ -265,27 +259,30 @@ namespace math
     }
 
     // matrix product
-    inline m3 operator*(const m3 &first, const m3 &second)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > operator*(const m3 < _data_t > &first, const m3 < _data_t > &second)
     {
-    	m3 t = ~second;
+    	auto t = ~second;
     	return
     	{
-    		{ first.c1 * t.c1, first.c1 * t.c2, first.c1 * t.c3 },
-    		{ first.c2 * t.c1, first.c2 * t.c2, first.c2 * t.c3 },
-    		{ first.c3 * t.c1, first.c3 * t.c2, first.c3 * t.c3 }
+    		{ first.at<0>() * t.at<0>(), first.at<0>() * t.at<1>(), first.at<0>() * t.at<2>() },
+    		{ first.at<1>() * t.at<0>(), first.at<1>() * t.at<1>(), first.at<1>() * t.at<2>() },
+    		{ first.at<2>() * t.at<0>(), first.at<2>() * t.at<1>(), first.at<2>() * t.at<2>() }
     	};
     }
 
-    inline m3 identity()
+    template < typename _data_t = double >
+    inline m3 < _data_t > identity()
     {
     	return{
-    			{ 1, 0, 0 },
-    			{ 0, 1, 0 },
-    			{ 0, 0, 1 }
+    			{ _data_t(1), _data_t(0), _data_t(0) },
+    			{ _data_t(0), _data_t(1), _data_t(0) },
+    			{ _data_t(0), _data_t(0), _data_t(1) }
     	};
     }
 
-    inline m3 rotate_x(double angle)
+    template < typename _data_t = double >
+    inline m3 < _data_t > rotate_x(double angle)
     {
     	return{
     			{ 1, 0, 0 },
@@ -294,7 +291,8 @@ namespace math
     	};
     }
 
-    inline m3 rotate_y(double angle)
+    template < typename _data_t = double >
+    inline m3 < _data_t > rotate_y(double angle)
     {
     	return{
     			{ std::cos(angle), 0, std::sin(angle) },
@@ -303,7 +301,8 @@ namespace math
     	};
     }
 
-    inline m3 rotate_z(double angle)
+    template < typename _data_t = double >
+    inline m3 < _data_t > rotate_z(double angle)
     {
     	return{
     			{ std::cos(angle), - std::sin(angle), 0 },
@@ -315,9 +314,10 @@ namespace math
     // Perform the given transformation in the specified base
     // Suppose that the base consists of rows,
     // each is a base vector.
-    inline m3 transform(const m3 &base, const m3 &transform)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > transform(const m3 < _data_t > &base, const m3 < _second_t > &transform)
     {
-    	m3 base_t = ~base;
+    	auto base_t = ~base;
     	return base_t * transform * !base_t;
     }
 
@@ -325,21 +325,22 @@ namespace math
     // with the given direction. Or, in other words, calculate
     // rotation matrix to rotate the axis to the given direction
     // in orthonormal base.
-    inline m3 align_axe(const v3 &axe, const v3 &direction)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > align_axe(const v3 < _data_t > &axe, const v3 < _second_t > &direction)
     {
-    	v3 ax_n = axe / norm(axe); // normalized
-    	v3 d_n = direction / norm(direction); // normalized
+    	v3 < _data_t > ax_n = axe / norm(axe); // normalized
+    	v3 < _data_t > d_n = direction / norm(direction); // normalized
     	// normal vector -- the rotation axis
-    	v3 n_n = (direction ^ axe) / norm(direction ^ axe); // normalized
+    	v3 < _data_t > n_n = (direction ^ axe) / norm(direction ^ axe); // normalized
 
     	// cosine of the angle between the axis and the direction
     	double alpha = ax_n * d_n;
 
     	// normal vector to two others
-    	v3 v_n = d_n - alpha * ax_n;
+    	v3 < _data_t > v_n = d_n - alpha * ax_n;
     	v_n = v_n / norm(v_n); // normalized
 
-    	m3 base = m3{ ax_n, v_n, n_n };
+    	m3 < _data_t > base = { ax_n, v_n, n_n };
 
     	return transform(base, rotate_z(std::acos(alpha)));
     }
@@ -348,13 +349,14 @@ namespace math
     // with the given directions. Or, in other words, calculate
     // a complete transformation matrix to rotate the given axis
     // to the given directions.
-    inline m3 align_axis(const m3 &base0, int axe1, int axe2,
-    	const v3 &direction1, const v3 &direction2)
+    template < typename _data_t, typename _second_t >
+    inline m3 < _data_t > align_axis(const m3 < _data_t > &base0, int axe1, int axe2,
+    	const v3 < _second_t > &direction1, const v3 < _second_t > &direction2)
     {
     	// Rotate the axis1 to the direction1 first
-    	m3 align_m1 = align_axe(base0[axe1], direction1);
+    	m3 < _data_t > align_m1 = align_axe(base0[axe1], direction1);
     	// Go into the new base
-    	m3 aligned_base = ~(align_m1 * (~base0));
+    	m3 < _data_t > aligned_base = ~(align_m1 * (~base0));
 
     	// Calculate rotation
     	double align_2_rot_angle =
