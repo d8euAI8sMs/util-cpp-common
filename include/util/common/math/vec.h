@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <util/common/math/scalar.h>
+
 namespace math
 {
 
@@ -9,49 +11,109 @@ namespace math
     /*                       v3                          */
     /*****************************************************/
 
+    template < typename _data_t = double >
     struct v3
     {
 
-    	double x, y, z;
+    	_data_t x, y, z;
 
-    	const double & operator[] (size_t i) const
+        template < typename _second_t >
+        v3 (const v3 < _second_t > & source)
+            : x(static_cast < _data_t > (source.x))
+            , y(static_cast < _data_t > (source.y))
+            , z(static_cast < _data_t > (source.z))
+        {
+        }
+
+        template < typename _second_t >
+        v3 (_second_t x, _second_t y = {}, _second_t z = {})
+            : x(static_cast < _data_t > (x))
+            , y(static_cast < _data_t > (y))
+            , z(static_cast < _data_t > (z))
+        {
+        }
+
+        v3 ()
+            : x({}), y({}), z({})
+        {
+        }
+
+    	const _data_t & operator[] (size_t i) const
     	{
     		return (i == 0) ? x : ((i == 1) ? y : z);
     	}
 
-    	double & operator[] (size_t i)
+    	_data_t & operator[] (size_t i)
     	{
     		return (i == 0) ? x : ((i == 1) ? y : z);
     	}
+
+        template < size_t i >
+        const _data_t & at() const;
+
+        template < size_t i >
+        _data_t & at();
+
+        template < > const _data_t & at < 0 > () const { return x; }
+        template < > const _data_t & at < 1 > () const { return y; }
+        template < > const _data_t & at < 2 > () const { return z; }
+
+        template < > _data_t & at < 0 > () { return x; }
+        template < > _data_t & at < 1 > () { return y; }
+        template < > _data_t & at < 2 > () { return z; }
     };
 
-    inline v3 operator+(const v3 &first, const v3 &second)
+    template < typename _data_t >
+    inline double norm(const v3 < _data_t > &first)
+    {
+        return std::sqrt((sqnorm(first.x) + sqnorm(first.y) + sqnorm(first.z)));
+    }
+
+    template < typename _data_t >
+    inline double sqnorm(const v3 < _data_t > &first)
+    {
+        return (sqnorm(first.x) + sqnorm(first.y) + sqnorm(first.z));
+    }
+
+    template < typename _data_t >
+    inline v3 < _data_t > conjugate(const v3 < _data_t > &first)
+    {
+        return { conjugate(first.x), conjugate(first.y), conjugate(first.z) };
+    }
+
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator+(const v3 < _data_t > &first, const v3 < _second_t > &second)
     {
     	return{ first.x + second.x, first.y + second.y, first.z + second.z};
     }
 
-    inline v3 operator-(const v3 &first, const v3 &second)
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator-(const v3 < _data_t > &first, const v3 < _second_t > &second)
     {
     	return{ first.x - second.x, first.y - second.y, first.z - second.z };
     }
 
-    inline v3 operator-(const v3 &first)
+    template < typename _data_t >
+    inline v3 < _data_t > operator-(const v3 < _data_t > &first)
     {
     	return{ -first.x, -first.y, -first.z };
     }
 
-    inline v3 operator*(const v3 &first, double n)
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator*(const v3 < _data_t > &first, _second_t n)
     {
     	return{ n * first.x, n * first.y, n * first.z };
     }
 
-    inline v3 operator*(double n, const v3 &first)
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator*(_second_t n, const v3 < _data_t > &first)
     {
     	return first * n;
     }
 
     // cross product
-    inline v3 operator^(const v3 &first, const v3 &second)
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator^(const v3 < _data_t > &first, const v3 < _second_t > &second)
     {
     	return{
     		first.y * second.z - first.z * second.y,
@@ -61,26 +123,25 @@ namespace math
     }
 
     // dot product
-    inline double operator*(const v3 &first, const v3 &second)
+    template < typename _data_t, typename _second_t >
+    inline _data_t operator*(const v3 < _data_t > &first, const v3 < _second_t > &second)
     {
-    	return first.x * second.x + first.y * second.y + first.z * second.z;
+        v3 < _second_t > cjg = conjugate(second);
+    	return first.x * cjg.x + first.y * cjg.y + first.z * cjg.z;
     }
 
-    inline v3 operator/(const v3 &first, double n)
+    template < typename _data_t, typename _second_t >
+    inline v3 < _data_t > operator/(const v3 < _data_t > &first, _second_t n)
     {
     	return{ first.x / n, first.y / n, first.z / n };
     }
 
-    inline double norm(const v3 &first)
-    {
-    	return std::sqrt(first.x * first.x + first.y * first.y + first.z * first.z);
-    }
-
     // Performs transformation from (r, theta, phi) to (x, y, z)
     // where r >= 0, theta in [-pi/2, pi/2], phi in [-pi, pi]
-    inline v3 spherical2rect(const v3 &polar, bool deg = false)
+    template < typename _data_t >
+    inline v3 < _data_t > spherical2rect(const v3 < _data_t > &polar, bool deg = false)
     {
-    	double m = (deg ? (std::acos(0) * 2) / 180 : 1);
+    	_data_t m = static_cast < _data_t > (deg ? (std::acos(0) * 2) / 180 : 1);
     	return{
     		polar.x * std::cos(m * polar.y) * std::cos(m * polar.z),
     		polar.x * std::cos(m * polar.y) * std::sin(m * polar.z),
@@ -89,9 +150,10 @@ namespace math
     }
 
     // Performs transformation to (r, theta, phi) from (x, y, z)
-    inline v3 rect2spherical(const v3 &rect, bool deg = false)
+    template < typename _data_t >
+    inline v3 < _data_t > rect2spherical(const v3 < _data_t > &rect, bool deg = false)
     {
-    	double m = (deg ? 180 / (std::acos(0) * 2) : 1);
+    	_data_t m = static_cast < _data_t > (deg ? 180 / (std::acos(0) * 2) : 1);
     	double r = norm(rect);
     	return{
     		// >= 0
