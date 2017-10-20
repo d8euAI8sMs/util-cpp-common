@@ -95,7 +95,7 @@ namespace plot
                     tbounds = dc.GetTextExtent(str);
                     x_offset = max(x_offset, tbounds.cx);
                 }
-                new_screen.xmin += x_offset + 5;
+                new_screen.xmin += x_offset + 10;
             }
 
             if (x_ticks)
@@ -137,7 +137,7 @@ namespace plot
                     tbounds = dc.GetTextExtent(str);
                     dc.MoveTo(new_screen.xmin, y);
                     dc.LineTo(new_screen.xmax, y);
-                    dc.TextOut(x_offset - tbounds.cx - 2, y - tbounds.cy / 2, str);
+                    dc.TextOut(x_offset - tbounds.cx + 5, y - tbounds.cy / 2, str);
                 }
             }
 
