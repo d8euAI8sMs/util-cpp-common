@@ -175,7 +175,7 @@ namespace math
     template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator/(const complex < _data_t > &first, const complex < _second_t > &second)
     {
-        return first * conjugate(second) / norm(second) / norm(second);
+        return first * conjugate(second) / sqnorm(second);
     }
 
     template < typename _data_t, typename _second_t,
