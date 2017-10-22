@@ -60,6 +60,8 @@ namespace math
         }
     };
 
+    static const complex < > _i = { 0, 1 };
+
     template < typename _data_t >
     complex < _data_t > _re(_data_t re)
     {
