@@ -182,6 +182,6 @@ namespace math
                typename = std::enable_if_t < std::is_arithmetic < _second_t > :: value >  >
     inline complex < _data_t > operator/(_second_t n, const complex < _data_t > &first)
     {
-        return first * conjugate(second) / norm(second) / norm(second);
+        return first * conjugate(n) / sqnorm(n);
     }
 }
