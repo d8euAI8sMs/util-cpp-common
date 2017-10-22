@@ -108,7 +108,7 @@ namespace math
         for (size_t i = 0; i < iters; ++i)
         {
             r = rk4_solve3(fn, r.t, dt, r.x);
-            r.t = t1 + i * dt; // to minimize rounding errors
+            r.t = t1 + (i + 1) * dt; // to minimize rounding errors
         }
         return r;
     }
@@ -131,7 +131,7 @@ namespace math
         for (size_t i = 0; i < iters; ++i)
         {
             r = rk4_solve3s(fn, r.t, dt, r.x, r.dx);
-            r.t = t1 + i * dt; // to minimize rounding errors
+            r.t = t1 + (i + 1) * dt; // to minimize rounding errors
         }
         return r;
     }
