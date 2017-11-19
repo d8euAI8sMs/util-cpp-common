@@ -553,6 +553,7 @@ namespace util
     public:
 
         const container_type         * container;
+        util::ptr_t < container_type > container_ptr;
         value_mapper_t                 value_mapper;
         pointer_mapper_t               pointer_mapper;
         iterator_source_t              begin_source;
@@ -573,6 +574,23 @@ namespace util
             pointer_mapper_t             pointer_mapper
         )
             : container(&container)
+            , begin_source(std::move(begin_source))
+            , end_source(std::move(end_source))
+            , value_mapper(std::move(value_mapper))
+            , pointer_mapper(std::move(pointer_mapper))
+        {
+        }
+
+        generic_iterable
+        (
+            util::ptr_t < container_type > container,
+            iterator_source_t              begin_source,
+            iterator_source_t              end_source,
+            value_mapper_t                 value_mapper,
+            pointer_mapper_t               pointer_mapper
+        )
+            : container_ptr(std::move(container))
+            , container(container.get())
             , begin_source(std::move(begin_source))
             , end_source(std::move(end_source))
             , value_mapper(std::move(value_mapper))
@@ -684,6 +702,34 @@ namespace util
     <
         typename _value_t,
         typename _container_t,
+        typename _container_iterable_t = container_iterable_t < _container_t, _value_t >,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline typename _container_iterable_t::ptr_t make_container_iterable
+    (
+        ptr_t < _container_t >                                    container,
+        const typename _container_iterable_t::value_mapper_t    & value_mapper,
+        const typename _container_iterable_t::iterator_source_t & begin_source = make_begin_iterator_source < _container_t, _iterator_t > (),
+        const typename _container_iterable_t::iterator_source_t & end_source   = make_end_iterator_source < _container_t, _iterator_t > ()
+    )
+    {
+        return _container_iterable_t::create
+        (
+            std::move(container),
+            begin_source,
+            end_source,
+            value_mapper,
+            [value_mapper] (const _container_t & c, const _iterator_t & pos, size_t idx)
+            {
+                return &value_mapper(c, pos, idx);
+            }
+        );
+    }
+
+    template
+    <
+        typename _value_t,
+        typename _container_t,
         typename _container_iterable_t = container_mapping_iterable_t < _container_t, _value_t >,
         typename _iterator_t = typename _container_t::const_iterator
     >
@@ -698,6 +744,34 @@ namespace util
         return _container_iterable_t::create
         (
             container,
+            begin_source,
+            end_source,
+            value_mapper,
+            [value_mapper] (const _container_t & c, const _iterator_t & pos, size_t idx)
+            {
+                return util::create < _value_t > (value_mapper(c, pos, idx));
+            }
+        );
+    }
+
+    template
+    <
+        typename _value_t,
+        typename _container_t,
+        typename _container_iterable_t = container_mapping_iterable_t < _container_t, _value_t >,
+        typename _iterator_t = typename _container_t::const_iterator
+    >
+    static inline typename _container_iterable_t::ptr_t make_container_mapping_iterable
+    (
+        ptr_t < _container_t >                                    container,
+        const typename _container_iterable_t::value_mapper_t    & value_mapper,
+        const typename _container_iterable_t::iterator_source_t & begin_source = make_begin_iterator_source < _container_t, _iterator_t > (),
+        const typename _container_iterable_t::iterator_source_t & end_source   = make_end_iterator_source < _container_t, _iterator_t > ()
+    )
+    {
+        return _container_iterable_t::create
+        (
+            std::move(container),
             begin_source,
             end_source,
             value_mapper,
