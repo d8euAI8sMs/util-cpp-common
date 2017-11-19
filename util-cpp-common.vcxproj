@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\util\common\gui\SimulationDialog.h" />
     <ClInclude Include="include\util\common\math\scalar.h" />
     <ClInclude Include="include\util\common\math\dsolve.h" />
     <ClInclude Include="include\util\common\math\vec.h" />
@@ -108,6 +109,7 @@
   <ItemGroup>
     <ClCompile Include="PlotStatic.cpp" />
     <ClCompile Include="rpoly.cpp" />
+    <ClCompile Include="SimulationDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

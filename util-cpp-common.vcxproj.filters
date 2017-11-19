@@ -22,6 +22,9 @@
     <Filter Include="Header Files\util">
       <UniqueIdentifier>{8a521ee1-92b2-4869-953f-2ba2458b764c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{e2ddaff3-5c86-4bb5-8f1d-bcc24827b32e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="include\util\common\math\scalar.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\common\gui\SimulationDialog.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -120,6 +126,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpoly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimulationDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
