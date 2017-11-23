@@ -139,7 +139,7 @@ namespace plot
             util::ptr_t < std::vector < tick_t > > ticks
                 = util::create < std::vector < tick_t > > ();
 
-            if (size < 1e-15) return ticks;
+            if (size < 1e-8) return ticks;
 
             int n = int(size / interval);
 
@@ -217,7 +217,7 @@ namespace plot
             util::ptr_t < std::vector < tick_t > > ticks
                 = std::make_shared < std::vector < tick_t > > ();
 
-            if (size < 1e-15) return ticks;
+            if (size < 1e-8) return ticks;
 
             ticks->reserve(n_intervals + 2);
 
