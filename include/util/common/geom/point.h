@@ -191,6 +191,31 @@ namespace geom
         {
             return geom::distance(*this, make_point(x, y));
         }
+
+        auto rotate (double radians) const
+        -> point < std::remove_const_t < decltype(x * 1. - y * 1.) >,
+                   std::remove_const_t < decltype(x * 1. + y * 1.) > >
+        {
+            double sine = std::sin(radians);
+            double cosine = std::cos(radians);
+            auto & p = *this;
+            return
+            {
+                p.x * cosine - p.y * sine,
+                p.x * sine + p.y * cosine
+            };
+        }
+
+        template < typename _X, typename _Y >
+        auto rotate
+        (
+            double radians,
+            const point < _X, _Y > & at
+        ) const
+        -> std::remove_const_t < decltype((std::declval<point>() - at).rotate(radians) + at) >
+        {
+            return (*this - at).rotate(radians) + at;
+        }
     };
 
     /*****************************************************/
@@ -216,6 +241,81 @@ namespace geom
             std::is_convertible < _Y, double > :: value >
     {
     };
+
+    /*****************************************************/
+    /*                geometry operations                */
+    /*****************************************************/
+
+    template <> inline point2d_t rotate
+    (
+        const point2d_t & geometry,
+        double radians,
+        point2d_t at
+    )
+    {
+        return geometry.rotate(radians, at);
+    }
+
+    template <> inline point2d_t scale
+    (
+        const point2d_t & geometry,
+        double n,
+        point2d_t at
+    )
+    {
+        return (geometry - at) * n + at;
+    }
+
+    template <> inline point2d_t move
+    (
+        const point2d_t & geometry,
+        point2d_t value
+    )
+    {
+        return geometry + value;
+    }
+
+    template <> inline point2d_t center
+    (
+        const point2d_t & geometry
+    )
+    {
+        return geometry;
+    }
+
+    inline bool intersects
+    (
+        const point2d_t &, const point2d_t &
+    )
+    {
+        return false;
+    }
+
+    template < typename G > inline bool intersects
+    (
+        const point2d_t &, const G &
+    )
+    {
+        return false;
+    }
+
+    template < typename G > inline bool intersects
+    (
+        const G &, const point2d_t &
+    )
+    {
+        return false;
+    }
+
+    /* point cannot contain anything */
+    template < typename G >
+    inline bool contains
+    (
+        const point2d_t &, const G &
+    )
+    {
+        return false;
+    }
 
     /*****************************************************/
     /*                formatting                         */
