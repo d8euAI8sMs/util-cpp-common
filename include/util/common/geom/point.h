@@ -88,6 +88,8 @@ namespace geom
         {
         }
 
+        template < typename = std::enable_if_t <
+            is_planar < point > :: value > >
         operator POINT () const
         {
             return{ x, y };
