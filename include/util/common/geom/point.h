@@ -30,7 +30,7 @@ namespace geom
         point < _X2, _Y2 > const & p2
     )
     {
-        return norm(p1 - p2);
+        return math::norm(p1 - p2);
     }
 
     template
@@ -44,7 +44,7 @@ namespace geom
         point < _X2, _Y2 > const & p2
     )
     {
-        return sqnorm(p1 - p2);
+        return math::sqnorm(p1 - p2);
     }
 
     /*****************************************************/
@@ -143,7 +143,7 @@ namespace geom
 
         double length() const
         {
-            return norm(*this);
+            return math::norm(*this);
         }
 
         template < typename = std::enable_if_t <
@@ -166,31 +166,6 @@ namespace geom
             return geom::distance(*this, make_point(x, y));
         }
     };
-
-    /*****************************************************/
-    /*            scalar point operations                */
-    /*****************************************************/
-
-    template < typename _X, typename _Y >
-    inline double norm(point < _X, _Y > const & p)
-    {
-        using math::sqnorm;
-        return std::sqrt(sqnorm(p));
-    }
-
-    template < typename _X, typename _Y >
-    inline double sqnorm(point < _X, _Y > const & p)
-    {
-        using math::sqnorm;
-        return sqnorm(p.x) + sqnorm(p.y);
-    }
-
-    template < typename _X, typename _Y >
-    inline point < _X, _Y > conjugate(point < _X, _Y > const & p)
-    {
-        using math::conjugate;
-        return { conjugate(p.x), conjugate(p.y) };
-    }
 
     /*****************************************************/
     /*                factory functions                  */
@@ -229,5 +204,31 @@ namespace geom
     )
     {
         return os << "(" << p.x << ", " << p.y << ")";
+    }
+}
+
+namespace math
+{
+
+    /*****************************************************/
+    /*            scalar point operations                */
+    /*****************************************************/
+
+    template < typename _X, typename _Y >
+    inline double norm(geom::point < _X, _Y > const & p)
+    {
+        return std::sqrt(sqnorm(p));
+    }
+
+    template < typename _X, typename _Y >
+    inline double sqnorm(geom::point < _X, _Y > const & p)
+    {
+        return sqnorm(p.x) + sqnorm(p.y);
+    }
+
+    template < typename _X, typename _Y >
+    inline geom::point < _X, _Y > conjugate(geom::point < _X, _Y > const & p)
+    {
+        return { conjugate(p.x), conjugate(p.y) };
     }
 }
