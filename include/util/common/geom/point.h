@@ -132,4 +132,16 @@ namespace geom
         using math::conjugate;
         return { conjugate(p.x), conjugate(p.y) };
     }
+
+    /*****************************************************/
+    /*                factory functions                  */
+    /*****************************************************/
+
+    template < typename _X, typename _Y >
+    inline auto make_point(_X x, _Y y)
+        -> point < std::remove_const_t < _X >,
+                   std::remove_const_t < _Y > >
+    {
+        return { x, y };
+    }
 }
