@@ -107,6 +107,14 @@ namespace geom
         {
             return norm(*this);
         }
+
+        template < typename = std::enable_if_t <
+            is_planar < point > :: value > >
+        double angle() const
+        {
+            return atan2(static_cast < double > (y),
+                         static_cast < double > (x));
+        }
     };
 
     /*****************************************************/
