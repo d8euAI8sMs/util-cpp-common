@@ -3,6 +3,7 @@
 #include <afxwin.h>
 
 #include <util/common/ptr.h>
+#include <util/common/math/scalar.h>
 
 #include <type_traits>
 
@@ -100,5 +101,35 @@ namespace geom
             y += o.y;
             return *this;
         }
+
+        double length() const
+        {
+            return norm(*this);
+        }
     };
+
+    /*****************************************************/
+    /*            scalar point operations                */
+    /*****************************************************/
+
+    template < typename _X, typename _Y >
+    inline double norm(point < _X, _Y > const & p)
+    {
+        using math::sqnorm;
+        return std::sqrt(sqnorm(p));
+    }
+
+    template < typename _X, typename _Y >
+    inline double sqnorm(point < _X, _Y > const & p)
+    {
+        using math::sqnorm;
+        return sqnorm(p.x) + sqnorm(p.y);
+    }
+
+    template < typename _X, typename _Y >
+    inline point < _X, _Y > conjugate(point < _X, _Y > const & p)
+    {
+        using math::conjugate;
+        return { conjugate(p.x), conjugate(p.y) };
+    }
 }
