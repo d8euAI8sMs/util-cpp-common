@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <type_traits>
+#include <iostream>
 
 #include <util/common/math/scalar.h>
 
@@ -177,6 +178,21 @@ namespace math
     inline complex < _data_t > operator/(_second_t n, const complex < _data_t > &first)
     {
         return n * conjugate(first) / sqnorm(first);
+    }
+
+    template < typename _Elem, typename _Traits, typename _data_t >
+    std::basic_ostream < _Elem, _Traits > & operator <<
+    (
+        std::basic_ostream < _Elem, _Traits > & os,
+        const complex < _data_t > & c
+    )
+    {
+        os << c.re;
+        auto old = os.setf(std::ios_base::showpos);
+        os << c.im;
+        os.flags(old);
+        os << "i";
+        return os;
     }
 }
 

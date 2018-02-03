@@ -8,6 +8,7 @@
 #include <util/common/geom/point.h>
 
 #include <type_traits>
+#include <iostream>
 
 namespace geom
 {
@@ -126,4 +127,18 @@ namespace geom
             is_planar < _P > :: value >
     {
     };
+
+    /*****************************************************/
+    /*                formatting                         */
+    /*****************************************************/
+
+    template < typename _Elem, typename _Traits, typename _P >
+    std::basic_ostream < _Elem, _Traits > & operator <<
+    (
+        std::basic_ostream < _Elem, _Traits > & os,
+        const line < _P > & l
+    )
+    {
+        return os << l.p1 << " - " << l.p2;
+    }
 }

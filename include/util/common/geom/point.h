@@ -7,6 +7,7 @@
 #include <util/common/geom/geom.h>
 
 #include <type_traits>
+#include <iostream>
 
 namespace geom
 {
@@ -218,4 +219,19 @@ namespace geom
             std::is_convertible < _Y, double > :: value >
     {
     };
+
+    /*****************************************************/
+    /*                formatting                         */
+    /*****************************************************/
+
+    template < typename _Elem, typename _Traits,
+               typename _X, typename _Y >
+    std::basic_ostream < _Elem, _Traits > & operator <<
+    (
+        std::basic_ostream < _Elem, _Traits > & os,
+        const point < _X, _Y > & p
+    )
+    {
+        return os << "(" << p.x << ", " << p.y << ")";
+    }
 }
