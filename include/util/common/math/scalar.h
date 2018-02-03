@@ -81,6 +81,18 @@ namespace math
     }
 
     template < typename _data_t, typename _second_t >
+    inline bool operator==(const complex < _data_t > &first, const complex < _second_t > &second)
+    {
+        return (first.re == second.re) && (first.im == second.im);
+    }
+
+    template < typename _data_t, typename _second_t >
+    inline bool operator!=(const complex < _data_t > &first, const complex < _second_t > &second)
+    {
+        return (first.re != second.re) || (first.im != second.im);
+    }
+
+    template < typename _data_t, typename _second_t >
     inline complex < _data_t > operator+(const complex < _data_t > &first, const complex < _second_t > &second)
     {
         return{ first.re + second.re, first.im + second.im };
