@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util-cpp-common", "src\util-cpp-common.vcxproj", "{9E8371D6-EAAB-42C2-B488-865A8216BDCC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util-cpp-common-test", "test\util-cpp-common-test.vcxproj", "{71CD854E-4B5B-41BE-B02E-D4E69118BF76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -15,6 +17,10 @@ Global
 		{9E8371D6-EAAB-42C2-B488-865A8216BDCC}.Debug|Win32.Build.0 = Debug|Win32
 		{9E8371D6-EAAB-42C2-B488-865A8216BDCC}.Release|Win32.ActiveCfg = Release|Win32
 		{9E8371D6-EAAB-42C2-B488-865A8216BDCC}.Release|Win32.Build.0 = Release|Win32
+		{71CD854E-4B5B-41BE-B02E-D4E69118BF76}.Debug|Win32.ActiveCfg = Debug|Win32
+		{71CD854E-4B5B-41BE-B02E-D4E69118BF76}.Debug|Win32.Build.0 = Debug|Win32
+		{71CD854E-4B5B-41BE-B02E-D4E69118BF76}.Release|Win32.ActiveCfg = Release|Win32
+		{71CD854E-4B5B-41BE-B02E-D4E69118BF76}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
