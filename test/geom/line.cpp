@@ -13,16 +13,16 @@ template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::To
 namespace geom
 {
 
-	TEST_CLASS(line_test)
-	{
-	public:
+    TEST_CLASS(line_test)
+    {
+    public:
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_factory)
             TEST_DESCRIPTION(L"line factory works fine")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_factory)
-		{
+        TEST_METHOD(_factory)
+        {
             auto l = make_line(make_point(1, 2.0), make_point(3, 4.0));
             Assert::AreEqual(make_point(1.0, 2.0), l.p1, L"p1", LINE_INFO());
             Assert::AreEqual(make_point(3.0, 4.0), l.p2, L"p2", LINE_INFO());
@@ -36,8 +36,8 @@ namespace geom
             TEST_DESCRIPTION(L"equality checking works fine")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_equality)
-		{
+        TEST_METHOD(_equality)
+        {
             Assert::IsTrue(make_line(1, 2.0, 3, 4.0) == make_line(1, 2.0, 3, 4.0),
                            L"same types", LINE_INFO());
             Assert::IsTrue(make_line(1u, 2.0, 3u, 4.0) == make_line(1, 2.0, 3, 4.0),
@@ -65,14 +65,14 @@ namespace geom
                            L"same types - neq", LINE_INFO());
             Assert::IsFalse(make_line(1u, 2.0, 3u, 4.0) == make_line(2, 2.0, 4, 4.0),
                            L"different types - neq", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_norm)
             TEST_DESCRIPTION(L"norm (length) is calculated correctly")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_norm)
-		{
+        TEST_METHOD(_norm)
+        {
             Assert::AreEqual(5, make_line(0, 0, 3, 4).length(), 1e-8,
                              L"length (0,0)-(3,4)", LINE_INFO());
             Assert::AreEqual(5, make_line(1, 1, 4, 5).length(), 1e-8,
@@ -81,14 +81,14 @@ namespace geom
                              L"norm (1,1)-(4,5)", LINE_INFO());
             Assert::AreEqual(25, math::sqnorm(make_line(1, 1, 4, 5)), 1e-8,
                              L"norm (1,1)-(4,5)", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_angle)
             TEST_DESCRIPTION(L"angle is calculated correctly")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_angle)
-		{
+        TEST_METHOD(_angle)
+        {
             const double pi_4 = std::atan(1);
 
             Assert::AreEqual(pi_4, make_line(1, 1, 4, 4).angle(), 1e-8,
@@ -103,26 +103,26 @@ namespace geom
                              L"pi", LINE_INFO());
             Assert::AreEqual(- 2 * pi_4, make_line(1, 1, 1, -4).angle(), 1e-8,
                              L"-pi/2", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_conjugate)
             TEST_DESCRIPTION(L"conjugation operation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_conjugate)
-		{
+        TEST_METHOD(_conjugate)
+        {
             using namespace math;
             Assert::AreEqual(make_line(2, - 6, 8, 1),
                              conjugate(make_line(2, -6, 8, 1)),
                              L"conjugate", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_empty)
             TEST_DESCRIPTION(L"empty check is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_empty)
-		{
+        TEST_METHOD(_empty)
+        {
             using namespace math;
 
             Assert::IsFalse(make_line(0, 0, 4, 6).empty(),
@@ -132,14 +132,14 @@ namespace geom
 
             Assert::IsTrue(make_line(0, 0, 0, 0).empty(),
                            L"empty int", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_inner_point)
             TEST_DESCRIPTION(L"inner point and center calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_inner_point)
-		{
+        TEST_METHOD(_inner_point)
+        {
             auto p1 = make_line(1, 2, 3, 4).inner_point(0);
             auto p2 = make_line(1, 2, 3, 4).inner_point(1);
             auto p3 = make_line(1, 2, 3, 4).inner_point(0.5);
@@ -166,14 +166,14 @@ namespace geom
                              L"p4.x", LINE_INFO());
             Assert::AreEqual(6, p4.y, 1e-8,
                              L"p4.y", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_intersection)
             TEST_DESCRIPTION(L"intersection calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_intersection)
-		{
+        TEST_METHOD(_intersection)
+        {
             auto l1 = make_line(1, 2, 3, 4);
             auto l2 = make_line(1, 4, 3, 2);
             auto l3 = make_line(0, 4, 2, 2);
@@ -228,14 +228,14 @@ namespace geom
             Assert::IsFalse(l1.intersects(l1), L"l1-l1 int", LINE_INFO());
             Assert::IsFalse(l1.segment_intersects(l1), L"l1-l1 seg", LINE_INFO());
             Assert::IsFalse(intersects(l1, l1), L"l1-l1 int-seg", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
             TEST_DESCRIPTION(L"rotation calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_rotate)
-		{
+        TEST_METHOD(_rotate)
+        {
             const double pi = 4 * std::atan(1);
 
             auto l1 = rotate(make_line(1, 2, 3, 4), pi);
@@ -258,14 +258,14 @@ namespace geom
                              L"l2 p2.x", LINE_INFO());
             Assert::AreEqual(4, l2.p2.y, 1e-8,
                              L"l2 p2.y", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_scale)
             TEST_DESCRIPTION(L"scale calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_scale)
-		{
+        TEST_METHOD(_scale)
+        {
             const double pi = 4 * std::atan(1);
 
             auto l1 = scale(make_line(1, 2, 3, 4), 10);
@@ -288,14 +288,14 @@ namespace geom
                              L"l2 p2.x", LINE_INFO());
             Assert::AreEqual(13, l2.p2.y, 1e-8,
                              L"l2 p2.y", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_move)
             TEST_DESCRIPTION(L"move calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_move)
-		{
+        TEST_METHOD(_move)
+        {
             auto l = move(make_line(1, 2, 3, 4), { 1, 2 });
 
             Assert::AreEqual(2, l.p1.x, 1e-8,
@@ -306,18 +306,18 @@ namespace geom
                              L"l p2.x", LINE_INFO());
             Assert::AreEqual(6, l.p2.y, 1e-8,
                              L"l p2.y", LINE_INFO());
-		}
+        }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_is_clockwise)
             TEST_DESCRIPTION(L"orientation calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-		TEST_METHOD(_is_clockwise)
-		{
+        TEST_METHOD(_is_clockwise)
+        {
             Assert::IsTrue(make_line(1, 2, 3, 4).is_clockwise({ 1, 4 }),
                              L"clockwise", LINE_INFO());
             Assert::IsFalse(make_line(1, 2, 3, 4).is_clockwise({ 3, 2 }),
                              L"clockwise", LINE_INFO());
-		}
-	};
+        }
+    };
 }
