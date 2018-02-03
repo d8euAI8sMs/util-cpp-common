@@ -17,32 +17,25 @@ namespace geom
     /*                     line                          */
     /*****************************************************/
 
-    template
-    <
-        typename P
-    >
     struct line
     {
         using ptr_t = util::ptr_t < line > ;
 
         template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
-        using point_type = P;
+        point2d_t p1, p2;
 
-        P p1, p2;
-
-        line(P p1, P p2)
+        line(point2d_t p1, point2d_t p2)
             : p1(p1), p2(p2)
         {
         }
 
         line()
-            : line(P{}, P{})
+            : line(point2d_t{}, point2d_t{})
         {
         }
 
-        template < typename _P >
-        line(line < _P > const & o)
+        line(line const & o)
             : line(o)
         {
         }
@@ -52,14 +45,12 @@ namespace geom
             return p1.empty() && p2.empty();
         }
 
-        template < typename _P >
-        bool operator == (line < _P > const & o) const
+        bool operator == (line const & o) const
         {
             return (p1 == o.p1) && (p2 == o.p2);
         }
 
-        template < typename _P >
-        bool operator != (line < _P > const & o) const
+        bool operator != (line const & o) const
         {
             return (p1 != o.p1) || (p2 != o.p2);
         }
@@ -69,8 +60,6 @@ namespace geom
             return norm(*this);
         }
 
-        template < typename = std::enable_if_t <
-            is_planar < line > :: value > >
         double angle() const
         {
             return (p2 - p1).angle();
@@ -103,16 +92,15 @@ namespace geom
     /*                factory functions                  */
     /*****************************************************/
 
-    template < typename _P >
-    inline auto make_line(_P p1, _P p2)
-        -> line < std::remove_const_t < _P > >
+    template < typename _P1, typename _P2 >
+    inline line make_line(_P1 p1, _P2 p2)
     {
         return { p1, p2 };
     }
 
-    template < typename _X, typename _Y >
-    inline auto make_line(_X x1, _Y y1, _X x2, _Y y2)
-        -> line < point < _X, _Y > >
+    template < typename _X1, typename _Y1,
+               typename _X2, typename _Y2 >
+    inline line make_line(_X1 x1, _Y1 y1, _X2 x2, _Y2 y2)
     {
         return { make_point(x1, y1), make_point(x2, y2) };
     }
@@ -121,10 +109,8 @@ namespace geom
     /*                type traits                        */
     /*****************************************************/
 
-    template < typename _P >
-    struct is_planar < line < _P > >
-        : std::integral_constant < bool,
-            is_planar < _P > :: value >
+    template <> struct is_planar < line >
+        : std::integral_constant < bool, true >
     {
     };
 
