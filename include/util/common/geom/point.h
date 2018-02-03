@@ -4,6 +4,7 @@
 
 #include <util/common/ptr.h>
 #include <util/common/math/scalar.h>
+#include <util/common/geom/geom.h>
 
 #include <type_traits>
 
@@ -144,4 +145,16 @@ namespace geom
     {
         return { x, y };
     }
+
+    /*****************************************************/
+    /*                type traits                        */
+    /*****************************************************/
+
+    template < typename _X, typename _Y >
+    struct is_planar < point < _X, _Y > >
+        : std::integral_constant < bool,
+            std::is_convertible < _X, double > :: value &&
+            std::is_convertible < _Y, double > :: value >
+    {
+    };
 }
