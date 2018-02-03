@@ -1,15 +1,15 @@
-// PlotStatic.cpp : implementation file
+// PlotControl.cpp : implementation file
 //
 
 #include "stdafx.h"
-#include <util/common/gui/PlotStatic.h>
+#include <util/common/gui/PlotControl.h>
 
 
-// PlotStatic
+// CPlotControl
 
-IMPLEMENT_DYNAMIC(PlotStatic, CStatic)
+IMPLEMENT_DYNAMIC(CPlotControl, CStatic)
 
-PlotStatic::PlotStatic()
+CPlotControl::CPlotControl()
     : buffer(nullptr)
     , buffer2(nullptr)
     , background(plot::palette::brush(0xffffff))
@@ -17,31 +17,31 @@ PlotStatic::PlotStatic()
 {
 }
 
-PlotStatic::~PlotStatic()
+CPlotControl::~CPlotControl()
 {
     delete buffer;
     delete buffer2;
 }
 
 
-BEGIN_MESSAGE_MAP(PlotStatic, CStatic)
+BEGIN_MESSAGE_MAP(CPlotControl, CStatic)
     ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
 
 
-// PlotStatic message handlers
+// CPlotControl message handlers
 
 
 
 
-void PlotStatic::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
+void CPlotControl::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
     CStatic::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
 
 
-void PlotStatic::RedrawBuffer()
+void CPlotControl::RedrawBuffer()
 {
     CDC dc; dc.CreateCompatibleDC(NULL);
 
@@ -77,14 +77,14 @@ void PlotStatic::RedrawBuffer()
 }
 
 
-void PlotStatic::SwapBuffers()
+void CPlotControl::SwapBuffers()
 {
     std::swap(buffer, buffer2);
 }
 
 
 
-void PlotStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+void CPlotControl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
     CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
 

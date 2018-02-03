@@ -3,15 +3,15 @@
 #include <util/common/plot/plot.h>
 
 
-// PlotStatic
+// CPlotControl
 
-class PlotStatic : public CStatic
+class CPlotControl : public CStatic
 {
-	DECLARE_DYNAMIC(PlotStatic)
+	DECLARE_DYNAMIC(CPlotControl)
 
 public:
-	PlotStatic();
-	virtual ~PlotStatic();
+	CPlotControl();
+	virtual ~CPlotControl();
 
 protected:
 	DECLARE_MESSAGE_MAP()

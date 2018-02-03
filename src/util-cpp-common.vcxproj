@@ -92,7 +92,7 @@
     <ClInclude Include="..\include\util\common\plot\math_interop.h" />
     <ClInclude Include="..\include\util\common\plot\palette.h" />
     <ClInclude Include="..\include\util\common\plot\plot.h" />
-    <ClInclude Include="..\include\util\common\gui\PlotStatic.h" />
+    <ClInclude Include="..\include\util\common\gui\PlotControl.h" />
     <ClInclude Include="..\include\util\common\plot\data_source.h" />
     <ClInclude Include="..\include\util\common\ptr.h" />
     <ClInclude Include="..\include\util\common\plot\shape.h" />
@@ -107,7 +107,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PlotStatic.cpp" />
+    <ClCompile Include="PlotControl.cpp" />
     <ClCompile Include="rpoly.cpp" />
     <ClCompile Include="SimulationDialog.cpp" />
     <ClCompile Include="stdafx.cpp">

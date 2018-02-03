@@ -114,7 +114,7 @@
     <ClInclude Include="..\include\util\common\gui\SimulationDialog.h">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\util\common\gui\PlotStatic.h">
+    <ClInclude Include="..\include\util\common\gui\PlotControl.h">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,13 +122,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlotStatic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rpoly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SimulationDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
