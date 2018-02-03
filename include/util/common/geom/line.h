@@ -62,7 +62,83 @@ namespace geom
         {
             return (p2 - p1).angle();
         }
+
+        point2d_t inner_point(double q) const
+        {
+            return p1 + (p2 - p1) * q;
+        }
+
+        bool intersection(const line & l,
+                          double & r1,
+                          double & r2) const
+        {
+            double d =
+                (l.p2.y - l.p1.y) * (p2.x - p1.x) -
+                (l.p2.x - l.p1.x) * (p2.y - p1.y);
+
+            double n1 =
+                (l.p2.x - l.p1.x) * (p1.y - l.p1.y) -
+                (l.p2.y - l.p1.y) * (p1.x - l.p1.x);
+            double n2 =
+                (p2.x - p1.x) * (p1.y - l.p1.y) -
+                (p2.y - p1.y) * (p1.x - l.p1.x);
+
+            double q1 = n1 / d;
+            double q2 = n2 / d;
+
+            if (isfinite(q1) && isfinite(q2))
+            {
+                r1 = q1;
+                r2 = q2;
+                return true;
+            }
+
+            return false;
+        }
+
+        bool intersects(const line & l) const
+        {
+            double q1, q2;
+            return intersection(l, q1, q2);
+        }
+
+        bool segment_intersects(const line & l) const
+        {
+            double q1, q2;
+
+            if (intersection(l, q1, q2) &&
+                (1e-8 < q1) && (q1 < (1 - 1e-8)) &&
+                (1e-8 < q2) && (q2 < (1 - 1e-8)))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /* true for right-hand rotation (p1, p2, p3) */
+        bool is_clockwise(double x, double y) const
+        {
+            return ((p1.x - x) * (p2.y - y) -
+                    (p2.x - x) * (p1.y - y)) > 0;
+        }
+
+        bool is_clockwise(const point2d_t & p3) const
+        {
+            return is_clockwise(p3.x, p3.y);
+        }
     };
+
+    /*****************************************************/
+    /*                helper functions                   */
+    /*****************************************************/
+
+    inline bool is_clockwise(const point2d_t & p1,
+                             const point2d_t & p2,
+                             const point2d_t & p3)
+    {
+        return make_line(p1, p2).is_clockwise(p3);
+    }
 
     /*****************************************************/
     /*                factory functions                  */
@@ -89,6 +165,77 @@ namespace geom
         : std::integral_constant < bool, true >
     {
     };
+
+    /*****************************************************/
+    /*                geometry operations                */
+    /*****************************************************/
+
+    template <> inline line rotate
+    (
+        const line & geometry,
+        double radians,
+        point2d_t at
+    )
+    {
+        return
+        {
+            rotate(geometry.p1, radians, at),
+            rotate(geometry.p2, radians, at)
+        };
+    }
+
+    template <> inline line scale
+    (
+        const line & geometry,
+        double n,
+        point2d_t at
+    )
+    {
+        return
+        {
+            scale(geometry.p1, n, at),
+            scale(geometry.p2, n, at)
+        };
+    }
+
+    template <> inline line move
+    (
+        const line & geometry,
+        point2d_t value
+    )
+    {
+        return
+        {
+            move(geometry.p1, value),
+            move(geometry.p2, value)
+        };
+    }
+
+    template <> inline point2d_t center
+    (
+        const line & geometry
+    )
+    {
+        return geometry.inner_point(0.5);
+    }
+
+    template <> inline bool intersects
+    (
+        const line & l1, const line & l2
+    )
+    {
+        return l1.segment_intersects(l2);
+    }
+
+    /* we assume that only geometry with inner
+       area can contain something */
+    template <> inline bool contains
+    (
+        const line &, const point2d_t &
+    )
+    {
+        return false;
+    }
 
     /*****************************************************/
     /*                formatting                         */
