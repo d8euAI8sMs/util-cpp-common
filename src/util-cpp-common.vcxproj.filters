@@ -25,6 +25,9 @@
     <Filter Include="Header Files\gui">
       <UniqueIdentifier>{e2ddaff3-5c86-4bb5-8f1d-bcc24827b32e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\geom">
+      <UniqueIdentifier>{a1af0e7b-0335-44a2-9f9b-e2c8fc3bdeab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -116,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="..\include\util\common\gui\PlotControl.h">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\util\common\geom\point.h">
+      <Filter>Header Files\geom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
