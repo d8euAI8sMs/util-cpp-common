@@ -55,38 +55,14 @@ namespace geom
             return (p1 != o.p1) || (p2 != o.p2);
         }
 
-        double length() const
-        {
-            return norm(*this);
-        }
+        /* points to math::norm specialized below */
+        double length() const;
 
         double angle() const
         {
             return (p2 - p1).angle();
         }
     };
-
-    /*****************************************************/
-    /*            scalar point operations                */
-    /*****************************************************/
-
-    template < typename _P >
-    inline double norm(line < _P > const & l)
-    {
-        return distance(l.p1, l.p2);
-    }
-
-    template < typename _P >
-    inline double sqnorm(line < _P > const & l)
-    {
-        return sqdistance(l.p1, l.p2);
-    }
-
-    template < typename _P >
-    inline line < _P > conjugate(line < _P > const & l)
-    {
-        return { conjugate(l.p1), conjugate(l.p2) };
-    }
 
     /*****************************************************/
     /*                factory functions                  */
@@ -118,13 +94,41 @@ namespace geom
     /*                formatting                         */
     /*****************************************************/
 
-    template < typename _Elem, typename _Traits, typename _P >
+    template < typename _Elem, typename _Traits >
     std::basic_ostream < _Elem, _Traits > & operator <<
     (
         std::basic_ostream < _Elem, _Traits > & os,
-        const line < _P > & l
+        const line & l
     )
     {
         return os << l.p1 << " - " << l.p2;
     }
+}
+
+namespace math
+{
+
+    /*****************************************************/
+    /*            scalar line operations                 */
+    /*****************************************************/
+
+    template<>inline double norm(geom::line const & l)
+    {
+        return distance(l.p1, l.p2);
+    }
+
+    template<>inline double sqnorm(geom::line const & l)
+    {
+        return sqdistance(l.p1, l.p2);
+    }
+
+    template<>inline geom::line conjugate(geom::line  const & l)
+    {
+        return { conjugate(l.p1), conjugate(l.p2) };
+    }
+}
+
+inline double geom::line::length() const
+{
+    return math::norm(*this);
 }
