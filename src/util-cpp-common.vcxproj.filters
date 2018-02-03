@@ -114,8 +114,8 @@
     <ClInclude Include="..\include\util\common\gui\SimulationDialog.h">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\util\common\plot\PlotStatic.h">
-      <Filter>Header Files\plot</Filter>
+    <ClInclude Include="..\include\util\common\gui\PlotStatic.h">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include <util/common/plot/PlotStatic.h>
+#include <util/common/gui/PlotStatic.h>
 
 
 // PlotStatic
