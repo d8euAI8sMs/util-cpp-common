@@ -3,14 +3,12 @@
 #include "CppUnitTest.h"
 
 #include <util/common/geom/line.h>
-#include <util/common/math/complex.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<int,double>> (const geom::point<int,double> & p) { RETURN_WIDE_STRING(p); }
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line<geom::point<int>>> (const geom::line<geom::point<int>> & l) { RETURN_WIDE_STRING(l); }
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line<geom::point<math::complex<>>>> (const geom::line<geom::point<math::complex<>>> & l) { RETURN_WIDE_STRING(l); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point2d_t> (const geom::point2d_t & p) { RETURN_WIDE_STRING(p); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line> (const geom::line & l) { RETURN_WIDE_STRING(l); }
 
 namespace geom
 {
@@ -26,12 +24,12 @@ namespace geom
 		TEST_METHOD(_factory)
 		{
             auto l = make_line(make_point(1, 2.0), make_point(3, 4.0));
-            Assert::AreEqual(make_point(1, 2.0), l.p1, L"p1", LINE_INFO());
-            Assert::AreEqual(make_point(3, 4.0), l.p2, L"p2", LINE_INFO());
+            Assert::AreEqual(make_point(1.0, 2.0), l.p1, L"p1", LINE_INFO());
+            Assert::AreEqual(make_point(3.0, 4.0), l.p2, L"p2", LINE_INFO());
 
             l = make_line(1, 2.0, 3, 4.0);
-            Assert::AreEqual(make_point(1, 2.0), l.p1, L"p1", LINE_INFO());
-            Assert::AreEqual(make_point(3, 4.0), l.p2, L"p2", LINE_INFO());
+            Assert::AreEqual(make_point(1.0, 2.0), l.p1, L"p1", LINE_INFO());
+            Assert::AreEqual(make_point(3.0, 4.0), l.p2, L"p2", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_equality)
@@ -79,9 +77,9 @@ namespace geom
                              L"length (0,0)-(3,4)", LINE_INFO());
             Assert::AreEqual(5, make_line(1, 1, 4, 5).length(), 1e-8,
                              L"length (1,1)-(4,5)", LINE_INFO());
-            Assert::AreEqual(5, norm(make_line(1, 1, 4, 5)), 1e-8,
+            Assert::AreEqual(5, math::norm(make_line(1, 1, 4, 5)), 1e-8,
                              L"norm (1,1)-(4,5)", LINE_INFO());
-            Assert::AreEqual(25, sqnorm(make_line(1, 1, 4, 5)), 1e-8,
+            Assert::AreEqual(25, math::sqnorm(make_line(1, 1, 4, 5)), 1e-8,
                              L"norm (1,1)-(4,5)", LINE_INFO());
 		}
 
@@ -114,8 +112,8 @@ namespace geom
 		TEST_METHOD(_conjugate)
 		{
             using namespace math;
-            Assert::AreEqual(make_line(2 - 3 * _i, - 6 * _i, 8 * _i, 1 + _i),
-                             conjugate(make_line(2 + 3 * _i, 6 * _i, - 8 * _i, 1 - _i)),
+            Assert::AreEqual(make_line(2, - 6, 8, 1),
+                             conjugate(make_line(2, -6, 8, 1)),
                              L"conjugate", LINE_INFO());
 		}
 

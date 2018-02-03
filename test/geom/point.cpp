@@ -72,9 +72,9 @@ namespace geom
 		{
             Assert::AreEqual(5, make_point(3, 4).length(), 1e-8,
                              L"length", LINE_INFO());
-            Assert::AreEqual(5, norm(make_point(3, 4)), 1e-8,
+            Assert::AreEqual(5, math::norm(make_point(3, 4)), 1e-8,
                              L"different types", LINE_INFO());
-            Assert::AreEqual(25, sqnorm(make_point(3, 4)), 1e-8,
+            Assert::AreEqual(25, math::sqnorm(make_point(3, 4)), 1e-8,
                              L"different types", LINE_INFO());
 		}
 
