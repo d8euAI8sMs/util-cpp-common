@@ -11,4 +11,9 @@ namespace geom
     {
     };
 
+    /* forward declaration */
+    template < typename X, typename Y > struct point;
+
+    using point2d_t = point < double, double > ;
+
 }

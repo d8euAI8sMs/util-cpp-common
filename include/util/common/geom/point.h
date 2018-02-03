@@ -16,10 +16,6 @@ namespace geom
     /*              some common operations               */
     /*****************************************************/
 
-    /* type forward declaration */
-
-    template < typename, typename > struct point;
-
     /* use forward implementation of functions instead of
        just forward declaration to make code shorter */
 
