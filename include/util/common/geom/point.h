@@ -141,6 +141,32 @@ namespace geom
             return *this;
         }
 
+        template < typename = std::enable_if_t <
+            ! std::is_unsigned < X > :: value &&
+            ! std::is_unsigned < Y > :: value && > >
+        auto operator - () const
+            -> point < std::remove_const_t < decltype(- x) >,
+                       std::remove_const_t < decltype(- y) > >
+        {
+            return { - x, - y };
+        }
+
+        template < typename _Z >
+        auto operator * (_Z n)
+            -> point < std::remove_const_t < decltype(x * n) >,
+                       std::remove_const_t < decltype(y * n) > >
+        {
+            return { x * n, y * n };
+        }
+
+        template < typename _Z >
+        auto operator / (_Z n)
+            -> point < std::remove_const_t < decltype(x / n) >,
+                       std::remove_const_t < decltype(y / n) > >
+        {
+            return { x / n, y / n };
+        }
+
         double length() const
         {
             return math::norm(*this);
