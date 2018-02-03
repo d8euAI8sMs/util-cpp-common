@@ -4,6 +4,8 @@
 
 #include <util/common/ptr.h>
 
+#include <type_traits>
+
 namespace geom
 {
 
@@ -13,7 +15,8 @@ namespace geom
 
     template
     <
-        typename N
+        typename X,
+        typename Y = X
     >
     struct point
     {
@@ -21,17 +24,26 @@ namespace geom
 
         template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
-        using value_type = N;
+        using x_type = X;
+        using y_type = Y;
 
-        N x, y;
+        x_type x;
+        y_type y;
 
-        point(N x, N y)
+        point(x_type x, y_type y)
             : x(x), y(y)
         {
         }
 
         point()
-            : point(0, 0)
+            : point(x_type{}, y_type{})
+        {
+        }
+
+        template < typename _X, typename _Y >
+        point(point < _X, _Y > const & o)
+            : point(static_cast < X > (o.x),
+                    static_cast < Y > (o.y))
         {
         }
 
@@ -45,14 +57,14 @@ namespace geom
             return ((x == 0) && (y == 0));
         }
 
-        template < typename _N >
-        bool operator == (point < _N > const & o) const
+        template < typename _X, typename _Y >
+        bool operator == (point < _X, _Y > const & o) const
         {
             return (x == o.x) && (y == o.y);
         }
 
-        template < typename _N >
-        bool operator != (point < _N > const & o) const
+        template < typename _X, typename _Y >
+        bool operator != (point < _X, _Y > const & o) const
         {
             return (x != o.x) || (y != o.y);
         }
