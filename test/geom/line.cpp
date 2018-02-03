@@ -3,6 +3,7 @@
 #include "CppUnitTest.h"
 
 #include <util/common/geom/line.h>
+#include <util/common/math/complex.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

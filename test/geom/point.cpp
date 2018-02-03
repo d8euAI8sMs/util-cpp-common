@@ -4,6 +4,7 @@
 
 #include <util/common/geom/point.h>
 #include <util/common/plot/shape.h>
+#include <util/common/math/complex.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
