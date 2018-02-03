@@ -133,5 +133,191 @@ namespace geom
             Assert::IsTrue(make_line(0, 0, 0, 0).empty(),
                            L"empty int", LINE_INFO());
 		}
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_inner_point)
+            TEST_DESCRIPTION(L"inner point and center calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+		TEST_METHOD(_inner_point)
+		{
+            auto p1 = make_line(1, 2, 3, 4).inner_point(0);
+            auto p2 = make_line(1, 2, 3, 4).inner_point(1);
+            auto p3 = make_line(1, 2, 3, 4).inner_point(0.5);
+            auto p4 = make_line(1, 2, 3, 4).inner_point(2);
+            auto pc = center(make_line(1, 2, 3, 4));
+
+            Assert::AreEqual(1, p1.x, 1e-8,
+                             L"p1.x", LINE_INFO());
+            Assert::AreEqual(2, p1.y, 1e-8,
+                             L"p1.y", LINE_INFO());
+            Assert::AreEqual(3, p2.x, 1e-8,
+                             L"p2.x", LINE_INFO());
+            Assert::AreEqual(4, p2.y, 1e-8,
+                             L"p2.y", LINE_INFO());
+            Assert::AreEqual(2, p3.x, 1e-8,
+                             L"p3.x", LINE_INFO());
+            Assert::AreEqual(3, p3.y, 1e-8,
+                             L"p3.y", LINE_INFO());
+            Assert::AreEqual(2, pc.x, 1e-8,
+                             L"pc.x", LINE_INFO());
+            Assert::AreEqual(3, pc.y, 1e-8,
+                             L"pc.y", LINE_INFO());
+            Assert::AreEqual(5, p4.x, 1e-8,
+                             L"p4.x", LINE_INFO());
+            Assert::AreEqual(6, p4.y, 1e-8,
+                             L"p4.y", LINE_INFO());
+		}
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_intersection)
+            TEST_DESCRIPTION(L"intersection calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+		TEST_METHOD(_intersection)
+		{
+            auto l1 = make_line(1, 2, 3, 4);
+            auto l2 = make_line(1, 4, 3, 2);
+            auto l3 = make_line(0, 4, 2, 2);
+            auto l4 = make_line(-1, 2, 1, 0);
+
+            double q1, q2;
+            bool r;
+
+            r = l1.intersection(l2, q1, q2);
+
+            Assert::IsTrue(r, L"l1-l2", LINE_INFO());
+            Assert::AreEqual(0.5, q1, 1e-8,
+                             L"l1-l2 q1", LINE_INFO());
+            Assert::AreEqual(0.5, q2, 1e-8,
+                             L"l1-l2 q2", LINE_INFO());
+            Assert::IsTrue(l1.intersects(l2), L"l1-l2 int", LINE_INFO());
+            Assert::IsTrue(l1.segment_intersects(l2), L"l1-l2 seg", LINE_INFO());
+            Assert::IsTrue(intersects(l1, l2), L"l1-l2 int-seg", LINE_INFO());
+
+            r = l1.intersection(l3, q1, q2);
+
+            Assert::IsTrue(r, L"l1-l3", LINE_INFO());
+            Assert::AreEqual(0.25, q1, 1e-8,
+                             L"l1-l3 q1", LINE_INFO());
+            Assert::AreEqual(0.75, q2, 1e-8,
+                             L"l1-l3 q2", LINE_INFO());
+            Assert::IsTrue(l1.intersects(l3), L"l1-l3 int", LINE_INFO());
+            Assert::IsTrue(l1.segment_intersects(l3), L"l1-l3 seg", LINE_INFO());
+            Assert::IsTrue(intersects(l1, l3), L"l1-l3 int-seg", LINE_INFO());
+
+            r = l1.intersection(l4, q1, q2);
+
+            Assert::IsTrue(r, L"l1-l4", LINE_INFO());
+            Assert::AreEqual(-0.5, q1, 1e-8,
+                             L"l1-l4 q1", LINE_INFO());
+            Assert::AreEqual(0.5, q2, 1e-8,
+                             L"l1-l4 q2", LINE_INFO());
+            Assert::IsTrue(l1.intersects(l4), L"l1-l4 int", LINE_INFO());
+            Assert::IsFalse(l1.segment_intersects(l4), L"l1-l4 seg", LINE_INFO());
+            Assert::IsFalse(intersects(l1, l4), L"l1-l4 int-seg", LINE_INFO());
+
+            r = l2.intersection(l4, q1, q2);
+
+            Assert::IsFalse(r, L"l2-l4", LINE_INFO());
+            Assert::IsFalse(l2.intersects(l4), L"l2-l4 int", LINE_INFO());
+            Assert::IsFalse(l2.segment_intersects(l4), L"l2-l4 seg", LINE_INFO());
+            Assert::IsFalse(intersects(l2, l4), L"l2-l4 int-seg", LINE_INFO());
+
+            r = l1.intersection(l1, q1, q2);
+
+            Assert::IsFalse(r, L"l1-l1", LINE_INFO());
+            Assert::IsFalse(l1.intersects(l1), L"l1-l1 int", LINE_INFO());
+            Assert::IsFalse(l1.segment_intersects(l1), L"l1-l1 seg", LINE_INFO());
+            Assert::IsFalse(intersects(l1, l1), L"l1-l1 int-seg", LINE_INFO());
+		}
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
+            TEST_DESCRIPTION(L"rotation calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+		TEST_METHOD(_rotate)
+		{
+            const double pi = 4 * std::atan(1);
+
+            auto l1 = rotate(make_line(1, 2, 3, 4), pi);
+            auto l2 = rotate(make_line(1, 2, 3, 4), pi / 2, { 2, 3 });
+
+            Assert::AreEqual(-1, l1.p1.x, 1e-8,
+                             L"l1 p1.x", LINE_INFO());
+            Assert::AreEqual(-2, l1.p1.y, 1e-8,
+                             L"l1 p1.y", LINE_INFO());
+            Assert::AreEqual(-3, l1.p2.x, 1e-8,
+                             L"l1 p2.x", LINE_INFO());
+            Assert::AreEqual(-4, l1.p2.y, 1e-8,
+                             L"l1 p2.y", LINE_INFO());
+
+            Assert::AreEqual(3, l2.p1.x, 1e-8,
+                             L"l2 p1.x", LINE_INFO());
+            Assert::AreEqual(2, l2.p1.y, 1e-8,
+                             L"l2 p1.y", LINE_INFO());
+            Assert::AreEqual(1, l2.p2.x, 1e-8,
+                             L"l2 p2.x", LINE_INFO());
+            Assert::AreEqual(4, l2.p2.y, 1e-8,
+                             L"l2 p2.y", LINE_INFO());
+		}
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_scale)
+            TEST_DESCRIPTION(L"scale calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+		TEST_METHOD(_scale)
+		{
+            const double pi = 4 * std::atan(1);
+
+            auto l1 = scale(make_line(1, 2, 3, 4), 10);
+            auto l2 = scale(make_line(1, 2, 3, 4), 10, { 2, 3 });
+
+            Assert::AreEqual(10, l1.p1.x, 1e-8,
+                             L"l1 p1.x", LINE_INFO());
+            Assert::AreEqual(20, l1.p1.y, 1e-8,
+                             L"l1 p1.y", LINE_INFO());
+            Assert::AreEqual(30, l1.p2.x, 1e-8,
+                             L"l1 p2.x", LINE_INFO());
+            Assert::AreEqual(40, l1.p2.y, 1e-8,
+                             L"l1 p2.y", LINE_INFO());
+
+            Assert::AreEqual(-8, l2.p1.x, 1e-8,
+                             L"l2 p1.x", LINE_INFO());
+            Assert::AreEqual(-7, l2.p1.y, 1e-8,
+                             L"l2 p1.y", LINE_INFO());
+            Assert::AreEqual(12, l2.p2.x, 1e-8,
+                             L"l2 p2.x", LINE_INFO());
+            Assert::AreEqual(13, l2.p2.y, 1e-8,
+                             L"l2 p2.y", LINE_INFO());
+		}
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_move)
+            TEST_DESCRIPTION(L"move calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+		TEST_METHOD(_move)
+		{
+            auto l = move(make_line(1, 2, 3, 4), { 1, 2 });
+
+            Assert::AreEqual(2, l.p1.x, 1e-8,
+                             L"l p1.x", LINE_INFO());
+            Assert::AreEqual(4, l.p1.y, 1e-8,
+                             L"l p1.y", LINE_INFO());
+            Assert::AreEqual(4, l.p2.x, 1e-8,
+                             L"l p2.x", LINE_INFO());
+            Assert::AreEqual(6, l.p2.y, 1e-8,
+                             L"l p2.y", LINE_INFO());
+		}
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_is_clockwise)
+            TEST_DESCRIPTION(L"orientation calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+		TEST_METHOD(_is_clockwise)
+		{
+            Assert::IsTrue(make_line(1, 2, 3, 4).is_clockwise({ 1, 4 }),
+                             L"clockwise", LINE_INFO());
+            Assert::IsFalse(make_line(1, 2, 3, 4).is_clockwise({ 3, 2 }),
+                             L"clockwise", LINE_INFO());
+		}
 	};
 }
