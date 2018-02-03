@@ -181,13 +181,13 @@ namespace geom
         }
 
         template < typename _X, typename _Y >
-        double distance(point < _X, _Y > const & o)
+        double distance(point < _X, _Y > const & o) const
         {
             return geom::distance(*this, o);
         }
 
         template < typename _X, typename _Y >
-        double distance(_X x, _Y y)
+        double distance(_X x, _Y y) const
         {
             return geom::distance(*this, make_point(x, y));
         }
