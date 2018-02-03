@@ -178,9 +178,13 @@ namespace math
     {
         return n * conjugate(first) / sqnorm(first);
     }
+}
+
+namespace std
+{
 
     template < typename _data_t >
-    complex < _data_t > exp(const complex < _data_t > & c)
+    math::complex < _data_t > exp(const math::complex < _data_t > & c)
     {
         _data_t e = std::exp(c.re);
         return { e * std::cos(c.im), e * std::sin(c.im) };
