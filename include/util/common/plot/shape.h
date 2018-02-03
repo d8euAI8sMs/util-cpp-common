@@ -9,6 +9,17 @@ namespace plot
 {
 
     /*****************************************************/
+    /*                     point                         */
+    /*****************************************************/
+
+    /**
+     *  add point type to `plot` namespace to allow using
+     *  convenient name `plot::point` instead of new
+     * `geom::point`
+     */
+    using geom::point;
+
+    /*****************************************************/
     /*                     rect                          */
     /*****************************************************/
 

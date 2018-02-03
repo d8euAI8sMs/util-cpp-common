@@ -4,7 +4,7 @@
 
 #include <util/common/ptr.h>
 
-namespace plot
+namespace geom
 {
 
     /*****************************************************/
