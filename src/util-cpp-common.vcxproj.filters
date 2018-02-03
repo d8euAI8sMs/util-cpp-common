@@ -129,6 +129,9 @@
     <ClInclude Include="..\include\util\common\geom\geom.h">
       <Filter>Header Files\geom</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util\common\math\complex.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
