@@ -8,9 +8,9 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<int,double>> (const geom::point<int,double> & p) { RETURN_WIDE_STRING("(" << p.x << ", " << p.y << ")"); }
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line<geom::point<int>>> (const geom::line<geom::point<int>> & l) { RETURN_WIDE_STRING("(" << l.p1.x << ", " << l.p1.y << ") - (" << l.p1.x << ", " << l.p1.y << ")"); }
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line<geom::point<math::complex<>>>> (const geom::line<geom::point<math::complex<>>> & l) { RETURN_WIDE_STRING("(" << l.p1.x.re << "+" << l.p1.x.im << "i, " << l.p1.y.re << "+" << l.p1.y.im << "i) - (" << l.p2.x.re << "+" << l.p2.x.im << "i, " << l.p2.y.re << "+" << l.p2.y.im << "i)"); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<int,double>> (const geom::point<int,double> & p) { RETURN_WIDE_STRING(p); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line<geom::point<int>>> (const geom::line<geom::point<int>> & l) { RETURN_WIDE_STRING(l); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::line<geom::point<math::complex<>>>> (const geom::line<geom::point<math::complex<>>> & l) { RETURN_WIDE_STRING(l); }
 
 namespace geom
 {

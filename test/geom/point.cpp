@@ -8,8 +8,8 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<int>> (const geom::point<int> & p) { RETURN_WIDE_STRING("(" << p.x << ", " << p.y << ")"); }
-template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<math::complex<>>> (const geom::point<math::complex<>> & p) { RETURN_WIDE_STRING("(" << p.x.re << "+" << p.x.im << "i, " << p.y.re << "+" << p.y.im << "i)"); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<int>> (const geom::point<int> & p) { RETURN_WIDE_STRING(p); }
+template<> static std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<geom::point<math::complex<>>> (const geom::point<math::complex<>> & p) { RETURN_WIDE_STRING(p); }
 
 namespace geom
 {
