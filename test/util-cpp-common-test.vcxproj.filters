@@ -32,5 +32,8 @@
     <ClCompile Include="geom\point.cpp">
       <Filter>Source Files\geom</Filter>
     </ClCompile>
+    <ClCompile Include="geom\line.cpp">
+      <Filter>Source Files\geom</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
