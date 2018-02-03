@@ -46,13 +46,13 @@ namespace geom
         }
 
         template < typename _N >
-        bool operator == (point < _N > const & o)
+        bool operator == (point < _N > const & o) const
         {
             return (x == o.x) && (y == o.y);
         }
 
         template < typename _N >
-        bool operator != (point < _N > const & o)
+        bool operator != (point < _N > const & o) const
         {
             return (x != o.x) || (y != o.y);
         }
