@@ -97,7 +97,7 @@ namespace geom
 
         bool empty() const
         {
-            return ((x == 0) && (y == 0));
+            return ((x == x_type{}) && (y == y_type{}));
         }
 
         template < typename _X, typename _Y >
