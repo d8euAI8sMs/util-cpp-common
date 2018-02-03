@@ -68,5 +68,37 @@ namespace geom
         {
             return (x != o.x) || (y != o.y);
         }
+
+        template < typename _X, typename _Y >
+        auto operator - (point < _X, _Y > const & o) const
+            -> point < std::remove_const_t < decltype(x - o.x) >,
+                       std::remove_const_t < decltype(y - o.y) > >
+        {
+            return { x - o.x, y - o.y };
+        }
+
+        template < typename _X, typename _Y >
+        auto operator + (point < _X, _Y > const & o) const
+            -> point < std::remove_const_t < decltype(x - o.x) >,
+                       std::remove_const_t < decltype(y - o.y) > >
+        {
+            return { x + o.x, y + o.y };
+        }
+
+        template < typename _X, typename _Y >
+        point & operator -= (point < _X, _Y > const & o)
+        {
+            x -= o.x;
+            y -= o.y;
+            return *this;
+        }
+
+        template < typename _X, typename _Y >
+        point & operator += (point < _X, _Y > const & o)
+        {
+            x += o.x;
+            y += o.y;
+            return *this;
+        }
     };
 }
