@@ -123,6 +123,9 @@
     <ClInclude Include="..\include\util\common\geom\point.h">
       <Filter>Header Files\geom</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util\common\geom\line.h">
+      <Filter>Header Files\geom</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\util\common\geom\geom.h">
       <Filter>Header Files\geom</Filter>
     </ClInclude>

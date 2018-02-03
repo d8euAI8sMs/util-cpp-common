@@ -76,6 +76,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\util\common\geom\geom.h" />
+    <ClInclude Include="..\include\util\common\geom\line.h" />
     <ClInclude Include="..\include\util\common\geom\point.h" />
     <ClInclude Include="..\include\util\common\gui\SimulationDialog.h" />
     <ClInclude Include="..\include\util\common\math\scalar.h" />
