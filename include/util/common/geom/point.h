@@ -44,5 +44,17 @@ namespace plot
         {
             return ((x == 0) && (y == 0));
         }
+
+        template < typename _N >
+        bool operator == (point < _N > const & o)
+        {
+            return (x == o.x) && (y == o.y);
+        }
+
+        template < typename _N >
+        bool operator != (point < _N > const & o)
+        {
+            return (x != o.x) || (y != o.y);
+        }
     };
 }
