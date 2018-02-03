@@ -12,6 +12,45 @@ namespace geom
 {
 
     /*****************************************************/
+    /*              some common operations               */
+    /*****************************************************/
+
+    /* type forward declaration */
+
+    template < typename, typename > struct point;
+
+    /* use forward implementation of functions instead of
+       just forward declaration to make code shorter */
+
+    template
+    <
+        typename _X1, typename _Y1,
+        typename _X2, typename _Y2
+    >
+    inline double distance
+    (
+        point < _X1, _Y1 > const & p1,
+        point < _X2, _Y2 > const & p2
+    )
+    {
+        return norm(p1 - p2);
+    }
+
+    template
+    <
+        typename _X1, typename _Y1,
+        typename _X2, typename _Y2
+    >
+    inline double sqdistance
+    (
+        point < _X1, _Y1 > const & p1,
+        point < _X2, _Y2 > const & p2
+    )
+    {
+        return sqnorm(p1 - p2);
+    }
+
+    /*****************************************************/
     /*                     point                         */
     /*****************************************************/
 
@@ -114,6 +153,18 @@ namespace geom
         {
             return atan2(static_cast < double > (y),
                          static_cast < double > (x));
+        }
+
+        template < typename _X, typename _Y >
+        double distance(point < _X, _Y > const & o)
+        {
+            return geom::distance(*this, o);
+        }
+
+        template < typename _X, typename _Y >
+        double distance(_X x, _Y y)
+        {
+            return geom::distance(*this, make_point(x, y));
         }
     };
 
