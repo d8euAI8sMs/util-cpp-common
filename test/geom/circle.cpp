@@ -23,19 +23,19 @@ namespace geom
 
             Assert::AreEqual(2, c.center.x, 1e-8, L"c.x", LINE_INFO());
             Assert::AreEqual(3, c.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(1, c.radius, 1e-8, L"r", LINE_INFO());
+            Assert::AreEqual(1, c.sqradius, 1e-8, L"r", LINE_INFO());
         }
 
-        BEGIN_TEST_METHOD_ATTRIBUTE(_sqradius)
-            TEST_DESCRIPTION(L"sqradius works fine")
+        BEGIN_TEST_METHOD_ATTRIBUTE(_radius)
+            TEST_DESCRIPTION(L"radius works fine")
         END_TEST_METHOD_ATTRIBUTE()
 
-        TEST_METHOD(_sqradius)
+        TEST_METHOD(_radius)
         {
-            auto c = make_circle(2, 3, 5);
+            auto c = make_circle(2, 3, 25);
 
-            Assert::AreEqual(5, c.radius, 1e-8, L"r", LINE_INFO());
-            Assert::AreEqual(25, c.sqradius(), 1e-8, L"sqr", LINE_INFO());
+            Assert::AreEqual(25, c.sqradius, 1e-8, L"sqr", LINE_INFO());
+            Assert::AreEqual(5, c.radius(), 1e-8, L"r", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_contains)
@@ -88,7 +88,7 @@ namespace geom
 
             Assert::AreEqual(2, r.center.x, 1e-8, L"c.x", LINE_INFO());
             Assert::AreEqual(3, r.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(1, r.radius, 1e-8, L"r", LINE_INFO());
+            Assert::AreEqual(1, r.sqradius, 1e-8, L"r", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_scale)
@@ -102,7 +102,7 @@ namespace geom
 
             Assert::AreEqual(2,  r.center.x, 1e-8, L"c.x", LINE_INFO());
             Assert::AreEqual(30, r.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(10, r.radius, 1e-8, L"r", LINE_INFO());
+            Assert::AreEqual(100, r.sqradius, 1e-8, L"r", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_move)
@@ -116,7 +116,7 @@ namespace geom
 
             Assert::AreEqual(4, r.center.x, 1e-8, L"c.x", LINE_INFO());
             Assert::AreEqual(6, r.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(1, r.radius, 1e-8, L"r", LINE_INFO());
+            Assert::AreEqual(1, r.sqradius, 1e-8, L"r", LINE_INFO());
         }
     };
 }
