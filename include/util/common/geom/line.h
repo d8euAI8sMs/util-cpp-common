@@ -130,17 +130,6 @@ namespace geom
     };
 
     /*****************************************************/
-    /*                helper functions                   */
-    /*****************************************************/
-
-    inline bool is_clockwise(const point2d_t & p1,
-                             const point2d_t & p2,
-                             const point2d_t & p3)
-    {
-        return make_line(p1, p2).is_clockwise(p3);
-    }
-
-    /*****************************************************/
     /*                factory functions                  */
     /*****************************************************/
 
@@ -155,6 +144,17 @@ namespace geom
     inline line make_line(_X1 x1, _Y1 y1, _X2 x2, _Y2 y2)
     {
         return { make_point(x1, y1), make_point(x2, y2) };
+    }
+
+    /*****************************************************/
+    /*                helper functions                   */
+    /*****************************************************/
+
+    inline bool is_clockwise(const point2d_t & p1,
+                             const point2d_t & p2,
+                             const point2d_t & p3)
+    {
+        return make_line(p1, p2).is_clockwise(p3);
     }
 
     /*****************************************************/
