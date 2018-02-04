@@ -94,6 +94,7 @@ namespace geom
             auto p4 = make_polygon < arr4_t > ({ { { 3, 1 }, { 3, 3 }, { 1, 3 }, { 1, 1 } } });
             auto l1 = make_line(1, 2, 3, 4);
             auto l2 = make_line(2, 3, 3, 4);
+            auto l3 = make_line(4, 1, 5, 2);
 
             auto i = p1.intersections(l1);
 
@@ -115,6 +116,13 @@ namespace geom
             Assert::IsTrue(p1.intersects(l2), L"p1 - l2 int", LINE_INFO());
             Assert::IsTrue(intersects(p1, l2), L"p1 - l2 int glob", LINE_INFO());
             Assert::IsTrue(intersects(l2, p1), L"l2 - p1 int glob", LINE_INFO());
+
+            i = p1.intersections(l3);
+
+            Assert::AreEqual(size_t(0), i.size(), L"p1 - l3", LINE_INFO());
+            Assert::IsFalse(p1.intersects(l3), L"p1 - l3 int", LINE_INFO());
+            Assert::IsFalse(intersects(p1, l3), L"p1 - l3 int glob", LINE_INFO());
+            Assert::IsFalse(intersects(l3, p1), L"l3 - p1 int glob", LINE_INFO());
 
             Assert::IsTrue(p1.intersects(p2), L"p1 - p2 int", LINE_INFO());
             Assert::IsTrue(intersects(p1, p2), L"p1 - p2 int glob", LINE_INFO());
