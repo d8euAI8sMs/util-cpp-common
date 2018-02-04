@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\util\common\geom\circle.h" />
     <ClInclude Include="..\include\util\common\geom\convex_polygon.h" />
     <ClInclude Include="..\include\util\common\geom\geom.h" />
     <ClInclude Include="..\include\util\common\geom\line.h" />
