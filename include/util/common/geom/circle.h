@@ -20,33 +20,33 @@ namespace geom
         template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
         point2d_t center;
-        double radius;
+        double sqradius;
 
         circle()
         {
         }
 
         circle(const point2d_t & c,
-               double r)
+               double sqr)
                : center(c)
-               , radius(r)
+               , sqradius(sqr)
         {
         }
 
-        double sqradius() const
+        double radius() const
         {
-            return radius * radius;
+            return std::sqrt(sqradius);
         }
 
         bool contains(const point2d_t & p) const
         {
-            return (sqdistance(p, center) < sqradius());
+            return (sqdistance(p, center) < sqradius);
         }
 
         bool border_contains(const point2d_t & p) const
         {
-            return std::abs(sqdistance(p, center) - sqradius())
-                / sqradius() <= 1e-8;
+            return std::abs(sqdistance(p, center) - sqradius)
+                / sqradius <= 1e-8;
         }
 
         bool inner_contains(const point2d_t & p) const
@@ -99,7 +99,7 @@ namespace geom
         point2d_t at
     )
     {
-        return { scale(geometry.center, n, at), geometry.radius * n };
+        return { scale(geometry.center, n, at), geometry.sqradius * n * n };
     }
 
     template <> inline circle move
@@ -108,7 +108,7 @@ namespace geom
         point2d_t value
     )
     {
-        return { move(geometry.center, value), geometry.radius };
+        return { move(geometry.center, value), geometry.sqradius };
     }
 
     inline bool contains
