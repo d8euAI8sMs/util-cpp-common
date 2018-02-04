@@ -42,7 +42,7 @@ namespace geom
 
         bool empty() const
         {
-            return p1.empty() && p2.empty();
+            return p1 == p2;
         }
 
         bool operator == (line const & o) const

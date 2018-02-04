@@ -92,6 +92,10 @@ namespace geom
             return{ x, y };
         }
 
+        /* to be precise, emptiness checking is incorrect;
+           we leave this type of checking untouched
+           because some legacy code (plot::xxx) depends
+           on it */
         bool empty() const
         {
             return ((x == x_type{}) && (y == y_type{}));
