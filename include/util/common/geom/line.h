@@ -36,7 +36,7 @@ namespace geom
         }
 
         line(line const & o)
-            : line(o)
+            : line(o.p1, o.p2)
         {
         }
 
