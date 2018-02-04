@@ -241,14 +241,14 @@ namespace geom
     /*                geometry operations                */
     /*****************************************************/
 
-    template < typename _C > inline polygon < _C > rotate
+    template < typename _C, typename _R = polygon < _C > > inline _R rotate
     (
         const polygon < _C > & geometry,
         double radians,
         point2d_t at = {}
     )
     {
-        auto g = geometry;
+        _R g = geometry;
         for (size_t i = 0; i < g.points.size(); ++i)
         {
             g.points[i] = rotate(g.points[i], radians, at);
@@ -256,14 +256,14 @@ namespace geom
         return g;
     }
 
-    template < typename _C > inline polygon < _C > scale
+    template < typename _C, typename _R = polygon < _C > > inline _R scale
     (
         const polygon < _C > & geometry,
         double n,
         point2d_t at = {}
     )
     {
-        auto g = geometry;
+        _R g = geometry;
         for (size_t i = 0; i < g.points.size(); ++i)
         {
             g.points[i] = scale(g.points[i], n, at);
@@ -271,13 +271,13 @@ namespace geom
         return g;
     }
 
-    template < typename _C > inline polygon < _C > move
+    template < typename _C, typename _R = polygon < _C > > inline _R move
     (
         const polygon < _C > & geometry,
         point2d_t value
     )
     {
-        auto g = geometry;
+        _R g = geometry;
         for (size_t i = 0; i < g.points.size(); ++i)
         {
             g.points[i] = move(g.points[i], value);
