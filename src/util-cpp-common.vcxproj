@@ -80,6 +80,7 @@
     <ClInclude Include="..\include\util\common\geom\line.h" />
     <ClInclude Include="..\include\util\common\geom\point.h" />
     <ClInclude Include="..\include\util\common\geom\polygon.h" />
+    <ClInclude Include="..\include\util\common\geom\triangle.h" />
     <ClInclude Include="..\include\util\common\gui\SimulationDialog.h" />
     <ClInclude Include="..\include\util\common\math\complex.h" />
     <ClInclude Include="..\include\util\common\math\scalar.h" />

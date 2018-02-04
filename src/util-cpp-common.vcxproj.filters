@@ -138,6 +138,9 @@
     <ClInclude Include="..\include\util\common\geom\convex_polygon.h">
       <Filter>Header Files\geom</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util\common\geom\triangle.h">
+      <Filter>Header Files\geom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
