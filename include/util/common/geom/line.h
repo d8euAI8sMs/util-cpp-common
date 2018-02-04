@@ -96,6 +96,25 @@ namespace geom
             return false;
         }
 
+        bool segment_intersection(const line & l,
+                                  double & r1,
+                                  double & r2) const
+        {
+            double q1, q2;
+
+            if (intersection(l, q1, q2) &&
+                (1e-8 < q1) && (q1 < (1 - 1e-8)) &&
+                (1e-8 < q2) && (q2 < (1 - 1e-8)))
+            {
+                r1 = q1;
+                r2 = q2;
+                return true;
+            }
+
+            return false;
+        }
+
+        /* true for right-hand rotation (p1, p2, p3) */
         bool intersects(const line & l) const
         {
             double q1, q2;
@@ -105,18 +124,9 @@ namespace geom
         bool segment_intersects(const line & l) const
         {
             double q1, q2;
-
-            if (intersection(l, q1, q2) &&
-                (1e-8 < q1) && (q1 < (1 - 1e-8)) &&
-                (1e-8 < q2) && (q2 < (1 - 1e-8)))
-            {
-                return true;
-            }
-
-            return false;
+            return segment_intersection(l, q1, q2);
         }
 
-        /* true for right-hand rotation (p1, p2, p3) */
         bool is_clockwise(double x, double y) const
         {
             return ((p1.x - x) * (p2.y - y) -
