@@ -209,6 +209,16 @@ namespace geom
     };
 
     /*****************************************************/
+    /*                factory functions                  */
+    /*****************************************************/
+
+    template < typename _C, typename _R = polygon < _C > >
+    inline _R make_polygon(_C const & o)
+    {
+        return _R(o);
+    }
+
+    /*****************************************************/
     /*                helper functions                   */
     /*****************************************************/
 
@@ -216,16 +226,6 @@ namespace geom
     inline bool is_convex(const _C & c)
     {
         return make_polygon(c).is_convex();
-    }
-
-    /*****************************************************/
-    /*                factory functions                  */
-    /*****************************************************/
-
-    template < typename _C >
-    inline polygon < _C > make_polygon(_C const & o)
-    {
-        return polygon < _C > (o);
     }
 
     /*****************************************************/
