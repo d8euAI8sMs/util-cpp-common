@@ -114,7 +114,6 @@ namespace geom
             return false;
         }
 
-        /* true for right-hand rotation (p1, p2, p3) */
         bool intersects(const line & l) const
         {
             double q1, q2;
@@ -127,10 +126,11 @@ namespace geom
             return segment_intersection(l, q1, q2);
         }
 
+        /* true for clockwise rotation (p1, p2, p3) */
         bool is_clockwise(double x, double y) const
         {
             return ((p1.x - x) * (p2.y - y) -
-                    (p2.x - x) * (p1.y - y)) > 0;
+                    (p2.x - x) * (p1.y - y)) < 0;
         }
 
         bool is_clockwise(const point2d_t & p3) const
