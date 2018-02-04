@@ -9,6 +9,7 @@
 #include <util/common/geom/line.h>
 #include <util/common/geom/polygon.h>
 #include <util/common/geom/convex_polygon.h>
+#include <util/common/geom/circle.h>
 
 #include <type_traits>
 #include <array>
@@ -65,6 +66,59 @@ namespace geom
         {
             points = { { p1, p2, p3 } };
         }
+
+        circle enclosing_circle() const
+        {
+            auto & p1 = points[0];
+            auto & p2 = points[1];
+            auto & p3 = points[2];
+
+            double d = 2 *
+            (
+                (p2.x - p1.x) * (p3.y - p1.y) -
+                (p3.x - p1.x) * (p2.y - p1.y)
+            );
+
+            point < double > c;
+
+            c.x =
+            (
+                p2.x * p2.x - p1.x * p1.x +
+                p2.y * p2.y - p1.y * p1.y
+            ) * (p3.y - p1.y) -
+            (
+                p3.x * p3.x - p1.x * p1.x +
+                p3.y * p3.y - p1.y * p1.y
+            ) * (p2.y - p1.y);
+
+            c.y =
+            (
+                p3.x * p3.x - p1.x * p1.x +
+                p3.y * p3.y - p1.y * p1.y
+            ) * (p2.x - p1.x) -
+            (
+                p2.x * p2.x - p1.x * p1.x +
+                p2.y * p2.y - p1.y * p1.y
+            ) * (p3.x - p1.x);
+
+            c.x /= d;
+            c.y /= d;
+
+            if (!isfinite(c.x) || !isfinite(c.y))
+            {
+                return circle();
+            }
+
+            double r_sq =
+                (c.x - p1.x) * (c.x - p1.x) +
+                (c.y - p1.y) * (c.y - p1.y);
+
+            return
+            {
+                c,
+                r_sq
+            };
+        }
     };
 
     /*****************************************************/
@@ -101,6 +155,17 @@ namespace geom
         : std::integral_constant < bool, true >
     {
     };
+
+    /*****************************************************/
+    /*                helper functions                   */
+    /*****************************************************/
+
+    inline circle enclosing_circle(const point2d_t & p1,
+                                   const point2d_t & p2,
+                                   const point2d_t & p3)
+    {
+        return make_triangle(p1, p2, p3).enclosing_circle();
+    }
 
     /*****************************************************/
     /*                geometry operations                */
