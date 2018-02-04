@@ -314,9 +314,9 @@ namespace geom
 
         TEST_METHOD(_is_clockwise)
         {
-            Assert::IsTrue(make_line(1, 2, 3, 4).is_clockwise({ 1, 4 }),
+            Assert::IsFalse(make_line(1, 2, 3, 4).is_clockwise({ 1, 4 }),
                              L"clockwise", LINE_INFO());
-            Assert::IsFalse(make_line(1, 2, 3, 4).is_clockwise({ 3, 2 }),
+            Assert::IsTrue(make_line(1, 2, 3, 4).is_clockwise({ 3, 2 }),
                              L"clockwise", LINE_INFO());
         }
     };
