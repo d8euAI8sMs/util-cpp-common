@@ -299,5 +299,57 @@ namespace geom
             Assert::AreEqual(2.25, c2.x, 1e-8, L"c2.x", LINE_INFO());
             Assert::AreEqual(3, c2.y, 1e-8, L"c2.y", LINE_INFO());
         }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_clockwise_sort)
+            TEST_DESCRIPTION(L"clockwise sort calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_clockwise_sort)
+        {
+            auto p1 = make_polygon < arr4_t > ({ { { 2, 2 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
+            auto p2 = make_polygon < arr4_t > ({ { { 0, 0 }, { 2, 2 }, { 2, 1 }, { 0, 3 } } });
+
+            p1.sort();
+            p2.sort();
+
+            Assert::AreEqual(2, p1.points[0].x, 1e-8, L"p1[0].x ccw", LINE_INFO());
+            Assert::AreEqual(2, p1.points[0].y, 1e-8, L"p1[0].y ccw", LINE_INFO());
+            Assert::AreEqual(3, p1.points[1].x, 1e-8, L"p1[1].x ccw", LINE_INFO());
+            Assert::AreEqual(3, p1.points[1].y, 1e-8, L"p1[1].y ccw", LINE_INFO());
+            Assert::AreEqual(2, p1.points[2].x, 1e-8, L"p1[2].x ccw", LINE_INFO());
+            Assert::AreEqual(4, p1.points[2].y, 1e-8, L"p1[2].y ccw", LINE_INFO());
+            Assert::AreEqual(1, p1.points[3].x, 1e-8, L"p1[3].x ccw", LINE_INFO());
+            Assert::AreEqual(3, p1.points[3].y, 1e-8, L"p1[3].y ccw", LINE_INFO());
+
+            Assert::AreEqual(0, p2.points[0].x, 1e-8, L"p2[0].x ccw", LINE_INFO());
+            Assert::AreEqual(0, p2.points[0].y, 1e-8, L"p2[0].y ccw", LINE_INFO());
+            Assert::AreEqual(2, p2.points[1].x, 1e-8, L"p2[1].x ccw", LINE_INFO());
+            Assert::AreEqual(1, p2.points[1].y, 1e-8, L"p2[1].y ccw", LINE_INFO());
+            Assert::AreEqual(2, p2.points[2].x, 1e-8, L"p2[2].x ccw", LINE_INFO());
+            Assert::AreEqual(2, p2.points[2].y, 1e-8, L"p2[2].y ccw", LINE_INFO());
+            Assert::AreEqual(0, p2.points[3].x, 1e-8, L"p2[3].x ccw", LINE_INFO());
+            Assert::AreEqual(3, p2.points[3].y, 1e-8, L"p2[3].y ccw", LINE_INFO());
+
+            p1.sort(false);
+            p2.sort(false);
+
+            Assert::AreEqual(2, p1.points[0].x, 1e-8, L"p1[0].x cw", LINE_INFO());
+            Assert::AreEqual(2, p1.points[0].y, 1e-8, L"p1[0].y cw", LINE_INFO());
+            Assert::AreEqual(1, p1.points[1].x, 1e-8, L"p1[1].x cw", LINE_INFO());
+            Assert::AreEqual(3, p1.points[1].y, 1e-8, L"p1[1].y cw", LINE_INFO());
+            Assert::AreEqual(2, p1.points[2].x, 1e-8, L"p1[2].x cw", LINE_INFO());
+            Assert::AreEqual(4, p1.points[2].y, 1e-8, L"p1[2].y cw", LINE_INFO());
+            Assert::AreEqual(3, p1.points[3].x, 1e-8, L"p1[3].x cw", LINE_INFO());
+            Assert::AreEqual(3, p1.points[3].y, 1e-8, L"p1[3].y cw", LINE_INFO());
+
+            Assert::AreEqual(0, p2.points[0].x, 1e-8, L"p2[0].x cw", LINE_INFO());
+            Assert::AreEqual(0, p2.points[0].y, 1e-8, L"p2[0].y cw", LINE_INFO());
+            Assert::AreEqual(0, p2.points[1].x, 1e-8, L"p2[1].x cw", LINE_INFO());
+            Assert::AreEqual(3, p2.points[1].y, 1e-8, L"p2[1].y cw", LINE_INFO());
+            Assert::AreEqual(2, p2.points[2].x, 1e-8, L"p2[2].x cw", LINE_INFO());
+            Assert::AreEqual(2, p2.points[2].y, 1e-8, L"p2[2].y cw", LINE_INFO());
+            Assert::AreEqual(2, p2.points[3].x, 1e-8, L"p2[3].x cw", LINE_INFO());
+            Assert::AreEqual(1, p2.points[3].y, 1e-8, L"p2[3].y cw", LINE_INFO());
+        }
     };
 }
