@@ -17,7 +17,7 @@ namespace geom
 {
 
     /*****************************************************/
-    /*                 convex_polygon                    */
+    /*                 triangle                          */
     /*****************************************************/
 
     struct triangle : public convex_polygon < std::array < point2d_t, 3 > >
