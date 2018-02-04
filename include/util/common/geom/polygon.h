@@ -53,7 +53,8 @@ namespace geom
         {
         }
 
-        polygon(polygon const & o)
+        template < typename _C >
+        polygon(polygon < _C > const & o)
             : polygon(o.points)
         {
         }
