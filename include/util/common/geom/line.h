@@ -278,11 +278,6 @@ namespace math
     {
         return sqdistance(l.p1, l.p2);
     }
-
-    template<>inline geom::line conjugate(geom::line  const & l)
-    {
-        return { conjugate(l.p1), conjugate(l.p2) };
-    }
 }
 
 inline double geom::line::length() const

@@ -360,24 +360,3 @@ namespace geom
         return os << " }";
     }
 }
-
-namespace math
-{
-
-    /*****************************************************/
-    /*            scalar line operations                 */
-    /*****************************************************/
-
-    template < typename _C > inline geom::polygon < _C > conjugate
-    (
-        const geom::polygon < _C > & g
-    )
-    {
-        auto g = geometry;
-        for (size_t i = 0; i < g.points.size(); ++i)
-        {
-            g.points[i] = conjugate(g.points[i]);
-        }
-        return g;
-    }
-}
