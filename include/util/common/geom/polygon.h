@@ -154,7 +154,7 @@ namespace geom
 
         virtual convex_type convexity() const
         {
-            if (points.size() < 3) convex_type::no;
+            if (points.size() < 3) return convex_type::no;
 
             bool clockwise = false;
             bool clockwise_selected = false;
