@@ -167,6 +167,12 @@ namespace geom
         return make_line(p1, p2).is_clockwise(p3);
     }
 
+    inline double angle(const point2d_t & p1,
+                        const point2d_t & p2)
+    {
+        return make_line(p1, p2).angle();
+    }
+
     /*****************************************************/
     /*                type traits                        */
     /*****************************************************/
