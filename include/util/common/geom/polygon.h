@@ -86,7 +86,7 @@ namespace geom
             return false;
         }
 
-        std::vector < point2d_t >
+        virtual std::vector < point2d_t >
         intersections(const line & l) const
         {
             std::vector < point2d_t > v;
@@ -107,7 +107,7 @@ namespace geom
             return v;
         }
 
-        bool intersects(const line & l) const
+        virtual bool intersects(const line & l) const
         {
             if (points.size() < 3) return false;
 
@@ -152,7 +152,7 @@ namespace geom
             return false;
         }
 
-        convex_type convexity() const
+        virtual convex_type convexity() const
         {
             if (points.size() < 3) convex_type::no;
 
@@ -181,7 +181,7 @@ namespace geom
             return convexity() != convex_type::no;
         }
 
-        bool contains(const point2d_t & p) const
+        virtual bool contains(const point2d_t & p) const
         {
             if (points.size() < 3) return false;
 
