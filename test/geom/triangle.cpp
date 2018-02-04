@@ -55,5 +55,26 @@ namespace geom
             Assert::AreEqual(0, t2.points[2].x, 1e-8, L"t2[2].x", LINE_INFO());
             Assert::AreEqual(0, t2.points[2].y, 1e-8, L"t2[2].y", LINE_INFO());
         }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_enclosing_circle)
+            TEST_DESCRIPTION(L"enclosing_circle is calculated correctly")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_enclosing_circle)
+        {
+            auto t1 = make_triangle(2, 0, 2, 2, 0, 2);
+            auto t2 = make_triangle(0, 0, 10, 3, 5, 7);
+
+            auto c1 = t1.enclosing_circle();
+            auto c2 = t2.enclosing_circle();
+
+            Assert::AreEqual(1, c1.center.x, 1e-8, L"c1.x", LINE_INFO());
+            Assert::AreEqual(1, c1.center.y, 1e-8, L"c1.y", LINE_INFO());
+            Assert::AreEqual(2, c1.sqradius, 1e-8, L"c1.r", LINE_INFO());
+
+            Assert::AreEqual(4.92, c2.center.x, 1e-2, L"c2.x", LINE_INFO());
+            Assert::AreEqual(1.77, c2.center.y, 1e-2, L"c2.y", LINE_INFO());
+            Assert::AreEqual(27.33, c2.sqradius, 1e-2, L"c2.r", LINE_INFO());
+        }
     };
 }
