@@ -41,5 +41,8 @@
     <ClCompile Include="geom\convex_polygon.cpp">
       <Filter>Source Files\geom</Filter>
     </ClCompile>
+    <ClCompile Include="geom\triangle.cpp">
+      <Filter>Source Files\geom</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
