@@ -132,6 +132,8 @@ namespace geom
 
             Assert::IsTrue(make_line(0, 0, 0, 0).empty(),
                            L"empty int", LINE_INFO());
+            Assert::IsTrue(make_line(4, 6, 4, 6).empty(),
+                           L"empty int - 2", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_inner_point)
