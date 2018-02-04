@@ -13,6 +13,10 @@
 #include <vector>
 #include <algorithm>
 
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795
+#endif
+
 namespace geom
 {
 
@@ -26,6 +30,10 @@ namespace geom
         counterclockwise,
         clockwise
     };
+
+    /* forward declaration */
+    template < typename _C >
+    inline void clockwise_sort(_C & c, bool counterclockwise = true);
 
     template < typename C = std::vector < point2d_t > >
     struct polygon
@@ -181,6 +189,11 @@ namespace geom
             return convexity() != convex_type::no;
         }
 
+        virtual void sort(bool counterclockwise = true)
+        {
+            clockwise_sort(points, counterclockwise);
+        }
+
         virtual bool contains(const point2d_t & p) const
         {
             if (points.size() < 3) return false;
@@ -226,6 +239,32 @@ namespace geom
     inline bool is_convex(const _C & c)
     {
         return make_polygon(c).is_convex();
+    }
+
+    template < typename _C >
+    inline void clockwise_sort(_C & c, bool counterclockwise)
+    {
+        if (c.empty()) return;
+        std::vector < std::pair < double, point2d_t > >
+            angles(points.size());
+        auto & p0 = c[0];
+        for (size_t i = 0; i < c.size(); ++i)
+        {
+            angles[i] = { angle(p0, c[i]), c[i] };
+            if (!counterclockwise) angles[i].first = - angles[i].first;
+            if (angles[i].first < 0) angles[i].first += 2 * M_PI;
+        }
+        auto cmp = [&counterclockwise]
+        (const std::pair < double, point2d_t > & p1,
+         const std::pair < double, point2d_t > & p2)
+        {
+            return p1.first < p2.first;
+        };
+        std::sort(angles.begin(), angles.end(), cmp);
+        for (size_t i = 0; i < c.size(); ++i)
+        {
+            c[i] = angles[i].second;
+        }
     }
 
     /*****************************************************/
