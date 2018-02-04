@@ -105,18 +105,6 @@ namespace geom
                              L"-pi/2", LINE_INFO());
         }
 
-        BEGIN_TEST_METHOD_ATTRIBUTE(_conjugate)
-            TEST_DESCRIPTION(L"conjugation operation is correct")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_conjugate)
-        {
-            using namespace math;
-            Assert::AreEqual(make_line(2, - 6, 8, 1),
-                             conjugate(make_line(2, -6, 8, 1)),
-                             L"conjugate", LINE_INFO());
-        }
-
         BEGIN_TEST_METHOD_ATTRIBUTE(_empty)
             TEST_DESCRIPTION(L"empty check is correct")
         END_TEST_METHOD_ATTRIBUTE()
