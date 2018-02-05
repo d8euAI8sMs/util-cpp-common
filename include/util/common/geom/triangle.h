@@ -67,6 +67,9 @@ namespace geom
             points = { { p1, p2, p3 } };
         }
 
+        /* calculates enclosing circle for
+           this triangle; returns empty circle
+           if the triangle is degenerate */
         circle enclosing_circle() const
         {
             auto & p1 = points[0];

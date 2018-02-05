@@ -19,6 +19,12 @@ namespace geom
     /*                 convex_polygon                    */
     /*****************************************************/
 
+    /**
+     * a convex polygon abstraction;
+     * 
+     * a convexity of the polygon MUST be guaranteed
+     * by the USER!
+     */
     template < typename C = std::vector < point2d_t > >
     struct convex_polygon : public polygon < C >
     {

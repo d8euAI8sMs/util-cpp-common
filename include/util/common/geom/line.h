@@ -58,16 +58,36 @@ namespace geom
         /* points to math::norm specialized below */
         double length() const;
 
+        /* angle between OX and this line;
+           >0 for counterclockwise rotation */
         double angle() const
         {
             return (p2 - p1).angle();
         }
 
+        /* returns point between p1 and p2;
+
+           0 => p1; 1 => p2;
+
+           q - any number
+         */
         point2d_t inner_point(double q) const
         {
             return p1 + (p2 - p1) * q;
         }
 
+        /* calculates an intersection point;
+
+           returns true if two lines have
+           intersection point and fills r1 and r2
+           with parameters on this and given lines
+           correspondingly;
+
+           intersection point = inner_point(r1)
+                              = l.inner_point(r2)
+
+           r1, r2 - any numbers
+         */
         bool intersection(const line & l,
                           double & r1,
                           double & r2) const
@@ -96,6 +116,19 @@ namespace geom
             return false;
         }
 
+        /* calculates an intersection point of two
+           line segments;
+
+           returns true if two line segments have
+           intersection point and fills r1 and r2
+           with parameters on this and given lines
+           correspondingly;
+
+           intersection point = inner_point(r1)
+                              = l.inner_point(r2)
+
+           r1, r2 in range (0, 1)
+         */
         bool segment_intersection(const line & l,
                                   double & r1,
                                   double & r2) const

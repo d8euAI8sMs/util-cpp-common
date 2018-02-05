@@ -35,6 +35,12 @@ namespace geom
     template < typename _C >
     inline void clockwise_sort(_C & c, bool counterclockwise = true);
 
+    /**
+     * a polygon abstraction;
+     *
+     * polygon is valid if it has >= 3 vertices;
+     * however, no internal validation is performed;
+     */
     template < typename C = std::vector < point2d_t > >
     struct polygon
     {
@@ -94,6 +100,16 @@ namespace geom
             return false;
         }
 
+        /**
+         * returns all intersection points with the given
+         * line segment;
+         *
+         * if number of vertices in this polygon is < 3,
+         * returns empty vector;
+         *
+         * does not report special intersection points
+         * (polygon vertices);
+         */
         virtual std::vector < point2d_t >
         intersections(const line & l) const
         {
@@ -115,6 +131,19 @@ namespace geom
             return v;
         }
 
+        /**
+         * checks for intersection with the given
+         * line segment;
+         *
+         * if number of vertices in this polygon is < 3,
+         * returns false;
+         *
+         * the function also checks if one point of line
+         * is in and other is out of this polygon; it may
+         * be helpful in case if intersection point is
+         * very close to polygon vertex (special
+         * intersection case);
+         */
         virtual bool intersects(const line & l) const
         {
             if (points.size() < 3) return false;
@@ -133,6 +162,19 @@ namespace geom
             return (contains(l.p1) ^ contains(l.p2));
         }
 
+        /**
+         * checks for intersection with the given
+         * polygon;
+         *
+         * if number of vertices in this polygon is < 3,
+         * returns false;
+         *
+         * the function also checks if some points of polygon
+         * are in and some are out of this polygon; it may
+         * be helpful in case if intersection point is
+         * very close to polygon vertex (special
+         * intersection case);
+         */
         template < typename _C >
         bool intersects(const polygon < _C > & p) const
         {
@@ -160,6 +202,13 @@ namespace geom
             return false;
         }
 
+        /**
+         * calculates the polygon convexity;
+         *
+         * returns convex_type::clockwise or
+         * convex_type::counterclockwise for convex
+         * polygon, convex_type::no otherwise;
+         */
         virtual convex_type convexity() const
         {
             if (points.size() < 3) return convex_type::no;
@@ -189,11 +238,27 @@ namespace geom
             return convexity() != convex_type::no;
         }
 
+        /**
+         * sorts polygon vertices clockwise or
+         * counterclockwise;
+         *
+         * does not touch the first point;
+         *
+         * the function does not test if the polygon
+         * is convex;
+         */
         virtual void sort(bool counterclockwise = true)
         {
             clockwise_sort(points, counterclockwise);
         }
 
+        /**
+         * tests if this polygon contains the given
+         * point;
+         *
+         * implemented for only convex polygons;
+         * throws exception if applied to non-convex polygon;
+         */
         virtual bool contains(const point2d_t & p) const
         {
             if (points.size() < 3) return false;
