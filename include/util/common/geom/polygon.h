@@ -26,7 +26,9 @@ namespace geom
 
     /* forward declaration */
     template < typename _C >
-    inline void clockwise_sort(_C & c, bool counterclockwise = true);
+    inline void clockwise_sort(_C & c,
+                               bool counterclockwise = true,
+                               bool keep_first = true);
 
     /**
      * a polygon abstraction;
@@ -263,14 +265,18 @@ namespace geom
          * sorts polygon vertices clockwise or
          * counterclockwise;
          *
-         * does not touch the first point;
+         * does not touch the first point
+         * if keep_first = true;
          *
          * the function does not test if the polygon
          * is convex;
          */
-        virtual void sort(bool counterclockwise = true)
+        virtual void sort(bool counterclockwise = true,
+                          bool keep_first = true)
         {
-            clockwise_sort(points, counterclockwise);
+            clockwise_sort(points,
+                           counterclockwise,
+                           keep_first);
         }
 
         /**
@@ -331,17 +337,19 @@ namespace geom
     }
 
     template < typename _C >
-    inline void clockwise_sort(_C & c, bool counterclockwise)
+    inline void clockwise_sort(_C & c,
+                               bool counterclockwise,
+                               bool keep_first)
     {
         if (c.empty()) return;
         std::vector < std::pair < double, point2d_t > >
-            angles(points.size());
+            angles(c.size());
         auto & p0 = c[0];
         for (size_t i = 0; i < c.size(); ++i)
         {
             angles[i] = { angle(p0, c[i]), c[i] };
             if (!counterclockwise) angles[i].first = - angles[i].first;
-            if (angles[i].first < 0) angles[i].first += 2 * M_PI;
+            if (keep_first && (angles[i].first < 0)) angles[i].first += 2 * M_PI;
         }
         auto cmp = [&counterclockwise]
         (const std::pair < double, point2d_t > & p1,
