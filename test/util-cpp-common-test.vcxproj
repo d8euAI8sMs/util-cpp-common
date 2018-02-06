@@ -89,6 +89,7 @@
     <ClCompile Include="geom\circle.cpp" />
     <ClCompile Include="geom\convex_polygon.cpp" />
     <ClCompile Include="geom\line.cpp" />
+    <ClCompile Include="geom\mesh.cpp" />
     <ClCompile Include="geom\point.cpp" />
     <ClCompile Include="geom\polygon.cpp" />
     <ClCompile Include="geom\triangle.cpp" />

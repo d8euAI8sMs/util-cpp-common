@@ -47,5 +47,8 @@
     <ClCompile Include="geom\circle.cpp">
       <Filter>Source Files\geom</Filter>
     </ClCompile>
+    <ClCompile Include="geom\mesh.cpp">
+      <Filter>Source Files\geom</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
