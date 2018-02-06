@@ -103,6 +103,10 @@ namespace geom
                              L"pi", LINE_INFO());
             Assert::AreEqual(- 2 * pi_4, make_line(1, 1, 1, -4).angle(), 1e-8,
                              L"-pi/2", LINE_INFO());
+            Assert::AreEqual(0, make_line(1, 1, 1, 1).angle(), 1e-8,
+                             L"0 - 1", LINE_INFO());
+            Assert::AreEqual(0, make_line(0, 0, 0, 0).angle(), 1e-8,
+                             L"0 - 2", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_empty)
