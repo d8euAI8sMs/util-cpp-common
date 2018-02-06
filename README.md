@@ -8,7 +8,7 @@ A number of math and plotting libraries created by the author and collected toge
 
 ## Status and Artifacts
 
-[![Build status](https://ci.appveyor.com/api/projects/status/p8ak4t8kxf6drpc7?svg=true)](https://ci.appveyor.com/project/kalaider/util-cpp-common) [![codecov](https://codecov.io/gh/d8euAI8sMs/util-cpp-common/branch/master/graph/badge.svg)](https://codecov.io/gh/d8euAI8sMs/util-cpp-common)
+[![Build status](https://ci.appveyor.com/api/projects/status/p8ak4t8kxf6drpc7?svg=true)](https://ci.appveyor.com/project/kalaider/util-cpp-common)
 
 ## Details
 
