@@ -16,6 +16,14 @@ namespace geom
 
     using point2d_t = point < double, double > ;
 
+    enum class convex_type
+    {
+        no,
+        degenerate,
+        counterclockwise,
+        clockwise
+    };
+
     template < typename G >
     inline G rotate
     (
