@@ -181,11 +181,12 @@ namespace geom
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                if (p.intersects(line(points[i], points[j])))
+                auto l = line(points[i], points[j]);
+                if (p.intersects(l))
                 {
                     return true;
                 }
-                bool contains_new = p.contains(points[i]);
+                bool contains_new = p._contains_any(l);
                 if (!contains_unknown && (contains_new != contains_point))
                 {
                     return true;
@@ -313,6 +314,22 @@ namespace geom
             }
 
             return true;
+        }
+
+    private:
+
+        /**
+         * checks if any point of the given line is
+         * contained by the polygon;
+         *
+         * checks points: q=0, q=0.45, q=0.5, q=0.55
+         */
+        bool _contains_any(const line & l) const
+        {
+            return (contains(l.p1) ||
+                    contains(l.inner_point(0.45)) ||
+                    contains(l.inner_point(0.5))  ||
+                    contains(l.inner_point(0.55)));
         }
     };
 
