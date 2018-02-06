@@ -168,6 +168,7 @@ namespace geom
             auto l2 = make_line(1, 4, 3, 2);
             auto l3 = make_line(0, 4, 2, 2);
             auto l4 = make_line(-1, 2, 1, 0);
+            auto l5 = make_line(2, 1, 0, 3);
 
             double q1, q2;
             bool r;
@@ -218,6 +219,17 @@ namespace geom
             Assert::IsFalse(l1.intersects(l1), L"l1-l1 int", LINE_INFO());
             Assert::IsFalse(l1.segment_intersects(l1), L"l1-l1 seg", LINE_INFO());
             Assert::IsFalse(intersects(l1, l1), L"l1-l1 int-seg", LINE_INFO());
+
+            r = l1.intersection(l5, q1, q2);
+
+            Assert::IsTrue(r, L"l1-l5", LINE_INFO());
+            Assert::AreEqual(0, q1, 1e-8,
+                             L"l1-l5 q1", LINE_INFO());
+            Assert::AreEqual(0.5, q2, 1e-8,
+                             L"l1-l5 q2", LINE_INFO());
+            Assert::IsTrue(l1.intersects(l5), L"l1-l5 int", LINE_INFO());
+            Assert::IsFalse(l1.segment_intersects(l5), L"l1-l5 seg", LINE_INFO());
+            Assert::IsFalse(intersects(l1, l5), L"l5-l1 int-seg", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
