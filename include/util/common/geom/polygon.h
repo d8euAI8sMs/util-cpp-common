@@ -24,13 +24,6 @@ namespace geom
     /*                     polygon                       */
     /*****************************************************/
 
-    enum class convex_type
-    {
-        no,
-        counterclockwise,
-        clockwise
-    };
-
     /* forward declaration */
     template < typename _C >
     inline void clockwise_sort(_C & c, bool counterclockwise = true);
