@@ -310,16 +310,26 @@ namespace geom
                              L"l p2.y", LINE_INFO());
         }
 
-        BEGIN_TEST_METHOD_ATTRIBUTE(_is_clockwise)
+        BEGIN_TEST_METHOD_ATTRIBUTE(_convexity)
             TEST_DESCRIPTION(L"orientation calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
 
-        TEST_METHOD(_is_clockwise)
+        TEST_METHOD(_convexity)
         {
-            Assert::IsFalse(make_line(1, 2, 3, 4).is_clockwise({ 1, 4 }),
-                             L"clockwise", LINE_INFO());
-            Assert::IsTrue(make_line(1, 2, 3, 4).is_clockwise({ 3, 2 }),
-                             L"clockwise", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 1, 4 }) == convex_type::counterclockwise,
+                             L"ccw", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 3, 2 }) == convex_type::clockwise,
+                             L"cw", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 1, 2 }) == convex_type::degenerate,
+                             L"no - 1", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 1.5, 2.5 }) == convex_type::degenerate,
+                             L"no - 2", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 0, 1 }) == convex_type::degenerate,
+                             L"no - 3", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 0, 1 + 1e-12 }) == convex_type::degenerate,
+                             L"no - 4", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 0, 1 - 1e-12 }) == convex_type::degenerate,
+                             L"no - 4", LINE_INFO());
         }
     };
 }
