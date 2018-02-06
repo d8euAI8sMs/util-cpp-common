@@ -95,6 +95,7 @@
     <ClInclude Include="..\include\util\common\math\rpoly.h" />
     <ClInclude Include="..\include\util\common\math\svd_hest.h" />
     <ClInclude Include="..\include\util\common\plot\custom_drawable.h" />
+    <ClInclude Include="..\include\util\common\plot\dirichlet_cell_drawable.h" />
     <ClInclude Include="..\include\util\common\plot\drawable.h" />
     <ClInclude Include="..\include\util\common\plot\layer_drawable.h" />
     <ClInclude Include="..\include\util\common\plot\list_drawable.h" />
@@ -103,6 +104,7 @@
     <ClInclude Include="..\include\util\common\plot\plot.h" />
     <ClInclude Include="..\include\util\common\gui\PlotControl.h" />
     <ClInclude Include="..\include\util\common\plot\data_source.h" />
+    <ClInclude Include="..\include\util\common\plot\triangulation_drawable.h" />
     <ClInclude Include="..\include\util\common\ptr.h" />
     <ClInclude Include="..\include\util\common\plot\shape.h" />
     <ClInclude Include="..\include\util\common\plot\simple_list_plot.h" />

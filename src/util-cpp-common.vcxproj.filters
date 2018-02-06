@@ -147,6 +147,12 @@
     <ClInclude Include="..\include\util\common\geom\mesh.h">
       <Filter>Header Files\geom</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util\common\plot\triangulation_drawable.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\util\common\plot\dirichlet_cell_drawable.h">
+      <Filter>Header Files\plot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
