@@ -100,6 +100,7 @@
     <ClInclude Include="..\include\util\common\plot\layer_drawable.h" />
     <ClInclude Include="..\include\util\common\plot\list_drawable.h" />
     <ClInclude Include="..\include\util\common\plot\math_interop.h" />
+    <ClInclude Include="..\include\util\common\plot\multilist_drawable.h" />
     <ClInclude Include="..\include\util\common\plot\palette.h" />
     <ClInclude Include="..\include\util\common\plot\plot.h" />
     <ClInclude Include="..\include\util\common\gui\PlotControl.h" />
