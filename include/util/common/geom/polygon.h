@@ -207,27 +207,54 @@ namespace geom
          *
          * returns convex_type::clockwise or
          * convex_type::counterclockwise for convex
-         * polygon, convex_type::no otherwise;
+         * polygon, convex_type::degenerate for
+         * degenerate polygon, convex_type::no otherwise;
+         *
+         * examples of degenerate polygons:
+         *    - n < 3
+         *    - all points ~lay on one line
+         *
+         * if some adjacent points ~lay on one line, the
+         * polygon is still not degenerate unless all its
+         * points ~lay on that line;
          */
         virtual convex_type convexity() const
         {
-            if (points.size() < 3) return convex_type::no;
+            if (points.size() < 3) return convex_type::degenerate;
 
             bool clockwise = false;
             bool clockwise_selected = false;
 
-            for (size_t i = 0, j = 1, k = 2; i < points.size(); ++i, ++j, ++k)
+            for (size_t i = 0, j = 1, k = 2; i < points.size(); i = j, j = k, ++k)
             {
-                if (j == points.size()) j = 0;
-                if (k == points.size()) k = 0;
-                bool new_clockwise = is_clockwise(points[i], points[j], points[k]);
-                if (clockwise_selected && (new_clockwise != clockwise))
+                for(;;)
                 {
-                    return convex_type::no;
+                    if (k == points.size()) k = 0;
+                    if (k == i) return convex_type::degenerate;
+
+                    auto c = geom::convexity(points[i], points[j], points[k]);
+
+                    if (c == convex_type::degenerate)
+                    {
+                        j = k;
+                        ++k;
+                    }
+                    else
+                    {
+                        bool new_clockwise = (c == convex_type::clockwise);
+                        if (clockwise_selected && (new_clockwise != clockwise))
+                        {
+                            return convex_type::no;
+                        }
+                        clockwise = new_clockwise;
+                        clockwise_selected = true;
+                        break;
+                    }
                 }
-                clockwise = new_clockwise;
-                clockwise_selected = true;
+                if (j < i) break;
             }
+
+            if (!clockwise_selected) return convex_type::degenerate;
 
             return clockwise ? convex_type::clockwise :
                                convex_type::counterclockwise;
@@ -235,7 +262,8 @@ namespace geom
 
         bool is_convex() const
         {
-            return convexity() != convex_type::no;
+            auto c = convexity();
+            return (c == convex_type::clockwise) || (c == convex_type::counterclockwise);
         }
 
         /**

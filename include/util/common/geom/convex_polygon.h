@@ -53,13 +53,35 @@ namespace geom
         {
         }
 
+        /**
+         * calculates the polygon convexity;
+         *
+         * convexity checking is simplified to just
+         * checking the convexity of the first
+         * non-degenerate triangle;
+         */
         convex_type convexity() const
         {
-            if (points.size() < 3) return convex_type::no;
+            if (points.size() < 3) return convex_type::degenerate;
 
-            return is_clockwise(points[0], points[1], points[2]) ?
-                               convex_type::clockwise :
-                               convex_type::counterclockwise;
+            size_t j = 1, k = 2;
+
+            for(;;)
+            {
+                if (k == points.size()) return convex_type::degenerate;
+
+                auto c = geom::convexity(points[0], points[j], points[k]);
+
+                if (c == convex_type::degenerate)
+                {
+                    j = k;
+                    ++k;
+                }
+                else
+                {
+                    return c;
+                }
+            }
         }
     };
 
