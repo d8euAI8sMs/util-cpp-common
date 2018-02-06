@@ -79,6 +79,7 @@
     <ClInclude Include="..\include\util\common\geom\convex_polygon.h" />
     <ClInclude Include="..\include\util\common\geom\geom.h" />
     <ClInclude Include="..\include\util\common\geom\line.h" />
+    <ClInclude Include="..\include\util\common\geom\mesh.h" />
     <ClInclude Include="..\include\util\common\geom\point.h" />
     <ClInclude Include="..\include\util\common\geom\polygon.h" />
     <ClInclude Include="..\include\util\common\geom\triangle.h" />

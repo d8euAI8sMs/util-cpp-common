@@ -144,6 +144,9 @@
     <ClInclude Include="..\include\util\common\geom\circle.h">
       <Filter>Header Files\geom</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util\common\geom\mesh.h">
+      <Filter>Header Files\geom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
