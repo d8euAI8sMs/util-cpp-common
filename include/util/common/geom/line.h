@@ -159,16 +159,35 @@ namespace geom
             return segment_intersection(l, q1, q2);
         }
 
-        /* true for clockwise rotation (p1, p2, p3) */
-        bool is_clockwise(double x, double y) const
+        /* calculates convexity type of the triangle
+           given p1, p2 of this line and the given p3;
+
+           returns convex_type::degenerate if (p1, p2, p3)
+           is not triangle (pi ~= pj or pk ~lies on the
+           pi-pj line);
+         */
+        convex_type convexity(const point2d_t & p3) const
         {
-            return ((p1.x - x) * (p2.y - y) -
-                    (p2.x - x) * (p1.y - y)) < 0;
+            double n = ((p1.x - p3.x) * (p2.y - p3.y) -
+                        (p2.x - p3.x) * (p1.y - p3.y));
+            double dd = (sqdistance(p1, p3) +
+                         sqdistance(p2, p3) +
+                         sqdistance(p1, p2)) / 3;
+            double q = n * n / dd;
+            if (!isfinite(q) || (std::abs(q) < 1e-8))
+            {
+                return convex_type::degenerate;
+            }
+            if (n < 0)
+            {
+                return convex_type::clockwise;
+            }
+            return convex_type::counterclockwise;
         }
 
-        bool is_clockwise(const point2d_t & p3) const
+        convex_type convexity(double x, double y) const
         {
-            return is_clockwise(p3.x, p3.y);
+            return convexity({ x, y });
         }
     };
 
@@ -193,11 +212,11 @@ namespace geom
     /*                helper functions                   */
     /*****************************************************/
 
-    inline bool is_clockwise(const point2d_t & p1,
-                             const point2d_t & p2,
-                             const point2d_t & p3)
+    inline convex_type convexity(const point2d_t & p1,
+                                 const point2d_t & p2,
+                                 const point2d_t & p3)
     {
-        return make_line(p1, p2).is_clockwise(p3);
+        return make_line(p1, p2).convexity(p3);
     }
 
     inline double angle(const point2d_t & p1,
