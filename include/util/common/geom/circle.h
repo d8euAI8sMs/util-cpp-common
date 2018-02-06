@@ -23,6 +23,7 @@ namespace geom
         double sqradius;
 
         circle()
+            : sqradius(0)
         {
         }
 
