@@ -3,7 +3,7 @@ version: '{build}'
 environment:
   project_name: util-cpp-common
   project_test_name: util-cpp-common-test
-  project_test_location: .\src\test\%CONFIGURATION%\%project_core_test_name%.dll
+  project_test_location: .\%CONFIGURATION%\%project_test_name%.dll
 
 image:
   - Visual Studio 2013
@@ -14,10 +14,5 @@ configuration:
 build:
   project: .\%project_name%.sln
 
-before_build:
-  - choco install opencover.portable
-  - choco install codecov
-
 test_script:
-  - OpenCover.Console.exe -register:user -target:"vstest.console" -targetargs:"/logger:Appveyor ""%project_test_location%" -filter:"+[%project_name%*]* -[%project_test_name%*]*" -output:".\coverage.xml" -returntargetcode
-  - codecov -f "coverage.xml"
+  - vstest.console.exe /logger:Appveyor "%project_test_location%"
