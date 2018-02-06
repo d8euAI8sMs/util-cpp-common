@@ -200,6 +200,105 @@ namespace geom
             Assert::IsTrue(p6.convexity() == convex_type::clockwise, L"p6 c", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_convex_special_cases)
+            TEST_DESCRIPTION(L"convexity calculation is correct - special cases")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_convex_special_cases)
+        {
+            auto p0 = polygon < > ();
+
+            Assert::IsFalse(p0.is_convex(), L"p0", LINE_INFO());
+            Assert::IsTrue(p0.convexity() == convex_type::degenerate, L"p0 c", LINE_INFO());
+
+            auto p1 = polygon < > ();
+            p1.points.emplace_back(2, 2);
+            p1.points.emplace_back(3, 3);
+
+            Assert::IsFalse(p1.is_convex(), L"p1", LINE_INFO());
+            Assert::IsTrue(p1.convexity() == convex_type::degenerate, L"p1 c", LINE_INFO());
+
+            auto p2 = p1;
+            p2.points.emplace_back(3, 3);
+
+            Assert::IsFalse(p2.is_convex(), L"p2", LINE_INFO());
+            Assert::IsTrue(p2.convexity() == convex_type::degenerate, L"p2 c", LINE_INFO());
+
+            auto p3 = p1;
+            p3.points.emplace_back(2.5, 2.5);
+
+            Assert::IsFalse(p3.is_convex(), L"p3", LINE_INFO());
+            Assert::IsTrue(p3.convexity() == convex_type::degenerate, L"p3 c", LINE_INFO());
+
+            auto p32 = polygon < > ();
+            p1.points.emplace_back(2, 2);
+            p3.points.emplace_back(2.5, 2.5);
+            p1.points.emplace_back(3, 3);
+
+            Assert::IsFalse(p32.is_convex(), L"p32", LINE_INFO());
+            Assert::IsTrue(p32.convexity() == convex_type::degenerate, L"p32 c", LINE_INFO());
+
+            auto p4 = p1;
+            p4.points.emplace_back(2.5, 2.5 + 1e-12);
+
+            Assert::IsFalse(p4.is_convex(), L"p4", LINE_INFO());
+            Assert::IsTrue(p4.convexity() == convex_type::degenerate, L"p4 c", LINE_INFO());
+
+            auto p5 = p1;
+            p5.points.emplace_back(2.5, 2.5 - 1e-12);
+
+            Assert::IsFalse(p5.is_convex(), L"p5", LINE_INFO());
+            Assert::IsTrue(p5.convexity() == convex_type::degenerate, L"p5 c", LINE_INFO());
+
+            auto p6 = polygon < > ();
+            p6.points.emplace_back(2, 2);
+            p6.points.emplace_back(2, 2);
+            p6.points.emplace_back(3, 3);
+            p6.points.emplace_back(3, 3);
+            p6.points.emplace_back(2, 4);
+            p6.points.emplace_back(2, 4);
+            p6.points.emplace_back(2, 4);
+            p6.points.emplace_back(2, 2);
+
+            Assert::IsTrue(p6.is_convex(), L"p6", LINE_INFO());
+            Assert::IsTrue(p6.convexity() == convex_type::counterclockwise, L"p6 c", LINE_INFO());
+
+            auto p7 = polygon < > ();
+            p7.points.emplace_back(2, 2);
+            p7.points.emplace_back(2, 2 + 1e-12);
+            p7.points.emplace_back(3 - 1e-12, 3);
+            p7.points.emplace_back(3, 3 + 1e-12);
+            p7.points.emplace_back(2, 4);
+            p7.points.emplace_back(2 + 1e-12, 4);
+            p7.points.emplace_back(2, 4 - 1e-12);
+            p7.points.emplace_back(2 - 1e-12, 2 + 1e-12);
+
+            Assert::IsTrue(p7.is_convex(), L"p7", LINE_INFO());
+            Assert::IsTrue(p7.convexity() == convex_type::counterclockwise, L"p7 c", LINE_INFO());
+
+            auto p8 = polygon < > ();
+            p8.points.emplace_back(2, 2);
+            p8.points.emplace_back(3, 3);
+            p8.points.emplace_back(2, 4);
+            p8.points.emplace_back(3, 3);
+
+            Assert::IsFalse(p8.is_convex(), L"p8", LINE_INFO());
+            Assert::IsTrue(p8.convexity() == convex_type::degenerate, L"p8 c", LINE_INFO());
+
+            auto p9 = polygon < > ();
+            p9.points.emplace_back(2, 2);
+            p9.points.emplace_back(2, 2);
+            p9.points.emplace_back(3, 3);
+            p9.points.emplace_back(3, 3);
+            p9.points.emplace_back(2, 4);
+            p9.points.emplace_back(2, 4);
+            p9.points.emplace_back(2, 4);
+            p9.points.emplace_back(2.5, 3);
+
+            Assert::IsFalse(p9.is_convex(), L"p9", LINE_INFO());
+            Assert::IsTrue(p9.convexity() == convex_type::no, L"p9 c", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
             TEST_DESCRIPTION(L"rotation calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
