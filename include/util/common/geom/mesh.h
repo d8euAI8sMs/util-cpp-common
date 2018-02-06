@@ -274,7 +274,7 @@ namespace geom
                 angles(nt.size());
 
             auto j = nt.begin();
-            auto & p0 = _triangles[*j].enclosing.center;
+            auto & p0 = point_at(i);
             for (idx_t i = 0; j != nt.end(); ++j, ++i)
             {
                 angles[i] = { angle(p0, _triangles[*j].enclosing.center), *j };
