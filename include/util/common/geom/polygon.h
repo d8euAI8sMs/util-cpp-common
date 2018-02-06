@@ -298,13 +298,16 @@ namespace geom
                     "only convex polygons"
                     "are supported now");
             }
+            if (c == convex_type::degenerate)
+            {
+                return false;
+            }
 
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                bool clockwise = is_clockwise(points[i], points[j], p);
-                if ((!clockwise && (c == convex_type::clockwise))
-                 || (clockwise && (c == convex_type::counterclockwise)))
+                convex_type c2 = geom::convexity(points[i], points[j], p);
+                if (c2 != c)
                 {
                     return false;
                 }

@@ -72,6 +72,9 @@ namespace geom
            if the triangle is degenerate */
         circle enclosing_circle() const
         {
+            if (convexity() == convex_type::degenerate)
+                return circle();
+
             auto & p1 = points[0];
             auto & p2 = points[1];
             auto & p3 = points[2];
