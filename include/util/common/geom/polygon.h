@@ -361,12 +361,30 @@ namespace geom
         if (c.empty()) return;
         std::vector < std::pair < double, point2d_t > >
             angles(c.size());
-        auto & p0 = c[0];
+        point2d_t p0;
+        for (size_t i = 0; i < c.size(); ++i)
+        {
+            p0 += c[i];
+        }
+        p0 = p0 / c.size();
+        auto a0 = angle(p0, c[0]);
         for (size_t i = 0; i < c.size(); ++i)
         {
             angles[i] = { angle(p0, c[i]), c[i] };
-            if (!counterclockwise) angles[i].first = - angles[i].first;
-            if (keep_first && (angles[i].first < 0)) angles[i].first += 2 * M_PI;
+            if (keep_first)
+            {
+                angles[i].first -= a0;
+                if (angles[i].first < 0)
+                    angles[i].first += 2 * M_PI;
+            }
+            if (!counterclockwise)
+            {
+                angles[i].first = - angles[i].first;
+            }
+            if (keep_first && (angles[i].first < 0))
+            {
+                angles[i].first += 2 * M_PI;
+            }
         }
         auto cmp = [&counterclockwise]
         (const std::pair < double, point2d_t > & p1,
