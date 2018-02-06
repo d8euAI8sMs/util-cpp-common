@@ -92,9 +92,11 @@ namespace geom
             auto p2 = make_polygon < arr4_t > ({ { { 2, 1 }, { 3, 2 }, { 2, 3 }, { 1, 2 } } });
             auto p3 = make_polygon < arr4_t > ({ { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } } });
             auto p4 = make_polygon < arr4_t > ({ { { 3, 1 }, { 3, 3 }, { 1, 3 }, { 1, 1 } } });
+            auto p5 = make_polygon < arr4_t > ({ { { 1, 1 }, { 2, 2 }, { 1, 3 }, { 0, 2 } } });
             auto l1 = make_line(1, 2, 3, 4);
             auto l2 = make_line(2, 3, 3, 4);
             auto l3 = make_line(4, 1, 5, 2);
+            auto l4 = make_line(2, 0, 2, 1);
 
             auto i = p1.intersections(l1);
 
@@ -124,6 +126,13 @@ namespace geom
             Assert::IsFalse(intersects(p1, l3), L"p1 - l3 int glob", LINE_INFO());
             Assert::IsFalse(intersects(l3, p1), L"l3 - p1 int glob", LINE_INFO());
 
+            i = p1.intersections(l4);
+
+            Assert::AreEqual(size_t(0), i.size(), L"p1 - l4", LINE_INFO());
+            Assert::IsFalse(p1.intersects(l4), L"p1 - l4 int", LINE_INFO());
+            Assert::IsFalse(intersects(p1, l4), L"p1 - l4 int glob", LINE_INFO());
+            Assert::IsFalse(intersects(l4, p1), L"l4 - p1 int glob", LINE_INFO());
+
             Assert::IsTrue(p1.intersects(p2), L"p1 - p2 int", LINE_INFO());
             Assert::IsTrue(intersects(p1, p2), L"p1 - p2 int glob", LINE_INFO());
             Assert::IsTrue(intersects(p2, p1), L"p2 - p1 int glob", LINE_INFO());
@@ -135,6 +144,13 @@ namespace geom
             Assert::IsTrue(p1.intersects(p4), L"p1 - p4 int", LINE_INFO());
             Assert::IsTrue(intersects(p1, p4), L"p1 - p4 int glob", LINE_INFO());
             Assert::IsTrue(intersects(p4, p1), L"p4 - p1 int glob", LINE_INFO());
+
+            Assert::IsFalse(p1.intersects(p5), L"p1 - p5 int", LINE_INFO());
+            Assert::IsFalse(intersects(p1, p5), L"p1 - p5 int glob", LINE_INFO());
+            Assert::IsFalse(intersects(p5, p1), L"p5 - p1 int glob", LINE_INFO());
+
+            Assert::IsFalse(p1.intersects(p1), L"p1 - p1 int", LINE_INFO());
+            Assert::IsFalse(intersects(p1, p1), L"p1 - p1 int glob", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_convex)
