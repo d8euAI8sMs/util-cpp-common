@@ -13,6 +13,15 @@
 namespace plot
 {
 
+    enum class list_data_format
+    {
+        /* all points connected with line segments */
+        chain,
+        /* points in pairs connected together,
+           pairs not connected */
+        segment
+    };
+
     template
     <
         typename _container_t,
@@ -37,6 +46,7 @@ namespace plot
         util::data_mapper_t < _container_t, typename _container_t::const_iterator, _mapped_t > data_mapper;
         drawable::ptr_t  point_painter;
         palette::pen_ptr line_pen;
+        list_data_format data_format;
 
     public:
 
@@ -53,6 +63,7 @@ namespace plot
             : data_source(std::move(data_source))
             , point_painter(std::move(point_painter))
             , line_pen(line_pen)
+            , data_format(list_data_format::chain)
         {
         }
 
@@ -70,7 +81,12 @@ namespace plot
 
             point < double > p;
 
-            dc.MoveTo(bounds.world_to_screen().xy(util::get_mapped_value_or_default(data_mapper, *data, (_iterator_t)data->begin(), 0)));
+            bool segment_begin = true;
+
+            if (data_format == list_data_format::chain)
+            {
+                dc.MoveTo(bounds.world_to_screen().xy(util::get_mapped_value_or_default(data_mapper, *data, (_iterator_t)data->begin(), 0)));
+            }
 
             size_t idx = 0;
             _iterator_t end = data->end();
@@ -80,9 +96,26 @@ namespace plot
                 p = util::get_mapped_value_or_default(data_mapper, *data, it, idx);
                 if (line_pen)
                 {
-                    auto _old = dc.SelectObject(*line_pen);
-                    dc.LineTo(bounds.world_to_screen().xy(p));
-                    dc.SelectObject(_old);
+                    if (data_format == list_data_format::chain)
+                    {
+                        auto _old = dc.SelectObject(*line_pen);
+                        dc.LineTo(bounds.world_to_screen().xy(p));
+                        dc.SelectObject(_old);
+                    }
+                    else if (data_format == list_data_format::segment)
+                    {
+                        if (segment_begin)
+                        {
+                            dc.MoveTo(bounds.world_to_screen().xy(p));
+                        }
+                        else
+                        {
+                            auto _old = dc.SelectObject(*line_pen);
+                            dc.LineTo(bounds.world_to_screen().xy(p));
+                            dc.SelectObject(_old);
+                        }
+                        segment_begin = !segment_begin;
+                    }
                 }
                 if (point_painter)
                 {
