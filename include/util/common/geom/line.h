@@ -4,7 +4,7 @@
 
 #include <util/common/ptr.h>
 #include <util/common/math/scalar.h>
-#include <util/common/geom/geom.h>
+#include <util/common/geom/geom_fwd.h>
 #include <util/common/geom/point.h>
 
 #include <type_traits>

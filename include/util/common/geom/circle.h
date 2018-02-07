@@ -3,7 +3,7 @@
 #include <afxwin.h>
 
 #include <util/common/ptr.h>
-#include <util/common/geom/geom.h>
+#include <util/common/geom/geom_fwd.h>
 #include <util/common/geom/point.h>
 
 namespace geom
