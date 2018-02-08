@@ -439,6 +439,29 @@ namespace geom
             Assert::IsTrue(degenerate_count < 100 / 2, L"degenerate Dirichlet cell count is small", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_add_4)
+            TEST_DESCRIPTION(L"mesh update works fine - special cases")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_add_4)
+        {
+            mesh m(true, true);
+
+            m.init(std::vector < point2d_t > ({ { 0, 0 }, { 1, 0 }, { 0, 1 } }));
+
+            auto r = m.add(point2d_t { 0, 1 });
+
+            Assert::AreEqual(size_t(3), m.vertices().size(), L"vertices size", LINE_INFO());
+            Assert::AreEqual(size_t(1), m.triangles().size(), L"triangles size", LINE_INFO());
+            Assert::AreEqual(size_t(2), r, L"remapped", LINE_INFO());
+
+            r = m.add(point2d_t { 0 - 1e-12, 1 + 1e-12 });
+
+            Assert::AreEqual(size_t(3), m.vertices().size(), L"vertices size - 2", LINE_INFO());
+            Assert::AreEqual(size_t(1), m.triangles().size(), L"triangles size - 2", LINE_INFO());
+            Assert::AreEqual(size_t(2), r, L"remapped - 2", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_user_flags)
             TEST_DESCRIPTION(L"user flags work fine")
         END_TEST_METHOD_ATTRIBUTE()
