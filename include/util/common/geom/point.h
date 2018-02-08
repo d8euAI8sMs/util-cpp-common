@@ -73,6 +73,13 @@ namespace geom
         {
         }
 
+        template < typename _X, typename _Y >
+        point(_X x, _Y y)
+            : point(static_cast < X > (x),
+                    static_cast < Y > (y))
+        {
+        }
+
         point()
             : point(x_type{}, y_type{})
         {
