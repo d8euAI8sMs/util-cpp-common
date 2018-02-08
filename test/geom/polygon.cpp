@@ -397,6 +397,226 @@ namespace geom
             Assert::IsFalse(p2.contains({ 2, 1.9 }), L"p2 (2,1.9)", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_contains_concave)
+            TEST_DESCRIPTION(L"containment calculation is correct - concave polygon")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_contains_concave)
+        {
+            auto p1 = polygon < > ();
+            p1.points.emplace_back(1, 2);
+            p1.points.emplace_back(2, 1);
+            p1.points.emplace_back(5, 1);
+            p1.points.emplace_back(4, 2);
+            p1.points.emplace_back(4, 3);
+            p1.points.emplace_back(5, 4);
+            p1.points.emplace_back(2, 4);
+            p1.points.emplace_back(1, 3);
+
+            Assert::IsFalse(p1.contains({ 0, 0 }), L"p1 (0,0)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 1, 0 }), L"p1 (1,0)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 2, 0 }), L"p1 (2,0)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 3, 0 }), L"p1 (3,0)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 4, 0 }), L"p1 (4,0)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 5, 0 }), L"p1 (5,0)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 6, 0 }), L"p1 (6,0)", LINE_INFO());
+
+            Assert::IsFalse(p1.contains({ 0, 5 }), L"p1 (0,5)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 1, 5 }), L"p1 (1,5)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 2, 5 }), L"p1 (2,5)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 3, 5 }), L"p1 (3,5)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 4, 5 }), L"p1 (4,5)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 5, 5 }), L"p1 (5,5)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 6, 5 }), L"p1 (6,5)", LINE_INFO());
+
+            Assert::IsFalse(p1.contains({ 0, 1 }), L"p1 (0,1)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 0, 2 }), L"p1 (0,2)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 0, 3 }), L"p1 (0,3)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 0, 4 }), L"p1 (0,4)", LINE_INFO());
+
+            Assert::IsFalse(p1.contains({ 6, 1 }), L"p1 (6,1)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 6, 2 }), L"p1 (6,2)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 6, 3 }), L"p1 (6,3)", LINE_INFO());
+            Assert::IsFalse(p1.contains({ 6, 4 }), L"p1 (6,4)", LINE_INFO());
+
+            Assert::IsTrue(p1.contains({ 2, 2 }), L"p1 (2,2)", LINE_INFO());
+            Assert::IsTrue(p1.contains({ 3, 3 }), L"p1 (3,3)", LINE_INFO());
+            Assert::IsTrue(p1.contains({ 2, 3 }), L"p1 (2,3)", LINE_INFO());
+            Assert::IsTrue(p1.contains({ 3, 2 }), L"p1 (3,2)", LINE_INFO());
+
+            auto p2 = polygon < > ();
+            p2.points.emplace_back(0, 0);
+            p2.points.emplace_back(7, 0);
+            p2.points.emplace_back(7, 3);
+            p2.points.emplace_back(1, 3);
+            p2.points.emplace_back(1, 4);
+            p2.points.emplace_back(7, 4);
+            p2.points.emplace_back(7, 7);
+            p2.points.emplace_back(0, 7);
+            p2.points.emplace_back(0, 6);
+            p2.points.emplace_back(6, 6);
+            p2.points.emplace_back(6, 5);
+            p2.points.emplace_back(0, 5);
+            p2.points.emplace_back(0, 2);
+            p2.points.emplace_back(6, 2);
+            p2.points.emplace_back(6, 1);
+            p2.points.emplace_back(0, 1);
+
+            for (size_t i = 0; i < 9; ++i)
+            {
+                auto info = L"p2 " + std::to_wstring(i) + L" left";
+                Assert::IsFalse(p2.contains({ -0.5, -0.5 + i }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" right";
+                Assert::IsFalse(p2.contains({ 7.5, -0.5 + i }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" top";
+                Assert::IsFalse(p2.contains({ -0.5 + i, 7.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" bottom";
+                Assert::IsFalse(p2.contains({ -0.5 + i, -0.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-bottom";
+                Assert::IsFalse(p2.contains({ -2.5 + i, 1.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-center";
+                Assert::IsFalse(p2.contains({ 2.5 + i, 3.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-top";
+                Assert::IsFalse(p2.contains({ -2.5 + i, 5.5 }), info.c_str(), LINE_INFO());
+            }
+
+            for (size_t i = 0; i < 7; ++i)
+            {
+                auto info = L"p2 " + std::to_wstring(i) + L" inside-bottom";
+                Assert::IsTrue(p2.contains({ 0.5 + i, 0.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inside-center-bottom";
+                Assert::IsTrue(p2.contains({ 0.5 + i, 2.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inside-center-top";
+                Assert::IsTrue(p2.contains({ 0.5 + i, 4.5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inside-top";
+                Assert::IsTrue(p2.contains({ 0.5 + i, 6.5 }), info.c_str(), LINE_INFO());
+            }
+
+            Assert::IsTrue(p2.contains({ 6.5, 1.5 }), L"p2 spec1", LINE_INFO());
+            Assert::IsTrue(p2.contains({ 0.5, 3.5 }), L"p2 spec2", LINE_INFO());
+            Assert::IsTrue(p2.contains({ 6.5, 5.5 }), L"p2 spec3", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_contains_concave_special_cases)
+            TEST_DESCRIPTION(L"containment calculation is correct - concave polygon - special cases")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_contains_concave_special_cases)
+        {
+            auto p1 = polygon < > ();
+            p1.points.emplace_back(1, 2);
+            p1.points.emplace_back(2, 1);
+            p1.points.emplace_back(5, 1);
+            p1.points.emplace_back(4, 2);
+            p1.points.emplace_back(4, 3);
+            p1.points.emplace_back(5, 4);
+            p1.points.emplace_back(2, 4);
+            p1.points.emplace_back(1, 3);
+
+            for (size_t i = 0; i < p1.points.size(); ++i)
+            {
+                auto info = L"p1 " + std::to_wstring(i);
+                Assert::IsFalse(p1.contains(p1.points[i]), info.c_str(), LINE_INFO());
+            }
+
+            for (size_t i = 0; i < p1.points.size(); ++i)
+            {
+                auto info = L"p1 " + std::to_wstring(i) + L" +0";
+                Assert::IsFalse(p1.contains(p1.points[i] + point2d_t{ 1e-12, 1e-12 }), info.c_str(), LINE_INFO());
+            }
+
+            for (size_t i = 0; i < p1.points.size(); ++i)
+            {
+                auto info = L"p1 " + std::to_wstring(i) + L" -0";
+                Assert::IsFalse(p1.contains(p1.points[i] + point2d_t{ -1e-12, -1e-12 }), info.c_str(), LINE_INFO());
+            }
+
+            auto p2 = polygon < > ();
+            p2.points.emplace_back(0, 0);
+            p2.points.emplace_back(7, 0);
+            p2.points.emplace_back(7, 3);
+            p2.points.emplace_back(1, 3);
+            p2.points.emplace_back(1, 4);
+            p2.points.emplace_back(7, 4);
+            p2.points.emplace_back(7, 7);
+            p2.points.emplace_back(0, 7);
+            p2.points.emplace_back(0, 6);
+            p2.points.emplace_back(6, 6);
+            p2.points.emplace_back(6, 5);
+            p2.points.emplace_back(0, 5);
+            p2.points.emplace_back(0, 2);
+            p2.points.emplace_back(6, 2);
+            p2.points.emplace_back(6, 1);
+            p2.points.emplace_back(0, 1);
+
+            for (int i = 0; i < 9; ++i)
+            {
+                auto info = L"p2 " + std::to_wstring(i) + L" left";
+                Assert::IsFalse(p2.contains({ 0, -1 + i }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" right";
+                Assert::IsFalse(p2.contains({ 7, -1 + i }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" top";
+                Assert::IsFalse(p2.contains({ -1 + i, 7 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" bottom";
+                Assert::IsFalse(p2.contains({ -1 + i, 0 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-bottom-1";
+                Assert::IsFalse(p2.contains({ -2 + i, 1 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-bottom-2";
+                Assert::IsFalse(p2.contains({ -2 + i, 2 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-center-1";
+                Assert::IsFalse(p2.contains({ 2 + i, 3 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-center-2";
+                Assert::IsFalse(p2.contains({ 2 + i, 4 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-top-1";
+                Assert::IsFalse(p2.contains({ -2 + i, 5 }), info.c_str(), LINE_INFO());
+                info = L"p2 " + std::to_wstring(i) + L" inner-top-2";
+                Assert::IsFalse(p2.contains({ -2 + i, 6 }), info.c_str(), LINE_INFO());
+            }
+
+            auto p3 = polygon < > ();
+            p3.points.emplace_back(-2, 0);
+            p3.points.emplace_back(0, 0);
+            p3.points.emplace_back(2, 0);
+            p3.points.emplace_back(0, 2);
+
+            Assert::IsFalse(p3.contains({ -2, 0 }), L"p3 (-1,0)", LINE_INFO());
+            Assert::IsFalse(p3.contains({ -3, 0 }), L"p3 (-3,0)", LINE_INFO());
+            Assert::IsFalse(p3.contains({ 2, 0 }), L"p3 (2,0)", LINE_INFO());
+            Assert::IsFalse(p3.contains({ 3, 0 }), L"p3 (3,0)", LINE_INFO());
+            Assert::IsFalse(p3.contains({ 0, 2 }), L"p3 (0,2)", LINE_INFO());
+            Assert::IsFalse(p3.contains({ 0, 3 }), L"p3 (0,3)", LINE_INFO());
+            Assert::IsTrue(p3.contains({ 0, 1 }), L"p3 (0,1)", LINE_INFO());
+            Assert::IsTrue(p3.contains({ 0, 1.5 }), L"p3 (0,1.5)", LINE_INFO());
+            Assert::IsTrue(p3.contains({ 0, 1.9 }), L"p3 (0,1.9)", LINE_INFO());
+            Assert::IsTrue(p3.contains({ 0, 1.99 }), L"p3 (0,1.99)", LINE_INFO());
+            Assert::IsTrue(p3.contains({ 0, 1.999 }), L"p3 (0,1.999)", LINE_INFO());
+
+            auto p4 = polygon < > ();
+            p4.points.emplace_back(-2, 0);
+            p4.points.emplace_back(-2, 0);
+            p4.points.emplace_back(0, 0);
+            p4.points.emplace_back(2, 0);
+            p4.points.emplace_back(2, 0);
+            p4.points.emplace_back(0, 2);
+            p4.points.emplace_back(0, 2);
+            p4.points.emplace_back(-2, 0);
+            p4.points.emplace_back(-2, 0);
+            p4.points.emplace_back(-2, 0);
+            p4.points.emplace_back(-2, 0);
+
+            Assert::IsFalse(p4.contains({ -2, 0 }), L"p4 (-1,0)", LINE_INFO());
+            Assert::IsFalse(p4.contains({ -3, 0 }), L"p4 (-3,0)", LINE_INFO());
+            Assert::IsFalse(p4.contains({ 2, 0 }), L"p4 (2,0)", LINE_INFO());
+            Assert::IsFalse(p4.contains({ 3, 0 }), L"p4 (3,0)", LINE_INFO());
+            Assert::IsFalse(p4.contains({ 0, 2 }), L"p4 (0,2)", LINE_INFO());
+            Assert::IsFalse(p4.contains({ 0, 3 }), L"p4 (0,3)", LINE_INFO());
+            Assert::IsTrue(p4.contains({ 0, 1 }), L"p4 (0,1)", LINE_INFO());
+            Assert::IsTrue(p4.contains({ 0, 1.5 }), L"p4 (0,1.5)", LINE_INFO());
+            Assert::IsTrue(p4.contains({ 0, 1.9 }), L"p4 (0,1.9)", LINE_INFO());
+            Assert::IsTrue(p4.contains({ 0, 1.99 }), L"p4 (0,1.99)", LINE_INFO());
+            Assert::IsTrue(p4.contains({ 0, 1.999 }), L"p4 (0,1.999)", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_center)
             TEST_DESCRIPTION(L"center calculation is correct")
         END_TEST_METHOD_ATTRIBUTE()
