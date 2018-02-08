@@ -284,36 +284,67 @@ namespace geom
          * tests if this polygon contains the given
          * point;
          *
-         * implemented for only convex polygons;
-         * throws exception if applied to non-convex polygon;
+         * implemented for generic concave polygon without
+         * self intersections;
          */
         virtual bool contains(const point2d_t & p) const
         {
             if (points.size() < 3) return false;
 
-            auto c = convexity();
-            if (c == convex_type::no)
-            {
-                throw std::domain_error(
-                    "only convex polygons"
-                    "are supported now");
-            }
-            if (c == convex_type::degenerate)
-            {
-                return false;
-            }
+            double d = sqdistance(points[0], p);
 
+            /* find the most distant point */
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                convex_type c2 = geom::convexity(points[i], points[j], p);
-                if (c2 != c)
+                auto d0 = sqdistance(points[j], p);
+                if (d0 > d)
                 {
-                    return false;
+                    d = d0;
                 }
             }
 
-            return true;
+            double q1, q2;
+
+            for (size_t retries = 0; retries < 3; ++retries)
+            {
+                for (size_t pivot = 0; pivot < points.size(); ++pivot)
+                {
+                    size_t count = 0;
+                    bool bad_pivot = false;
+                    auto c = line(points[pivot], points[(pivot + 1) % points.size()]).inner_point((double) rand() / RAND_MAX);
+                    auto l = scale(line(p, c), 2 * std::sqrt(d / sqdistance(p, c)), p);
+                    for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
+                    {
+                        if (j == points.size()) j = 0;
+                        if (!line(points[i], points[j]).intersection(l, q1, q2)) continue;
+
+                        if ((1e-8 < q1) && (q1 < (1 - 1e-8)))
+                        {
+                            if (std::abs(q2) <= 1e-8)
+                            {
+                                return false;
+                            }
+                            else if ((1e-8 < q2) && (q2 < (1 - 1e-8)))
+                            {
+                                ++count;
+                            }
+                        }
+
+                        /* bad pivot, possibly intersection near point */
+                        if ((std::abs(q1) <= 1e-8) ||
+                            (std::abs(q1 - 1) <= 1e-8))
+                        {
+                            bad_pivot = true;
+                            break;
+                        }
+                    }
+                    if (bad_pivot) continue;
+                    return (count % 2) == 1;
+                }
+            }
+
+            return false;
         }
 
     private:
