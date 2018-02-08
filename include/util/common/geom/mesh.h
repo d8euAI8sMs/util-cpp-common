@@ -187,25 +187,27 @@ namespace geom
         }
 
         template < typename _C >
-        mesh & add(const _C & c,
+        std::vector < idx_t > add(const _C & c,
                    flags_t flags = no_flags)
         {
+            std::vector < idx_t > remapped(c.size());
             for (size_t i = 0; i < c.size(); ++i)
             {
-                add(c[i], flags);
+                remapped[i] = add(c[i], flags);
             }
-            return *this;
+            return remapped;
         }
 
         template < typename _InputIter >
-        mesh & add(_InputIter begin, _InputIter end,
+        std::vector < idx_t > add(_InputIter begin, _InputIter end,
                    flags_t flags = no_flags)
         {
+            std::vector < idx_t > remapped;
             for (; begin != end; ++begin)
             {
-                add(*begin, flags);
+                remapped.push_back(add(*begin, flags));
             }
-            return *this;
+            return remapped;
         }
 
     private:
@@ -540,6 +542,15 @@ namespace geom
                    flags_t flags)
         {
             flags = _safe_flags(flags);
+
+            for (idx_t i = 0; i < _vertices.size(); ++i)
+            {
+                if ((std::abs(p.x - _vertices[i].point.x) <= 1e-8) &&
+                    (std::abs(p.y - _vertices[i].point.y) <= 1e-8))
+                {
+                    return i;
+                }
+            }
 
             std::set < idx_t > orphans;
 
