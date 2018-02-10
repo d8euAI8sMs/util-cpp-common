@@ -16,6 +16,9 @@
     <Filter Include="Source Files\geom">
       <UniqueIdentifier>{71cf1eda-029a-42a8-bc30-ea4004658229}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{3f8acc5e-22cc-4d42-8879-c6bc4b54a9cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="geom\mesh.cpp">
       <Filter>Source Files\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="math\fuzzy.cpp">
+      <Filter>Source Files\math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
