@@ -69,5 +69,52 @@ namespace math
             if (x1 > x2 + tolerance) return _greater;
             return _equal;
         }
+
+    public:
+
+        type value;
+
+    public:
+
+        fuzzy()           : value()      { }
+        fuzzy(type value) : value(value) { }
+
+    public:
+
+        explicit operator type () const { return value; }
+
+        type operator () () const { return value; }
+
+    public:
+
+        bool operator == (const fuzzy & o)
+        {
+            return (equals(value, o.value) >= 0);
+        }
+
+        bool operator != (const fuzzy & o)
+        {
+            return (equals(value, o.value) < 0);
+        }
+
+        bool operator < (const fuzzy & o)
+        {
+            return (less(value, o.value) > 0);
+        }
+
+        bool operator > (const fuzzy & o)
+        {
+            return (greater(value, o.value) > 0);
+        }
+
+        bool operator <= (const fuzzy & o)
+        {
+            return (less(value, o.value) >= 0);
+        }
+
+        bool operator >= (const fuzzy & o)
+        {
+            return (greater(value, o.value) >= 0);
+        }
     };
 }
