@@ -5,6 +5,10 @@
 namespace math
 {
 
+    /*****************************************************/
+    /*                     traits                        */
+    /*****************************************************/
+
     template < typename _T >
     struct fuzzy_traits
     {
@@ -17,6 +21,10 @@ namespace math
     {
         static type tolerance() { return std::numeric_limits < _T > :: epsilon(); }
     };
+
+    /*****************************************************/
+    /*                     fuzzy                         */
+    /*****************************************************/
 
     template < typename _Traits >
     class fuzzy
