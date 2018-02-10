@@ -125,4 +125,14 @@ namespace math
             return (greater(value, o.value) >= 0);
         }
     };
+
+    /*****************************************************/
+    /*                     factory                       */
+    /*****************************************************/
+
+    template < typename _Traits >
+    fuzzy < _Traits > make_fuzzy(typename _Traits::type value)
+    {
+        return fuzzy < _Traits > (value);
+    }
 }
