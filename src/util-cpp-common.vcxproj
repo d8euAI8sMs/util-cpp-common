@@ -86,6 +86,7 @@
     <ClInclude Include="..\include\util\common\geom\triangle.h" />
     <ClInclude Include="..\include\util\common\gui\SimulationDialog.h" />
     <ClInclude Include="..\include\util\common\math\complex.h" />
+    <ClInclude Include="..\include\util\common\math\fuzzy.h" />
     <ClInclude Include="..\include\util\common\math\scalar.h" />
     <ClInclude Include="..\include\util\common\math\dsolve.h" />
     <ClInclude Include="..\include\util\common\math\vec.h" />
