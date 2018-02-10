@@ -46,6 +46,34 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: equals(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_operator_eq)
+            TEST_DESCRIPTION(L"== works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_operator_eq)
+        {
+            Assert::IsTrue (fuzzy < test_traits > (1) == 1, L"1 == 1", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) == 2, L"1 != 2", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) == 1 + 1e-12, L"1 ~ 1+0", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) == 1 - 1e-12, L"1 ~ 1-0", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) == 1 + test_traits::tolerance(), L"1 ~ 1+t", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) == 1 - test_traits::tolerance(), L"1 ~ 1-t", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_operator_neq)
+            TEST_DESCRIPTION(L"!= works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_operator_neq)
+        {
+            Assert::IsFalse(fuzzy < test_traits > (1) != 1, L"1 == 1", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) != 2, L"1 != 2", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) != 1 + 1e-12, L"1 ~ 1+0", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) != 1 - 1e-12, L"1 ~ 1-0", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) != 1 + test_traits::tolerance(), L"1 ~ 1+t", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) != 1 - test_traits::tolerance(), L"1 ~ 1-t", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_less)
             TEST_DESCRIPTION(L"less works fine")
         END_TEST_METHOD_ATTRIBUTE()
@@ -74,6 +102,34 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_operator_lt)
+            TEST_DESCRIPTION(L"< works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_operator_lt)
+        {
+            Assert::IsTrue (fuzzy < test_traits > (1) < 2, L"1 < 2", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (2) < 1, L"2 !< 1", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) < 1 + 1e-12, L"1 ~ 1+0", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) < 1 - 1e-12, L"1 ~ 1-0", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) < 1 + test_traits::tolerance(), L"1 ~ 1+t", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) < 1 - test_traits::tolerance(), L"1 ~ 1-t", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_operator_le)
+            TEST_DESCRIPTION(L"<= works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_operator_le)
+        {
+            Assert::IsTrue (fuzzy < test_traits > (1) <= 2, L"1 < 2", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (2) <= 1, L"2 !< 1", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) <= 1 + 1e-12, L"1 ~ 1+0", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) <= 1 - 1e-12, L"1 ~ 1-0", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) <= 1 + test_traits::tolerance(), L"1 ~ 1+t", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) <= 1 - test_traits::tolerance(), L"1 ~ 1-t", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_greater)
             TEST_DESCRIPTION(L"greater works fine")
         END_TEST_METHOD_ATTRIBUTE()
@@ -100,6 +156,34 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 - 1e-12, 0.5), L"1 ~ 1-0", LINE_INFO());
             Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 + 0.5, 0.5), L"1 ~ 1+t", LINE_INFO());
             Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_operator_gt)
+            TEST_DESCRIPTION(L"> works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_operator_gt)
+        {
+            Assert::IsTrue (fuzzy < test_traits > (2) > 1, L"2 > 1", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) > 2, L"1 !> 2", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) > 1 + 1e-12, L"1 ~ 1+0", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) > 1 - 1e-12, L"1 ~ 1-0", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) > 1 + test_traits::tolerance(), L"1 ~ 1+t", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) > 1 - test_traits::tolerance(), L"1 ~ 1-t", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_operator_ge)
+            TEST_DESCRIPTION(L">= works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_operator_ge)
+        {
+            Assert::IsTrue (fuzzy < test_traits > (2) >= 1, L"2 > 1", LINE_INFO());
+            Assert::IsFalse(fuzzy < test_traits > (1) >= 2, L"1 !> 2", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) >= 1 + 1e-12, L"1 ~ 1+0", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) >= 1 - 1e-12, L"1 ~ 1-0", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) >= 1 + test_traits::tolerance(), L"1 ~ 1+t", LINE_INFO());
+            Assert::IsTrue (fuzzy < test_traits > (1) >= 1 - test_traits::tolerance(), L"1 ~ 1-t", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_compare)
