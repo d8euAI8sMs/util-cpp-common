@@ -32,6 +32,20 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: equals(1, 1 - test_traits::tolerance()), L"1 ~ 1-t", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_equals_override_tolerance)
+            TEST_DESCRIPTION(L"equals with overridden tolerance works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_equals_override_tolerance)
+        {
+            Assert::AreEqual(1,  fuzzy < test_traits > :: equals(1, 1, 0.5), L"1 == 1", LINE_INFO());
+            Assert::AreEqual(-1, fuzzy < test_traits > :: equals(1, 2, 0.5), L"1 != 2", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: equals(1, 1 + 1e-12, 0.5), L"1 ~ 1+0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: equals(1, 1 - 1e-12, 0.5), L"1 ~ 1-0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: equals(1, 1 + 0.5, 0.5), L"1 ~ 1+t", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: equals(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_less)
             TEST_DESCRIPTION(L"less works fine")
         END_TEST_METHOD_ATTRIBUTE()
@@ -44,6 +58,20 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 - 1e-12), L"1 ~ 1-0", LINE_INFO());
             Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 + test_traits::tolerance()), L"1 ~ 1+t", LINE_INFO());
             Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 - test_traits::tolerance()), L"1 ~ 1-t", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_less_override_tolerance)
+            TEST_DESCRIPTION(L"less with overridden tolerance works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_less_override_tolerance)
+        {
+            Assert::AreEqual(1,  fuzzy < test_traits > :: less(1, 2, 0.5), L"1 < 2", LINE_INFO());
+            Assert::AreEqual(-1, fuzzy < test_traits > :: less(2, 1, 0.5), L"2 !< 1", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 + 1e-12, 0.5), L"1 ~ 1+0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 - 1e-12, 0.5), L"1 ~ 1-0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 + 0.5, 0.5), L"1 ~ 1+t", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: less(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_greater)
@@ -60,6 +88,20 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 - test_traits::tolerance()), L"1 ~ 1-t", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_greater_override_tolerance)
+            TEST_DESCRIPTION(L"greater with overridden tolerance works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_greater_override_tolerance)
+        {
+            Assert::AreEqual(1,  fuzzy < test_traits > :: greater(2, 1, 0.5), L"2 > 1", LINE_INFO());
+            Assert::AreEqual(-1, fuzzy < test_traits > :: greater(1, 2, 0.5), L"1 !> 2", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 + 1e-12, 0.5), L"1 ~ 1+0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 - 1e-12, 0.5), L"1 ~ 1-0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 + 0.5, 0.5), L"1 ~ 1+t", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: greater(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_compare)
             TEST_DESCRIPTION(L"compare works fine")
         END_TEST_METHOD_ATTRIBUTE()
@@ -73,6 +115,21 @@ namespace math
             Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 - 1e-12), L"1 ~ 1-0", LINE_INFO());
             Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 + test_traits::tolerance()), L"1 ~ 1+t", LINE_INFO());
             Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 - test_traits::tolerance()), L"1 ~ 1-t", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_compare_override_tolerance)
+            TEST_DESCRIPTION(L"compare with overridden tolerance works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_compare_override_tolerance)
+        {
+            Assert::AreEqual(1,  fuzzy < test_traits > :: compare(2, 1, 0.5), L"2 > 1", LINE_INFO());
+            Assert::AreEqual(-1, fuzzy < test_traits > :: compare(1, 2, 0.5), L"1 < 2", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1, 0.5), L"1 = 1", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 + 1e-12, 0.5), L"1 ~ 1+0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 - 1e-12, 0.5), L"1 ~ 1-0", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 + 0.5, 0.5), L"1 ~ 1+t", LINE_INFO());
+            Assert::AreEqual(0,  fuzzy < test_traits > :: compare(1, 1 - 0.5, 0.5), L"1 ~ 1-t", LINE_INFO());
         }
     };
 }
