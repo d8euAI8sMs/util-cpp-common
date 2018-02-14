@@ -46,8 +46,8 @@ namespace geom
 
         bool border_contains(const point2d_t & p) const
         {
-            return std::abs(sqdistance(p, center) - sqradius)
-                / sqradius <= 1e-8;
+            return fuzzy_t::eq(0,
+                std::abs(sqdistance(p, center) - sqradius) / sqradius);
         }
 
         bool inner_contains(const point2d_t & p) const

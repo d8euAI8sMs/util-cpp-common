@@ -319,21 +319,20 @@ namespace geom
                         if (j == points.size()) j = 0;
                         if (!line(points[i], points[j]).intersection(l, q1, q2)) continue;
 
-                        if ((1e-8 < q1) && (q1 < (1 - 1e-8)))
+                        if (fuzzy_t::gt(q1, 0) && fuzzy_t::lt(q1, 1))
                         {
-                            if (std::abs(q2) <= 1e-8)
+                            if (fuzzy_t::eq(0, q2))
                             {
                                 return false;
                             }
-                            else if ((1e-8 < q2) && (q2 < (1 - 1e-8)))
+                            else if (fuzzy_t::gt(q2, 0) && fuzzy_t::lt(q2, 1))
                             {
                                 ++count;
                             }
                         }
 
                         /* bad pivot, possibly intersection near point */
-                        if ((std::abs(q1) <= 1e-8) ||
-                            (std::abs(q1 - 1) <= 1e-8))
+                        if (fuzzy_t::eq(q1, 0) || fuzzy_t::eq(1, q1))
                         {
                             bad_pivot = true;
                             break;

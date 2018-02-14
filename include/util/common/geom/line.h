@@ -136,8 +136,8 @@ namespace geom
             double q1, q2;
 
             if (intersection(l, q1, q2) &&
-                (1e-8 < q1) && (q1 < (1 - 1e-8)) &&
-                (1e-8 < q2) && (q2 < (1 - 1e-8)))
+                fuzzy_t::gt(q1, 0) && fuzzy_t::lt(q1, 1) &&
+                fuzzy_t::gt(q2, 0) && fuzzy_t::lt(q2, 1))
             {
                 r1 = q1;
                 r2 = q2;
@@ -174,7 +174,7 @@ namespace geom
                          sqdistance(p2, p3) +
                          sqdistance(p1, p2)) / 3;
             double q = n * n / dd;
-            if (!isfinite(q) || (std::abs(q) < 1e-8))
+            if (!isfinite(q) || fuzzy_t::eq(0, q))
             {
                 return convex_type::degenerate;
             }
