@@ -61,6 +61,18 @@ namespace math
         using traits = _Traits;
         using type   = typename traits::type;
 
+        /**
+         *  requires:
+         *      { x1 == x2 } => bool
+         *      { x1 <= x2 } => bool
+         *      { x1 + x2 } => type
+         *
+         *  returns:
+         *      1 - equal exactly
+         *      0 - equal with respect
+         *          to the given tolerance
+         *     -1 - not equal
+         */
         static int equals(type x1, type x2, type tolerance = traits::tolerance())
         {
             if (x1 == x2) return _sure;
@@ -69,6 +81,17 @@ namespace math
             return _sure_not;
         }
 
+        /**
+         *  requires:
+         *      { x1 > x2 } => bool
+         *      { x1 + x2 } => type
+         *
+         *  returns:
+         *      1 - less
+         *      0 - equal with respect
+         *          to the given tolerance
+         *     -1 - greater
+         */
         static int less(type x1, type x2, type tolerance = traits::tolerance())
         {
             if (x2 > x1 + tolerance) return _sure;
@@ -76,6 +99,17 @@ namespace math
             return _unsure;
         }
 
+        /**
+         *  requires:
+         *      { x1 > x2 } => bool
+         *      { x1 + x2 } => type
+         *
+         *  returns:
+         *      1 - greater
+         *      0 - equal with respect
+         *          to the given tolerance
+         *     -1 - less
+         */
         static int greater(type x1, type x2, type tolerance = traits::tolerance())
         {
             if (x2 > x1 + tolerance) return _sure_not;
