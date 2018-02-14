@@ -117,6 +117,31 @@ namespace math
             return _unsure;
         }
 
+        static bool eq(type x1, type x2, type tolerance = traits::tolerance())
+        {
+            return equals(x1, x2, tolerance) >= 0;
+        }
+
+        static int lt(type x1, type x2, type tolerance = traits::tolerance())
+        {
+            return less(x1, x2, tolerance) > 0;
+        }
+
+        static int gt(type x1, type x2, type tolerance = traits::tolerance())
+        {
+            return greater(x1, x2, tolerance) > 0;
+        }
+
+        static int le(type x1, type x2, type tolerance = traits::tolerance())
+        {
+            return less(x1, x2, tolerance) >= 0;
+        }
+
+        static int ge(type x1, type x2, type tolerance = traits::tolerance())
+        {
+            return greater(x1, x2, tolerance) >= 0;
+        }
+
     public:
 
         type value;
