@@ -83,13 +83,6 @@ namespace math
             return _unsure;
         }
 
-        static int compare(type x1, type x2, type tolerance = traits::tolerance())
-        {
-            if (x2 > x1 + tolerance) return _less;
-            if (x1 > x2 + tolerance) return _greater;
-            return _equal;
-        }
-
     public:
 
         type value;
