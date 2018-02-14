@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+#include <util/common/math/fuzzy.h>
+
 namespace geom
 {
 
@@ -15,6 +17,9 @@ namespace geom
     template < typename X, typename Y > struct point;
 
     using point2d_t = point < double, double > ;
+
+    using fuzzy_geom_traits_t = math::fuzzy_weak_double_traits;
+    using fuzzy_t = math::fuzzy < fuzzy_geom_traits_t > ;
 
     enum class convex_type
     {
