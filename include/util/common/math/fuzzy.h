@@ -16,10 +16,22 @@ namespace math
         static type tolerance();
     };
 
-    template < typename _T >
-    struct fuzzy_numeric_traits : fuzzy_traits < _T >
+    template < typename _T, typename _R, _R (*_TolF) () >
+    struct fuzzy_delegating_traits
+        : fuzzy_traits < _T >
     {
-        static type tolerance() { return std::numeric_limits < _T > :: epsilon(); }
+        static type tolerance() { return static_cast < type > (_TolF()); }
+    };
+
+    template < typename _T, typename _R = _T >
+    struct fuzzy_numeric_traits
+        : fuzzy_delegating_traits < _T, _R, std::numeric_limits < _R > :: epsilon >
+    {
+    };
+
+    struct fuzzy_weak_double_traits
+        : fuzzy_delegating_traits < double, float, std::numeric_limits < float > :: epsilon >
+    {
     };
 
     /*****************************************************/
