@@ -142,9 +142,9 @@ namespace geom
 
         /* calculates an intersection point;
 
-           returns true if two lines have
+           returns >0 if two lines have
            intersection point and fills r1 and r2
-           with parameters on this and given lines
+           with parameters on this and given line
            correspondingly;
 
            intersection point = inner_point(r1)
@@ -183,15 +183,19 @@ namespace geom
         /* calculates an intersection point of two
            line segments;
 
-           returns true if two line segments have
+           returns >0 if two line segments have
            intersection point and fills r1 and r2
-           with parameters on this and given lines
+           with parameters on this and given line
            correspondingly;
+
+           returns 0 if intersection point is too
+           close to line segment boundaries (i.e.
+           r1, r2 ~ 0 or ~1);
 
            intersection point = inner_point(r1)
                               = l.inner_point(r2)
 
-           r1, r2 in range (0, 1)
+           r1, r2 in range (~0, ~1)
          */
         math::confidence_t segment_intersection(const line & l,
                                                 double & r1,
