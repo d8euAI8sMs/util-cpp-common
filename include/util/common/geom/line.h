@@ -366,17 +366,15 @@ namespace geom
         const line & l1, const line & l2
     )
     {
-        return l1.segment_intersects(l2);
+        return l1.segment_intersects(l2) > 0;
     }
 
-    /* we assume that only geometry with inner
-       area can contain something */
     template <> inline bool contains
     (
-        const line &, const point2d_t &
+        const line & l, const point2d_t & p
     )
     {
-        return false;
+        return l.contains(p) > 0;
     }
 
     /*****************************************************/
