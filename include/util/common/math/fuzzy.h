@@ -198,4 +198,33 @@ namespace math
     {
         return fuzzy < _Traits > (value);
     }
+
+    /*****************************************************/
+    /*                   fuzzy_value                     */
+    /*****************************************************/
+
+    template < typename _T >
+    struct fuzzy_value
+    {
+        const confidence_t confidence;
+        const _T value;
+        fuzzy_value(confidence_t c, const _T & v) : confidence(c), value(v) { }
+        fuzzy_value(confidence_t c, _T && v) : confidence(c), value(std::move(v)) { }
+        operator const _T & () const { return value; }
+    };
+
+    /*****************************************************/
+    /*              fuzzy_value factories                */
+    /*****************************************************/
+
+    namespace fuzzy_values
+    {
+        template < typename _T > fuzzy_value < _T > negative_confidence() { return fuzzy_value < _T > (confidence::negative, _T{}); }
+        template < typename _T > fuzzy_value < _T > negative_confidence(_T && t) { return fuzzy_value < _T > (confidence::negative, std::forward < _T > (t)); }
+        template < typename _T > fuzzy_value < _T > positive_confidence() { return fuzzy_value < _T > (confidence::positive, _T{}); }
+        template < typename _T > fuzzy_value < _T > positive_confidence(_T && t) { return fuzzy_value < _T > (confidence::positive, std::forward < _T > (t)); }
+        template < typename _T > fuzzy_value < _T > zero_confidence() { return fuzzy_value < _T > (confidence::zero, _T{}); }
+        template < typename _T > fuzzy_value < _T > zero_confidence(_T && t) { return fuzzy_value < _T > (confidence::zero, std::forward < _T > (t)); }
+        template < typename _T > fuzzy_value < _T > value(confidence_t c, _T && t) { return fuzzy_value < _T > (c, std::forward < _T > (t)); }
+    }
 }
