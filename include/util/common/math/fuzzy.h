@@ -35,6 +35,19 @@ namespace math
     };
 
     /*****************************************************/
+    /*                   confidence                      */
+    /*****************************************************/
+
+    using confidence_t = int;
+
+    namespace confidence
+    {
+        static const confidence_t positive = 1;
+        static const confidence_t zero     = 0;
+        static const confidence_t negative = -1;
+    }
+
+    /*****************************************************/
     /*                     fuzzy                         */
     /*****************************************************/
 
