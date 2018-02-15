@@ -83,6 +83,80 @@ namespace geom
                              L"norm (1,1)-(4,5)", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_distance)
+            TEST_DESCRIPTION(L"distance is calculated correctly")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_distance)
+        {
+            auto l = make_line(1, 2, 3, 4);
+
+            Assert::AreEqual(1, l.sqdistance({ 3, 2 }).confidence,
+                             L"p 1", LINE_INFO());
+            Assert::AreEqual(2, l.sqdistance({ 3, 2 }), 1e-8,
+                             L"p 1 val", LINE_INFO());
+            Assert::AreEqual(1, l.segment_sqdistance({ 3, 2 }).confidence,
+                             L"p 1 seg", LINE_INFO());
+            Assert::AreEqual(2, l.segment_sqdistance({ 3, 2 }), 1e-8,
+                             L"p 1 val seg", LINE_INFO());
+
+            Assert::AreEqual(1, l.sqdistance({ 0, 3 }).confidence,
+                             L"p 2", LINE_INFO());
+            Assert::AreEqual(2, l.sqdistance({ 0, 3 }), 1e-8,
+                             L"p 2 val", LINE_INFO());
+            Assert::AreEqual(0, l.segment_sqdistance({ 0, 3 }).confidence,
+                             L"p 2 seg", LINE_INFO());
+            Assert::AreEqual(0, l.segment_sqdistance({ 0, 3 }), 1e-8,
+                             L"p 2 val seg", LINE_INFO());
+
+            Assert::AreEqual(1, l.sqdistance(l.p1).confidence,
+                             L"p 3", LINE_INFO());
+            Assert::AreEqual(0, l.sqdistance(l.p1), 1e-8,
+                             L"p 3 val", LINE_INFO());
+            Assert::AreEqual(0, l.segment_sqdistance(l.p1).confidence,
+                             L"p 3 seg", LINE_INFO());
+            Assert::AreEqual(0, l.segment_sqdistance(l.p1), 1e-8,
+                             L"p 3 val seg", LINE_INFO());
+
+            Assert::AreEqual(1, l.sqdistance(l.p2).confidence,
+                             L"p 4", LINE_INFO());
+            Assert::AreEqual(0, l.sqdistance(l.p2), 1e-8,
+                             L"p 4 val", LINE_INFO());
+            Assert::AreEqual(0, l.segment_sqdistance(l.p2).confidence,
+                             L"p 4 seg", LINE_INFO());
+            Assert::AreEqual(0, l.segment_sqdistance(l.p2), 1e-8,
+                             L"p 4 val seg", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_contains)
+            TEST_DESCRIPTION(L"containment is calculated correctly")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_contains)
+        {
+            auto l = make_line(1, 2, 3, 4);
+
+            Assert::AreEqual(1, l.contains(l.inner_point(0.5)),
+                             L"p 1", LINE_INFO());
+            Assert::AreEqual(1, l.segment_contains(l.inner_point(0.5)),
+                             L"p 1", LINE_INFO());
+
+            Assert::AreEqual(1, l.contains(l.inner_point(2)),
+                             L"p 2", LINE_INFO());
+            Assert::AreEqual(-1, l.segment_contains(l.inner_point(2)),
+                             L"p 2", LINE_INFO());
+
+            Assert::AreEqual(1, l.contains(l.p1),
+                             L"p 3", LINE_INFO());
+            Assert::AreEqual(0, l.segment_contains(l.p1),
+                             L"p 3", LINE_INFO());
+
+            Assert::AreEqual(1, l.contains(l.p2),
+                             L"p 4", LINE_INFO());
+            Assert::AreEqual(0, l.segment_contains(l.p2),
+                             L"p 4", LINE_INFO());
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_angle)
             TEST_DESCRIPTION(L"angle is calculated correctly")
         END_TEST_METHOD_ATTRIBUTE()
