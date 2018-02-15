@@ -67,10 +67,10 @@ namespace math
          *      { x1 + x2 } => type
          *
          *  returns:
-         *      1 - equal exactly
-         *      0 - equal with respect
+         *      >0 - equal exactly
+         *       0 - equal with respect
          *          to the given tolerance
-         *     -1 - not equal
+         *      <0 - not equal
          */
         static confidence_t equals(type x1, type x2, type tolerance = traits::tolerance())
         {
@@ -86,10 +86,10 @@ namespace math
          *      { x1 + x2 } => type
          *
          *  returns:
-         *      1 - less
-         *      0 - equal with respect
-         *          to the given tolerance
-         *     -1 - greater
+         *      >0 - less
+         *       0 - equal with respect
+         *           to the given tolerance
+         *      <0 - greater
          */
         static confidence_t less(type x1, type x2, type tolerance = traits::tolerance())
         {
@@ -104,10 +104,10 @@ namespace math
          *      { x1 + x2 } => type
          *
          *  returns:
-         *      1 - greater
-         *      0 - equal with respect
-         *          to the given tolerance
-         *     -1 - less
+         *      >0 - greater
+         *       0 - equal with respect
+         *           to the given tolerance
+         *      <0 - less
          */
         static confidence_t greater(type x1, type x2, type tolerance = traits::tolerance())
         {
