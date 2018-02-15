@@ -104,7 +104,7 @@ namespace geom
                              L"p 2", LINE_INFO());
             Assert::AreEqual(2, l.sqdistance({ 0, 3 }), 1e-8,
                              L"p 2 val", LINE_INFO());
-            Assert::AreEqual(0, l.segment_sqdistance({ 0, 3 }).confidence,
+            Assert::AreEqual(-1, l.segment_sqdistance({ 0, 3 }).confidence,
                              L"p 2 seg", LINE_INFO());
             Assert::AreEqual(0, l.segment_sqdistance({ 0, 3 }), 1e-8,
                              L"p 2 val seg", LINE_INFO());
