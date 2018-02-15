@@ -422,7 +422,11 @@ namespace geom
             Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 0, 1 + 1e-12 }) == convex_type::degenerate,
                              L"no - 4", LINE_INFO());
             Assert::IsTrue(make_line(1, 2, 3, 4).convexity({ 0, 1 - 1e-12 }) == convex_type::degenerate,
-                             L"no - 4", LINE_INFO());
+                             L"no - 5", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 1 + 1e-12, 2).convexity({ 1, 3 }) == convex_type::degenerate,
+                             L"no - 6", LINE_INFO());
+            Assert::IsTrue(make_line(1, 2, 1, 2 + 1e-12).convexity({ 2, 2 }) == convex_type::degenerate,
+                             L"no - 7", LINE_INFO());
         }
     };
 }
