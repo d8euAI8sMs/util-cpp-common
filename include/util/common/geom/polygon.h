@@ -287,63 +287,59 @@ namespace geom
          * implemented for generic concave polygon without
          * self intersections;
          */
-        virtual bool contains(const point2d_t & p) const
+        virtual math::confidence_t contains(const point2d_t & p) const
         {
-            if (points.size() < 3) return false;
+            if (points.size() < 3) return math::confidence::negative;
 
-            double d = sqdistance(points[0], p);
+            double min_x, max_x, min_y, max_y;
+            double d;
 
-            /* find the most distant point */
+            min_x = max_x = points[0].x;
+            min_y = max_y = points[0].y;
+
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                auto d0 = sqdistance(points[j], p);
-                if (d0 > d)
-                {
-                    d = d0;
-                }
+                if (line(points[i], points[j]).segment_contains(p) >= 0)
+                    return math::confidence::zero;
+                if (points[i].x < min_x) min_x = points[i].x;
+                if (points[i].y < min_y) min_y = points[i].y;
+                if (points[i].x > max_x) max_x = points[i].x;
+                if (points[i].y > max_y) max_y = points[i].y;
             }
+
+            if ((p.x < min_x) || (p.x > max_x) || (p.y < min_y) || (p.y > max_y))
+                return math::confidence::negative;
+
+            d = 2 * (max_x + max_y - min_x - min_y);
 
             double q1, q2;
 
-            for (size_t retries = 0; retries < 3; ++retries)
+            point2d_t pivot;
+
+            for (;;)
             {
-                for (size_t pivot = 0; pivot < points.size(); ++pivot)
+                pivot.x = p.x + (1 + rand() / (RAND_MAX + 1.)) * d;
+                pivot.y = p.y + (1 + rand() / (RAND_MAX + 1.)) * d;
+
+                size_t c = 0;
+                size_t i, j;
+
+                for (i = 0, j = 1; i < points.size(); ++i, ++j)
                 {
-                    size_t count = 0;
-                    bool bad_pivot = false;
-                    auto c = line(points[pivot], points[(pivot + 1) % points.size()]).inner_point((double) rand() / RAND_MAX);
-                    auto l = scale(line(p, c), 2 * std::sqrt(d / sqdistance(p, c)), p);
-                    for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
-                    {
-                        if (j == points.size()) j = 0;
-                        if (!line(points[i], points[j]).intersection(l, q1, q2)) continue;
-
-                        if (fuzzy_t::gt(q1, 0) && fuzzy_t::lt(q1, 1))
-                        {
-                            if (fuzzy_t::eq(0, q2))
-                            {
-                                return false;
-                            }
-                            else if (fuzzy_t::gt(q2, 0) && fuzzy_t::lt(q2, 1))
-                            {
-                                ++count;
-                            }
-                        }
-
-                        /* bad pivot, possibly intersection near point */
-                        if (fuzzy_t::eq(q1, 0) || fuzzy_t::eq(1, q1))
-                        {
-                            bad_pivot = true;
-                            break;
-                        }
-                    }
-                    if (bad_pivot) continue;
-                    return (count % 2) == 1;
+                    if (j == points.size()) j = 0;
+                    auto has_int = line(points[i], points[j]).segment_intersects({ p, pivot });
+                    if (has_int == 0)
+                        break;
+                    if (has_int > 0)
+                        ++c;
                 }
-            }
 
-            return false;
+                if (i != points.size()) continue;
+
+                return ((c % 2) == 1) ? math::confidence::positive
+                                      : math::confidence::negative;
+            }
         }
 
     private:
