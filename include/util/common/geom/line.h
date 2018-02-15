@@ -111,7 +111,10 @@ namespace geom
                     math::sqnorm(inner_point(q1) - p));
             if (i1 < 0)
                 return math::fuzzy_values::negative_confidence(0.0);
-            return math::fuzzy_values::zero_confidence(0.0);
+            d1 = math::norm(inner_point(q1) - p);
+            if (fuzzy_t::eq(0, d1))
+                return math::fuzzy_values::zero_confidence(0.0);
+            return math::fuzzy_values::negative_confidence(0.0);
         }
 
         math::fuzzy_value < double > distance(const point2d_t & p) const
