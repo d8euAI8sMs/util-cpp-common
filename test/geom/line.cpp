@@ -249,64 +249,64 @@ namespace geom
             auto l5 = make_line(2, 1, 0, 3);
 
             double q1, q2;
-            bool r;
+            math::confidence_t r;
 
             r = l1.intersection(l2, q1, q2);
 
-            Assert::IsTrue(r, L"l1-l2", LINE_INFO());
+            Assert::AreEqual(1, r, L"l1-l2", LINE_INFO());
             Assert::AreEqual(0.5, q1, 1e-8,
                              L"l1-l2 q1", LINE_INFO());
             Assert::AreEqual(0.5, q2, 1e-8,
                              L"l1-l2 q2", LINE_INFO());
-            Assert::IsTrue(l1.intersects(l2), L"l1-l2 int", LINE_INFO());
-            Assert::IsTrue(l1.segment_intersects(l2), L"l1-l2 seg", LINE_INFO());
+            Assert::AreEqual(1, l1.intersects(l2), L"l1-l2 int", LINE_INFO());
+            Assert::AreEqual(1, l1.segment_intersects(l2), L"l1-l2 seg", LINE_INFO());
             Assert::IsTrue(intersects(l1, l2), L"l1-l2 int-seg", LINE_INFO());
 
             r = l1.intersection(l3, q1, q2);
 
-            Assert::IsTrue(r, L"l1-l3", LINE_INFO());
+            Assert::AreEqual(1, r, L"l1-l3", LINE_INFO());
             Assert::AreEqual(0.25, q1, 1e-8,
                              L"l1-l3 q1", LINE_INFO());
             Assert::AreEqual(0.75, q2, 1e-8,
                              L"l1-l3 q2", LINE_INFO());
-            Assert::IsTrue(l1.intersects(l3), L"l1-l3 int", LINE_INFO());
-            Assert::IsTrue(l1.segment_intersects(l3), L"l1-l3 seg", LINE_INFO());
+            Assert::AreEqual(1, l1.intersects(l3), L"l1-l3 int", LINE_INFO());
+            Assert::AreEqual(1, l1.segment_intersects(l3), L"l1-l3 seg", LINE_INFO());
             Assert::IsTrue(intersects(l1, l3), L"l1-l3 int-seg", LINE_INFO());
 
             r = l1.intersection(l4, q1, q2);
 
-            Assert::IsTrue(r, L"l1-l4", LINE_INFO());
+            Assert::AreEqual(1, r, L"l1-l4", LINE_INFO());
             Assert::AreEqual(-0.5, q1, 1e-8,
                              L"l1-l4 q1", LINE_INFO());
             Assert::AreEqual(0.5, q2, 1e-8,
                              L"l1-l4 q2", LINE_INFO());
-            Assert::IsTrue(l1.intersects(l4), L"l1-l4 int", LINE_INFO());
-            Assert::IsFalse(l1.segment_intersects(l4), L"l1-l4 seg", LINE_INFO());
+            Assert::AreEqual(1, l1.intersects(l4), L"l1-l4 int", LINE_INFO());
+            Assert::AreEqual(-1, l1.segment_intersects(l4), L"l1-l4 seg", LINE_INFO());
             Assert::IsFalse(intersects(l1, l4), L"l1-l4 int-seg", LINE_INFO());
 
             r = l2.intersection(l4, q1, q2);
 
-            Assert::IsFalse(r, L"l2-l4", LINE_INFO());
-            Assert::IsFalse(l2.intersects(l4), L"l2-l4 int", LINE_INFO());
-            Assert::IsFalse(l2.segment_intersects(l4), L"l2-l4 seg", LINE_INFO());
+            Assert::AreEqual(-1, r, L"l2-l4", LINE_INFO());
+            Assert::AreEqual(-1, l2.intersects(l4), L"l2-l4 int", LINE_INFO());
+            Assert::AreEqual(-1, l2.segment_intersects(l4), L"l2-l4 seg", LINE_INFO());
             Assert::IsFalse(intersects(l2, l4), L"l2-l4 int-seg", LINE_INFO());
 
             r = l1.intersection(l1, q1, q2);
 
-            Assert::IsFalse(r, L"l1-l1", LINE_INFO());
-            Assert::IsFalse(l1.intersects(l1), L"l1-l1 int", LINE_INFO());
-            Assert::IsFalse(l1.segment_intersects(l1), L"l1-l1 seg", LINE_INFO());
+            Assert::AreEqual(-1, r, L"l1-l1", LINE_INFO());
+            Assert::AreEqual(-1, l1.intersects(l1), L"l1-l1 int", LINE_INFO());
+            Assert::AreEqual(-1, l1.segment_intersects(l1), L"l1-l1 seg", LINE_INFO());
             Assert::IsFalse(intersects(l1, l1), L"l1-l1 int-seg", LINE_INFO());
 
             r = l1.intersection(l5, q1, q2);
 
-            Assert::IsTrue(r, L"l1-l5", LINE_INFO());
+            Assert::AreEqual(1, r, L"l1-l5", LINE_INFO());
             Assert::AreEqual(0, q1, 1e-8,
                              L"l1-l5 q1", LINE_INFO());
             Assert::AreEqual(0.5, q2, 1e-8,
                              L"l1-l5 q2", LINE_INFO());
-            Assert::IsTrue(l1.intersects(l5), L"l1-l5 int", LINE_INFO());
-            Assert::IsFalse(l1.segment_intersects(l5), L"l1-l5 seg", LINE_INFO());
+            Assert::AreEqual(1, l1.intersects(l5), L"l1-l5 int", LINE_INFO());
+            Assert::AreEqual(0, l1.segment_intersects(l5), L"l1-l5 seg", LINE_INFO());
             Assert::IsFalse(intersects(l1, l5), L"l5-l1 int-seg", LINE_INFO());
         }
 
