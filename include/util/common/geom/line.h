@@ -246,7 +246,7 @@ namespace geom
          */
         convex_type convexity(const point2d_t & p3) const
         {
-            if (contains(p3))
+            if (contains(p3) >= 0)
             {
                 return convex_type::degenerate;
             }
