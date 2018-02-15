@@ -388,13 +388,13 @@ namespace geom
             auto p2 = p;
             std::reverse(p2.points.begin(), p2.points.end());
 
-            Assert::IsTrue(p.contains({ 2, 3 }), L"p1 (2,3)", LINE_INFO());
-            Assert::IsTrue(p.contains({ 2, 2.1 }), L"p1 (2,2.1)", LINE_INFO());
-            Assert::IsFalse(p.contains({ 2, 1.9 }), L"p1 (2,1.9)", LINE_INFO());
+            Assert::AreEqual(1, p.contains({ 2, 3 }), L"p1 (2,3)", LINE_INFO());
+            Assert::AreEqual(1, p.contains({ 2, 2.1 }), L"p1 (2,2.1)", LINE_INFO());
+            Assert::AreEqual(-1, p.contains({ 2, 1.9 }), L"p1 (2,1.9)", LINE_INFO());
 
-            Assert::IsTrue(p2.contains({ 2, 3 }), L"p2 (2,3)", LINE_INFO());
-            Assert::IsTrue(p2.contains({ 2, 2.1 }), L"p2 (2,2.1)", LINE_INFO());
-            Assert::IsFalse(p2.contains({ 2, 1.9 }), L"p2 (2,1.9)", LINE_INFO());
+            Assert::AreEqual(1, p2.contains({ 2, 3 }), L"p2 (2,3)", LINE_INFO());
+            Assert::AreEqual(1, p2.contains({ 2, 2.1 }), L"p2 (2,2.1)", LINE_INFO());
+            Assert::AreEqual(-1, p2.contains({ 2, 1.9 }), L"p2 (2,1.9)", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_contains_concave)
@@ -413,36 +413,36 @@ namespace geom
             p1.points.emplace_back(2, 4);
             p1.points.emplace_back(1, 3);
 
-            Assert::IsFalse(p1.contains({ 0, 0 }), L"p1 (0,0)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 1, 0 }), L"p1 (1,0)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 2, 0 }), L"p1 (2,0)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 3, 0 }), L"p1 (3,0)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 4, 0 }), L"p1 (4,0)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 5, 0 }), L"p1 (5,0)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 6, 0 }), L"p1 (6,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 0, 0 }), L"p1 (0,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 1, 0 }), L"p1 (1,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 2, 0 }), L"p1 (2,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 3, 0 }), L"p1 (3,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 4, 0 }), L"p1 (4,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 5, 0 }), L"p1 (5,0)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 6, 0 }), L"p1 (6,0)", LINE_INFO());
 
-            Assert::IsFalse(p1.contains({ 0, 5 }), L"p1 (0,5)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 1, 5 }), L"p1 (1,5)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 2, 5 }), L"p1 (2,5)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 3, 5 }), L"p1 (3,5)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 4, 5 }), L"p1 (4,5)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 5, 5 }), L"p1 (5,5)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 6, 5 }), L"p1 (6,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 0, 5 }), L"p1 (0,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 1, 5 }), L"p1 (1,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 2, 5 }), L"p1 (2,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 3, 5 }), L"p1 (3,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 4, 5 }), L"p1 (4,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 5, 5 }), L"p1 (5,5)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 6, 5 }), L"p1 (6,5)", LINE_INFO());
 
-            Assert::IsFalse(p1.contains({ 0, 1 }), L"p1 (0,1)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 0, 2 }), L"p1 (0,2)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 0, 3 }), L"p1 (0,3)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 0, 4 }), L"p1 (0,4)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 0, 1 }), L"p1 (0,1)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 0, 2 }), L"p1 (0,2)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 0, 3 }), L"p1 (0,3)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 0, 4 }), L"p1 (0,4)", LINE_INFO());
 
-            Assert::IsFalse(p1.contains({ 6, 1 }), L"p1 (6,1)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 6, 2 }), L"p1 (6,2)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 6, 3 }), L"p1 (6,3)", LINE_INFO());
-            Assert::IsFalse(p1.contains({ 6, 4 }), L"p1 (6,4)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 6, 1 }), L"p1 (6,1)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 6, 2 }), L"p1 (6,2)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 6, 3 }), L"p1 (6,3)", LINE_INFO());
+            Assert::AreEqual(-1, p1.contains({ 6, 4 }), L"p1 (6,4)", LINE_INFO());
 
-            Assert::IsTrue(p1.contains({ 2, 2 }), L"p1 (2,2)", LINE_INFO());
-            Assert::IsTrue(p1.contains({ 3, 3 }), L"p1 (3,3)", LINE_INFO());
-            Assert::IsTrue(p1.contains({ 2, 3 }), L"p1 (2,3)", LINE_INFO());
-            Assert::IsTrue(p1.contains({ 3, 2 }), L"p1 (3,2)", LINE_INFO());
+            Assert::AreEqual(1, p1.contains({ 2, 2 }), L"p1 (2,2)", LINE_INFO());
+            Assert::AreEqual(1, p1.contains({ 3, 3 }), L"p1 (3,3)", LINE_INFO());
+            Assert::AreEqual(1, p1.contains({ 2, 3 }), L"p1 (2,3)", LINE_INFO());
+            Assert::AreEqual(1, p1.contains({ 3, 2 }), L"p1 (3,2)", LINE_INFO());
 
             auto p2 = polygon < > ();
             p2.points.emplace_back(0, 0);
@@ -465,36 +465,36 @@ namespace geom
             for (size_t i = 0; i < 9; ++i)
             {
                 auto info = L"p2 " + std::to_wstring(i) + L" left";
-                Assert::IsFalse(p2.contains({ -0.5, -0.5 + i }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ -0.5, -0.5 + i }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" right";
-                Assert::IsFalse(p2.contains({ 7.5, -0.5 + i }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ 7.5, -0.5 + i }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" top";
-                Assert::IsFalse(p2.contains({ -0.5 + i, 7.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ -0.5 + i, 7.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" bottom";
-                Assert::IsFalse(p2.contains({ -0.5 + i, -0.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ -0.5 + i, -0.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-bottom";
-                Assert::IsFalse(p2.contains({ -2.5 + i, 1.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ -2.5 + i, 1.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-center";
-                Assert::IsFalse(p2.contains({ 2.5 + i, 3.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ 2.5 + i, 3.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-top";
-                Assert::IsFalse(p2.contains({ -2.5 + i, 5.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(-1, p2.contains({ -2.5 + i, 5.5 }), info.c_str(), LINE_INFO());
             }
 
             for (size_t i = 0; i < 7; ++i)
             {
                 auto info = L"p2 " + std::to_wstring(i) + L" inside-bottom";
-                Assert::IsTrue(p2.contains({ 0.5 + i, 0.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(1, p2.contains({ 0.5 + i, 0.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inside-center-bottom";
-                Assert::IsTrue(p2.contains({ 0.5 + i, 2.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(1, p2.contains({ 0.5 + i, 2.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inside-center-top";
-                Assert::IsTrue(p2.contains({ 0.5 + i, 4.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(1, p2.contains({ 0.5 + i, 4.5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inside-top";
-                Assert::IsTrue(p2.contains({ 0.5 + i, 6.5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(1, p2.contains({ 0.5 + i, 6.5 }), info.c_str(), LINE_INFO());
             }
 
-            Assert::IsTrue(p2.contains({ 6.5, 1.5 }), L"p2 spec1", LINE_INFO());
-            Assert::IsTrue(p2.contains({ 0.5, 3.5 }), L"p2 spec2", LINE_INFO());
-            Assert::IsTrue(p2.contains({ 6.5, 5.5 }), L"p2 spec3", LINE_INFO());
+            Assert::AreEqual(1, p2.contains({ 6.5, 1.5 }), L"p2 spec1", LINE_INFO());
+            Assert::AreEqual(1, p2.contains({ 0.5, 3.5 }), L"p2 spec2", LINE_INFO());
+            Assert::AreEqual(1, p2.contains({ 6.5, 5.5 }), L"p2 spec3", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_contains_concave_special_cases)
@@ -516,19 +516,19 @@ namespace geom
             for (size_t i = 0; i < p1.points.size(); ++i)
             {
                 auto info = L"p1 " + std::to_wstring(i);
-                Assert::IsFalse(p1.contains(p1.points[i]), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p1.contains(p1.points[i]), info.c_str(), LINE_INFO());
             }
 
             for (size_t i = 0; i < p1.points.size(); ++i)
             {
                 auto info = L"p1 " + std::to_wstring(i) + L" +0";
-                Assert::IsFalse(p1.contains(p1.points[i] + point2d_t{ 1e-12, 1e-12 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p1.contains(p1.points[i] + point2d_t{ 1e-12, 1e-12 }), info.c_str(), LINE_INFO());
             }
 
             for (size_t i = 0; i < p1.points.size(); ++i)
             {
                 auto info = L"p1 " + std::to_wstring(i) + L" -0";
-                Assert::IsFalse(p1.contains(p1.points[i] + point2d_t{ -1e-12, -1e-12 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p1.contains(p1.points[i] + point2d_t{ -1e-12, -1e-12 }), info.c_str(), LINE_INFO());
             }
 
             auto p2 = polygon < > ();
@@ -549,28 +549,28 @@ namespace geom
             p2.points.emplace_back(6, 1);
             p2.points.emplace_back(0, 1);
 
-            for (int i = 0; i < 9; ++i)
+            for (int i = 0; i <= 7; ++i)
             {
                 auto info = L"p2 " + std::to_wstring(i) + L" left";
-                Assert::IsFalse(p2.contains({ 0, -1 + i }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ 0, i }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" right";
-                Assert::IsFalse(p2.contains({ 7, -1 + i }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ 7, i }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" top";
-                Assert::IsFalse(p2.contains({ -1 + i, 7 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 7 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" bottom";
-                Assert::IsFalse(p2.contains({ -1 + i, 0 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 0 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-bottom-1";
-                Assert::IsFalse(p2.contains({ -2 + i, 1 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 1 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-bottom-2";
-                Assert::IsFalse(p2.contains({ -2 + i, 2 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 2 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-center-1";
-                Assert::IsFalse(p2.contains({ 2 + i, 3 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 3 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-center-2";
-                Assert::IsFalse(p2.contains({ 2 + i, 4 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 4 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-top-1";
-                Assert::IsFalse(p2.contains({ -2 + i, 5 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 5 }), info.c_str(), LINE_INFO());
                 info = L"p2 " + std::to_wstring(i) + L" inner-top-2";
-                Assert::IsFalse(p2.contains({ -2 + i, 6 }), info.c_str(), LINE_INFO());
+                Assert::AreEqual(0, p2.contains({ i, 6 }), info.c_str(), LINE_INFO());
             }
 
             auto p3 = polygon < > ();
@@ -579,17 +579,17 @@ namespace geom
             p3.points.emplace_back(2, 0);
             p3.points.emplace_back(0, 2);
 
-            Assert::IsFalse(p3.contains({ -2, 0 }), L"p3 (-1,0)", LINE_INFO());
-            Assert::IsFalse(p3.contains({ -3, 0 }), L"p3 (-3,0)", LINE_INFO());
-            Assert::IsFalse(p3.contains({ 2, 0 }), L"p3 (2,0)", LINE_INFO());
-            Assert::IsFalse(p3.contains({ 3, 0 }), L"p3 (3,0)", LINE_INFO());
-            Assert::IsFalse(p3.contains({ 0, 2 }), L"p3 (0,2)", LINE_INFO());
-            Assert::IsFalse(p3.contains({ 0, 3 }), L"p3 (0,3)", LINE_INFO());
-            Assert::IsTrue(p3.contains({ 0, 1 }), L"p3 (0,1)", LINE_INFO());
-            Assert::IsTrue(p3.contains({ 0, 1.5 }), L"p3 (0,1.5)", LINE_INFO());
-            Assert::IsTrue(p3.contains({ 0, 1.9 }), L"p3 (0,1.9)", LINE_INFO());
-            Assert::IsTrue(p3.contains({ 0, 1.99 }), L"p3 (0,1.99)", LINE_INFO());
-            Assert::IsTrue(p3.contains({ 0, 1.999 }), L"p3 (0,1.999)", LINE_INFO());
+            Assert::AreEqual(0, p3.contains({ -2, 0 }), L"p3 (-2,0)", LINE_INFO());
+            Assert::AreEqual(-1, p3.contains({ -3, 0 }), L"p3 (-3,0)", LINE_INFO());
+            Assert::AreEqual(0, p3.contains({ 2, 0 }), L"p3 (2,0)", LINE_INFO());
+            Assert::AreEqual(-1, p3.contains({ 3, 0 }), L"p3 (3,0)", LINE_INFO());
+            Assert::AreEqual(0, p3.contains({ 0, 2 }), L"p3 (0,2)", LINE_INFO());
+            Assert::AreEqual(-1, p3.contains({ 0, 3 }), L"p3 (0,3)", LINE_INFO());
+            Assert::AreEqual(1, p3.contains({ 0, 1 }), L"p3 (0,1)", LINE_INFO());
+            Assert::AreEqual(1, p3.contains({ 0, 1.5 }), L"p3 (0,1.5)", LINE_INFO());
+            Assert::AreEqual(1, p3.contains({ 0, 1.9 }), L"p3 (0,1.9)", LINE_INFO());
+            Assert::AreEqual(1, p3.contains({ 0, 1.99 }), L"p3 (0,1.99)", LINE_INFO());
+            Assert::AreEqual(1, p3.contains({ 0, 1.999 }), L"p3 (0,1.999)", LINE_INFO());
 
             auto p4 = polygon < > ();
             p4.points.emplace_back(-2, 0);
@@ -604,17 +604,17 @@ namespace geom
             p4.points.emplace_back(-2, 0);
             p4.points.emplace_back(-2, 0);
 
-            Assert::IsFalse(p4.contains({ -2, 0 }), L"p4 (-1,0)", LINE_INFO());
-            Assert::IsFalse(p4.contains({ -3, 0 }), L"p4 (-3,0)", LINE_INFO());
-            Assert::IsFalse(p4.contains({ 2, 0 }), L"p4 (2,0)", LINE_INFO());
-            Assert::IsFalse(p4.contains({ 3, 0 }), L"p4 (3,0)", LINE_INFO());
-            Assert::IsFalse(p4.contains({ 0, 2 }), L"p4 (0,2)", LINE_INFO());
-            Assert::IsFalse(p4.contains({ 0, 3 }), L"p4 (0,3)", LINE_INFO());
-            Assert::IsTrue(p4.contains({ 0, 1 }), L"p4 (0,1)", LINE_INFO());
-            Assert::IsTrue(p4.contains({ 0, 1.5 }), L"p4 (0,1.5)", LINE_INFO());
-            Assert::IsTrue(p4.contains({ 0, 1.9 }), L"p4 (0,1.9)", LINE_INFO());
-            Assert::IsTrue(p4.contains({ 0, 1.99 }), L"p4 (0,1.99)", LINE_INFO());
-            Assert::IsTrue(p4.contains({ 0, 1.999 }), L"p4 (0,1.999)", LINE_INFO());
+            Assert::AreEqual(0, p4.contains({ -2, 0 }), L"p4 (-2,0)", LINE_INFO());
+            Assert::AreEqual(-1, p4.contains({ -3, 0 }), L"p4 (-3,0)", LINE_INFO());
+            Assert::AreEqual(0, p4.contains({ 2, 0 }), L"p4 (2,0)", LINE_INFO());
+            Assert::AreEqual(-1, p4.contains({ 3, 0 }), L"p4 (3,0)", LINE_INFO());
+            Assert::AreEqual(0, p4.contains({ 0, 2 }), L"p4 (0,2)", LINE_INFO());
+            Assert::AreEqual(-1, p4.contains({ 0, 3 }), L"p4 (0,3)", LINE_INFO());
+            Assert::AreEqual(1, p4.contains({ 0, 1 }), L"p4 (0,1)", LINE_INFO());
+            Assert::AreEqual(1, p4.contains({ 0, 1.5 }), L"p4 (0,1.5)", LINE_INFO());
+            Assert::AreEqual(1, p4.contains({ 0, 1.9 }), L"p4 (0,1.9)", LINE_INFO());
+            Assert::AreEqual(1, p4.contains({ 0, 1.99 }), L"p4 (0,1.99)", LINE_INFO());
+            Assert::AreEqual(1, p4.contains({ 0, 1.999 }), L"p4 (0,1.999)", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_center)
