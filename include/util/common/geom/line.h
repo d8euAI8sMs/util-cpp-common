@@ -76,6 +76,70 @@ namespace geom
             return p1 + (p2 - p1) * q;
         }
 
+        math::fuzzy_value < double > sqdistance(const point2d_t & p) const
+        {
+            if (empty()) return math::fuzzy_values::negative_confidence(0.0);
+            auto d = p2 - p1;
+            auto v = point2d_t(p.x + d.y, p.y - d.x);
+            double q1, q2;
+            auto l = line(p, v);
+            auto i = intersection(l, q1, q2);
+            /* should not occur, possible only in case
+               if line segment is too small or point is too
+               close to line, so return 0 */
+            if (i < 0) return math::fuzzy_values::zero_confidence(0.0);
+            return math::fuzzy_values::positive_confidence(math::sqnorm(inner_point(q1) - p));
+        }
+
+        math::fuzzy_value < double > segment_sqdistance(const point2d_t & p) const
+        {
+            if (empty()) return math::fuzzy_values::negative_confidence(0.0);
+            auto d = p2 - p1;
+            auto v = point2d_t(p.x + d.y, p.y - d.x);
+            double q1, q2;
+            auto l = line(p, v);
+            auto i = intersection(l, q1, q2);
+            /* should not occur, possible only in case
+               if line segment is too small or point is too
+               close to line, so return 0 */
+            if (i < 0) return math::fuzzy_values::zero_confidence(0.0);
+            /* check if intersection is inside the line segment */
+            double d1 = length(), s1 = d1 * min(q1, 1 - q1);
+            auto i1 = fuzzy_t::greater(s1, 0);
+            if (i1 > 0)
+                return math::fuzzy_values::positive_confidence(
+                    math::sqnorm(inner_point(q1) - p));
+            if (i1 < 0)
+                return math::fuzzy_values::negative_confidence(0.0);
+            return math::fuzzy_values::zero_confidence(0.0);
+        }
+
+        math::fuzzy_value < double > distance(const point2d_t & p) const
+        {
+            auto d = sqdistance(p);
+            return { d.confidence, std::sqrt(d.value) };
+        }
+
+        math::fuzzy_value < double > segment_distance(const point2d_t & p) const
+        {
+            auto d = segment_sqdistance(p);
+            return { d.confidence, std::sqrt(d.value) };
+        }
+
+        math::confidence_t contains(const point2d_t & p) const
+        {
+            auto d = distance(p);
+            if (d.confidence <= 0) return d.confidence;
+            return fuzzy_t::equals(0, d);
+        }
+
+        math::confidence_t segment_contains(const point2d_t & p) const
+        {
+            auto d = segment_distance(p);
+            if (d.confidence <= 0) return d.confidence;
+            return fuzzy_t::equals(0, d);
+        }
+
         /* calculates an intersection point;
 
            returns true if two lines have
