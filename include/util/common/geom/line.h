@@ -249,7 +249,7 @@ namespace geom
          */
         convex_type convexity(const point2d_t & p3) const
         {
-            if (contains(p3) >= 0)
+            if ((contains(p3) >= 0) || fuzzy_t::eq(0, geom::distance(p1, p2)))
             {
                 return convex_type::degenerate;
             }
