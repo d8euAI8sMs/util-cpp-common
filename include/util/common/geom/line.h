@@ -152,9 +152,9 @@ namespace geom
 
            r1, r2 - any numbers
          */
-        bool intersection(const line & l,
-                          double & r1,
-                          double & r2) const
+        math::confidence_t intersection(const line & l,
+                                        double & r1,
+                                        double & r2) const
         {
             double d =
                 (l.p2.y - l.p1.y) * (p2.x - p1.x) -
@@ -174,10 +174,10 @@ namespace geom
             {
                 r1 = q1;
                 r2 = q2;
-                return true;
+                return math::confidence::positive;
             }
 
-            return false;
+            return math::confidence::negative;
         }
 
         /* calculates an intersection point of two
@@ -193,31 +193,41 @@ namespace geom
 
            r1, r2 in range (0, 1)
          */
-        bool segment_intersection(const line & l,
-                                  double & r1,
-                                  double & r2) const
+        math::confidence_t segment_intersection(const line & l,
+                                                double & r1,
+                                                double & r2) const
         {
             double q1, q2;
 
-            if (intersection(l, q1, q2) &&
-                fuzzy_t::gt(q1, 0) && fuzzy_t::lt(q1, 1) &&
-                fuzzy_t::gt(q2, 0) && fuzzy_t::lt(q2, 1))
+            if (intersection(l, q1, q2) > 0)
             {
+                double d1 = length(), d2 = l.length();
+                double s1 = d1 * min(q1, 1 - q1),
+                       s2 = d2 * min(q2, 1 - q2);
+
+                auto i1 = fuzzy_t::greater(s1, 0),
+                     i2 = fuzzy_t::greater(s2, 0);
+
                 r1 = q1;
                 r2 = q2;
-                return true;
+
+                if ((i1 > 0) && (i2 > 0))
+                    return math::confidence::positive;
+                if ((i1 < 0) || (i2 < 0))
+                    return math::confidence::negative;
+                return math::confidence::zero;
             }
 
-            return false;
+            return math::confidence::negative;
         }
 
-        bool intersects(const line & l) const
+        math::confidence_t intersects(const line & l) const
         {
             double q1, q2;
             return intersection(l, q1, q2);
         }
 
-        bool segment_intersects(const line & l) const
+        math::confidence_t segment_intersects(const line & l) const
         {
             double q1, q2;
             return segment_intersection(l, q1, q2);
@@ -232,16 +242,12 @@ namespace geom
          */
         convex_type convexity(const point2d_t & p3) const
         {
-            double n = ((p1.x - p3.x) * (p2.y - p3.y) -
-                        (p2.x - p3.x) * (p1.y - p3.y));
-            double dd = (sqdistance(p1, p3) +
-                         sqdistance(p2, p3) +
-                         sqdistance(p1, p2)) / 3;
-            double q = n * n / dd;
-            if (!isfinite(q) || fuzzy_t::eq(0, q))
+            if (contains(p3))
             {
                 return convex_type::degenerate;
             }
+            double n = ((p1.x - p3.x) * (p2.y - p3.y) -
+                        (p2.x - p3.x) * (p1.y - p3.y));
             if (n < 0)
             {
                 return convex_type::clockwise;
