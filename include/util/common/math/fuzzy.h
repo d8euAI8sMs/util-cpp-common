@@ -55,20 +55,6 @@ namespace math
     class fuzzy
     {
 
-        enum : int
-        {
-            _sure_not = -1,
-            _unsure = 0,
-            _sure = 1
-        };
-
-        enum : int
-        {
-            _less = -1,
-            _equal = 0,
-            _greater = 1
-        };
-
     public:
 
         using traits = _Traits;
@@ -86,12 +72,12 @@ namespace math
          *          to the given tolerance
          *     -1 - not equal
          */
-        static int equals(type x1, type x2, type tolerance = traits::tolerance())
+        static confidence_t equals(type x1, type x2, type tolerance = traits::tolerance())
         {
-            if (x1 == x2) return _sure;
+            if (x1 == x2) return confidence::positive;
             if ((x1 <= x2 + tolerance)
-                && (x2 <= x1 + tolerance)) return _unsure;
-            return _sure_not;
+                && (x2 <= x1 + tolerance)) return confidence::zero;
+            return confidence::negative;
         }
 
         /**
@@ -105,11 +91,11 @@ namespace math
          *          to the given tolerance
          *     -1 - greater
          */
-        static int less(type x1, type x2, type tolerance = traits::tolerance())
+        static confidence_t less(type x1, type x2, type tolerance = traits::tolerance())
         {
-            if (x2 > x1 + tolerance) return _sure;
-            if (x1 > x2 + tolerance) return _sure_not;
-            return _unsure;
+            if (x2 > x1 + tolerance) return confidence::positive;
+            if (x1 > x2 + tolerance) return confidence::negative;
+            return confidence::zero;
         }
 
         /**
@@ -123,11 +109,11 @@ namespace math
          *          to the given tolerance
          *     -1 - less
          */
-        static int greater(type x1, type x2, type tolerance = traits::tolerance())
+        static confidence_t greater(type x1, type x2, type tolerance = traits::tolerance())
         {
-            if (x2 > x1 + tolerance) return _sure_not;
-            if (x1 > x2 + tolerance) return _sure;
-            return _unsure;
+            if (x2 > x1 + tolerance) return confidence::negative;
+            if (x1 > x2 + tolerance) return confidence::positive;
+            return confidence::zero;
         }
 
         static bool eq(type x1, type x2, type tolerance = traits::tolerance())
