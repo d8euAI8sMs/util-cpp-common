@@ -155,6 +155,16 @@ namespace geom
                              L"p 4", LINE_INFO());
             Assert::AreEqual(0, l.segment_contains(l.p2),
                              L"p 4", LINE_INFO());
+
+            Assert::AreEqual(-1, l.contains({ 3, 2 }),
+                             L"p 5", LINE_INFO());
+            Assert::AreEqual(-1, l.segment_contains({ 3, 2 }),
+                             L"p 5", LINE_INFO());
+
+            Assert::AreEqual(-1, l.contains({ 1, 4 }),
+                             L"p 6", LINE_INFO());
+            Assert::AreEqual(-1, l.segment_contains({ 1, 4 }),
+                             L"p 6", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_angle)
