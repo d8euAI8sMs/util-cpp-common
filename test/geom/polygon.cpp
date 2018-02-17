@@ -14,6 +14,7 @@ namespace geom
 {
 
     using arr4_t  = std::array < point2d_t, 4 > ;
+    using vect_t  = std::vector < point2d_t > ;
 
     static const arr4_t points =
     {
@@ -80,6 +81,73 @@ namespace geom
                              L"non-empty", LINE_INFO());
             Assert::IsFalse(make_polygon < arr4_t > ({}).empty(),
                              L"empty", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_intersection_with_line)
+            TEST_DESCRIPTION(L"intersection with line calculation is correct")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_intersection_with_line)
+        {
+            auto p1 = make_polygon < vect_t > ({ { { 2, 2 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
+
+            Assert::AreEqual(1,  p1.intersects(make_line(1, 2, 3, 4)), L"p1 - l1", LINE_INFO());
+            Assert::AreEqual(1,  p1.intersects(make_line(2, 3, 3, 4)), L"p1 - l2", LINE_INFO());
+            Assert::AreEqual(-1, p1.intersects(make_line(4, 1, 5, 2)), L"p1 - l3", LINE_INFO());
+            Assert::AreEqual(-1, p1.intersects(make_line(2, 0, 2, 1)), L"p1 - l4", LINE_INFO());
+
+            Assert::AreEqual(-1, p1.intersects(make_line(3, 2, 3, 5)), L"p1 - l5", LINE_INFO());
+            Assert::AreEqual(-1, p1.intersects(make_line(1, 2, 1, 5)), L"p1 - l6", LINE_INFO());
+            Assert::AreEqual(1,  p1.intersects(make_line(2.999, 2, 2.999, 5)), L"p1 - l7", LINE_INFO());
+
+            Assert::AreEqual(1,  p1.intersects(make_line(2, 1, 2, 5)), L"p1 - l8", LINE_INFO());
+            Assert::AreEqual(1,  p1.intersects(make_line(2, 2, 2, 5)), L"p1 - l9", LINE_INFO());
+            Assert::AreEqual(1,  p1.intersects(make_line(2, 3, 2, 5)), L"p1 - l10", LINE_INFO());
+            Assert::AreEqual(0,  p1.intersects(make_line(2, 4, 2, 5)), L"p1 - l11", LINE_INFO());
+
+            Assert::AreEqual(0,  p1.intersects(make_line(1, 1, 4, 4)), L"p1 - l12", LINE_INFO());
+            Assert::AreEqual(0,  p1.intersects(make_line(2, 2, 4, 4)), L"p1 - l13", LINE_INFO());
+            Assert::AreEqual(0,  p1.intersects(make_line(3, 3, 4, 4)), L"p1 - l14", LINE_INFO());
+
+            auto p2 = make_polygon < vect_t > ({ { { 2, 2 }, { 2.5, 2.5 }, { 3, 3 }, { 2.5, 3.5 }, { 2, 4 }, { 1.5, 3.5 }, { 1, 3 }, { 1.5, 2.5 } } });
+
+            Assert::AreEqual(1,  p2.intersects(make_line(1, 2, 3, 4)), L"p2 - l1", LINE_INFO());
+            Assert::AreEqual(1,  p2.intersects(make_line(2, 3, 3, 4)), L"p2 - l2", LINE_INFO());
+            Assert::AreEqual(-1, p2.intersects(make_line(4, 1, 5, 2)), L"p2 - l3", LINE_INFO());
+            Assert::AreEqual(-1, p2.intersects(make_line(2, 0, 2, 1)), L"p2 - l4", LINE_INFO());
+
+            Assert::AreEqual(-1, p2.intersects(make_line(3, 2, 3, 5)), L"p2 - l5", LINE_INFO());
+            Assert::AreEqual(-1, p2.intersects(make_line(1, 2, 1, 5)), L"p2 - l6", LINE_INFO());
+            Assert::AreEqual(1,  p2.intersects(make_line(2.999, 2, 2.999, 5)), L"p2 - l7", LINE_INFO());
+
+            Assert::AreEqual(1,  p2.intersects(make_line(2, 1, 2, 5)), L"p2 - l8", LINE_INFO());
+            Assert::AreEqual(1,  p2.intersects(make_line(2, 2, 2, 5)), L"p2 - l9", LINE_INFO());
+            Assert::AreEqual(1,  p2.intersects(make_line(2, 3, 2, 5)), L"p2 - l10", LINE_INFO());
+            Assert::AreEqual(0,  p2.intersects(make_line(2, 4, 2, 5)), L"p2 - l11", LINE_INFO());
+
+            Assert::AreEqual(0,  p2.intersects(make_line(1, 1, 4, 4)), L"p2 - l12", LINE_INFO());
+            Assert::AreEqual(0,  p2.intersects(make_line(2, 2, 4, 4)), L"p2 - l13", LINE_INFO());
+            Assert::AreEqual(0,  p2.intersects(make_line(3, 3, 4, 4)), L"p2 - l14", LINE_INFO());
+
+            auto p3 = make_polygon < vect_t > ({ { { 2, 2 }, { 2.25, 2.25 }, { 3, 2 }, { 2.75, 2.75 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
+
+            Assert::AreEqual(1,  p3.intersects(make_line(1, 2, 3, 4)), L"p3 - l1", LINE_INFO());
+            Assert::AreEqual(1,  p3.intersects(make_line(2, 3, 3, 4)), L"p3 - l2", LINE_INFO());
+            Assert::AreEqual(-1, p3.intersects(make_line(4, 1, 5, 2)), L"p3 - l3", LINE_INFO());
+            Assert::AreEqual(-1, p3.intersects(make_line(2, 0, 2, 1)), L"p3 - l4", LINE_INFO());
+
+            Assert::AreEqual(-1, p3.intersects(make_line(3, 2, 3, 5)), L"p3 - l5", LINE_INFO());
+            Assert::AreEqual(-1, p3.intersects(make_line(1, 2, 1, 5)), L"p3 - l6", LINE_INFO());
+            Assert::AreEqual(1,  p3.intersects(make_line(2.999, 2, 2.999, 5)), L"p3 - l7", LINE_INFO());
+
+            Assert::AreEqual(1,  p3.intersects(make_line(2, 1, 2, 5)), L"p3 - l8", LINE_INFO());
+            Assert::AreEqual(1,  p3.intersects(make_line(2, 2, 2, 5)), L"p3 - l9", LINE_INFO());
+            Assert::AreEqual(1,  p3.intersects(make_line(2, 3, 2, 5)), L"p3 - l10", LINE_INFO());
+            Assert::AreEqual(0,  p3.intersects(make_line(2, 4, 2, 5)), L"p3 - l11", LINE_INFO());
+
+            Assert::AreEqual(1,  p3.intersects(make_line(1, 1, 4, 4)), L"p3 - l12", LINE_INFO());
+            Assert::AreEqual(1,  p3.intersects(make_line(2, 2, 4, 4)), L"p3 - l13", LINE_INFO());
+            Assert::AreEqual(0,  p3.intersects(make_line(3, 3, 4, 4)), L"p3 - l14", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_intersection)
