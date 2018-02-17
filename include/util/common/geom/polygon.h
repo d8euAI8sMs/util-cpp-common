@@ -139,22 +139,89 @@ namespace geom
          * very close to polygon vertex (special
          * intersection case);
          */
-        virtual bool intersects(const line & l) const
+        virtual math::confidence_t intersects(const line & l) const
         {
-            if (points.size() < 3) return false;
+            if (points.size() < 3) return math::confidence::negative;
 
             double q1, q2;
+
+            std::vector < double > possible_intersection_points;
+            bool possible_edge_coincide = false;
 
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                if (l.segment_intersection(line(points[i], points[j]), q1, q2))
+                auto l0 = line(points[i], points[j]);
+                auto it = l.segment_intersection(l0, q1, q2);
+                if (it > 0)
+                    return math::confidence::positive;
+                else if (it == 0)
                 {
-                    return true;
+                    /* no checking if lines are parallel since
+                       if it is the case, segment_intersection
+                       will return -1 */
+                    possible_intersection_points.push_back(q1);
+                }
+                else if (it < 0)
+                {
+                    /* due to previous comment, if points lie on
+                       an edge of a polygon and no other intersection
+                       point found, an algorithm should report 0 */
+                    if ((l0.contains(l.p1) >= 0) && (l0.contains(l.p2) >= 0))
+                    {
+                        possible_edge_coincide = true;
+                    }
                 }
             }
 
-            return (contains(l.p1) ^ contains(l.p2));
+            auto c1 = contains(l.p1),
+                 c2 = contains(l.p2);
+
+            bool possible_contains_line = false;
+
+            if (c1 * c2 < 0)
+                return math::confidence::positive;
+            if ((c1 > 0) && (c2 > 0))
+                return math::confidence::negative;
+            if ((c1 <= 0) && (c2 <= 0))
+            {
+                if (!possible_intersection_points.empty())
+                {
+                    auto s = l.length();
+                    for(size_t i = 0; i < possible_intersection_points.size(); ++i)
+                    {
+                        auto q = possible_intersection_points[i];
+                        /* skip l.p1 or l.p2 as an algorithm may
+                           report incorrect results */
+                        q1 = ((q * s) - 2 * fuzzy_t::traits::tolerance()) / s;
+                        q2 = ((q * s) + 2 * fuzzy_t::traits::tolerance()) / s;
+                        auto c3 = contains(l.inner_point(q1));
+                        if (c3 > 0)
+                        {
+                            if (fuzzy_t::eq(0, q * s))
+                                return math::confidence::zero;
+                            if ((c1 == 0) && (c2 == 0))
+                                possible_contains_line = true;
+                            return math::confidence::positive;
+                        }
+                        auto c4 = contains(l.inner_point(q2));
+                        if (c4 > 0)
+                        {
+                            if (fuzzy_t::eq(s, q * s))
+                                return math::confidence::zero;
+                            if ((c1 == 0) && (c2 == 0))
+                                possible_contains_line = true;
+                            return math::confidence::positive;
+                        }
+                    }
+                }
+                if (possible_contains_line)
+                    return math::confidence::zero;
+                if (possible_edge_coincide)
+                    return math::confidence::zero;
+            }
+
+            return math::confidence::negative;
         }
 
         /**
