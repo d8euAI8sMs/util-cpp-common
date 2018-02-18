@@ -63,6 +63,11 @@ namespace geom
                             math::confidence::zero) :
                         math::confidence::negative;
         }
+
+        inline status_t trusted(status_t s)
+        {
+            return s | (s << 1);
+        }
     }
 
     using flags_t = size_t;
