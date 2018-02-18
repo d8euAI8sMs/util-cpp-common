@@ -192,10 +192,24 @@ namespace geom
 
            r1, r2 - any numbers
          */
-        math::confidence_t intersection(const line & l,
-                                        double & r1,
-                                        double & r2) const
+        status_t intersection(const line & l,
+                              double & r1,
+                              double & r2,
+                              flags_t flg = 0) const
         {
+            status_t r = status::trusted(status::ok);
+
+            /* parallelism check is not supported now */
+            if (flags::has_any(flg, flags::line::check_coincidence))
+            {
+                if ((contains(l.p1) >= 0) && (contains(l.p2) >= 0))
+                {
+                    r |= status::trusted(status::line::coincides);
+                    /* segment coincidence check is not supported now */
+                    return r;
+                }
+            }
+
             double d =
                 (l.p2.y - l.p1.y) * (p2.x - p1.x) -
                 (l.p2.x - l.p1.x) * (p2.y - p1.y);
@@ -214,10 +228,31 @@ namespace geom
             {
                 r1 = q1;
                 r2 = q2;
-                return math::confidence::positive;
+
+                r |= status::trusted(status::line::intersects);
+
+                if (flags::has_none(flg, flags::line::inside_segment))
+                    return r;
+
+                double d1 = length(), d2 = l.length();
+                double s1 = d1 * min(q1, 1 - q1),
+                       s2 = d2 * min(q2, 1 - q2);
+
+                auto i1 = fuzzy_t::greater(s1, 0),
+                     i2 = fuzzy_t::greater(s2, 0);
+
+                if (i1 == 0)
+                    r |= status::line::self_segment;
+                else if (i1 > 0)
+                    r |= status::trusted(status::line::self_segment);
+
+                if (i2 == 0)
+                    r |= status::line::other_segment;
+                else if (i2 > 0)
+                    r |= status::trusted(status::line::other_segment);
             }
 
-            return math::confidence::negative;
+            return r;
         }
 
         /* calculates an intersection point of two
@@ -237,44 +272,26 @@ namespace geom
 
            r1, r2 in range (~0, ~1)
          */
-        math::confidence_t segment_intersection(const line & l,
-                                                double & r1,
-                                                double & r2) const
+        status_t segment_intersection(const line & l,
+                                      double & r1,
+                                      double & r2,
+                                      flags_t flg = 0) const
         {
-            double q1, q2;
-
-            if (intersection(l, q1, q2) > 0)
-            {
-                double d1 = length(), d2 = l.length();
-                double s1 = d1 * min(q1, 1 - q1),
-                       s2 = d2 * min(q2, 1 - q2);
-
-                auto i1 = fuzzy_t::greater(s1, 0),
-                     i2 = fuzzy_t::greater(s2, 0);
-
-                r1 = q1;
-                r2 = q2;
-
-                if ((i1 > 0) && (i2 > 0))
-                    return math::confidence::positive;
-                if ((i1 < 0) || (i2 < 0))
-                    return math::confidence::negative;
-                return math::confidence::zero;
-            }
-
-            return math::confidence::negative;
+            return intersection(l, r1, r2, flg |
+                                flags::line::inside_segment |
+                                flags::line::check_segment_coincidence);
         }
 
-        math::confidence_t intersects(const line & l) const
+        status_t intersects(const line & l, flags_t flg = 0) const
         {
             double q1, q2;
-            return intersection(l, q1, q2);
+            return intersection(l, q1, q2, flg);
         }
 
-        math::confidence_t segment_intersects(const line & l) const
+        status_t segment_intersects(const line & l, flags_t flg = 0) const
         {
             double q1, q2;
-            return segment_intersection(l, q1, q2);
+            return segment_intersection(l, q1, q2, flg);
         }
 
         /* calculates convexity type of the triangle
@@ -406,7 +423,8 @@ namespace geom
         const line & l1, const line & l2
     )
     {
-        return l1.segment_intersects(l2) > 0;
+        return status::is_trusted(l1.segment_intersects(l2),
+                                  status::line::both_segments);
     }
 
     template <> inline bool contains
