@@ -51,6 +51,26 @@ namespace geom
         }
     }
 
+    using flags_t = size_t;
+
+    namespace flags
+    {
+        inline bool has(flags_t f, flags_t bits)
+        {
+            return (f & bits) == bits;
+        }
+
+        inline bool has_any(flags_t f, flags_t bits)
+        {
+            return (f & bits) != 0;
+        }
+
+        inline bool has_none(flags_t f, flags_t bits)
+        {
+            return (f & bits) == 0;
+        }
+    }
+
     enum class convex_type
     {
         no,
