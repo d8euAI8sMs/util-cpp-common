@@ -49,6 +49,20 @@ namespace geom
         {
             return is(s, ok);
         }
+
+        inline bool is_trusted(status_t s, status_t bits)
+        {
+            return is(s, bits | (bits << 1));
+        }
+
+        inline math::confidence_t get(status_t s, status_t bits)
+        {
+            return is(s, bits) ?
+                        (is(s, bits << 1) ?
+                            math::confidence::positive :
+                            math::confidence::zero) :
+                        math::confidence::negative;
+        }
     }
 
     using flags_t = size_t;
