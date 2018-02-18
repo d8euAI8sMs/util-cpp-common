@@ -182,10 +182,26 @@ namespace geom
 
         /* calculates an intersection point;
 
-           returns >0 if two lines have
-           intersection point and fills r1 and r2
-           with parameters on this and given line
-           correspondingly;
+           if `check_coincidence` flag set, checks
+           if two lines coincide and sets `coincides`
+           status bits if check succeeds; if the flag is
+           not set, but lines coincide, sets `intersects`
+           status bits unless lines are exactly parallel
+           or exactly coincide;
+
+           if `inside_segment` flag set and line
+           intersection detected, sets `self_segment` and/or
+           `other_segment` bits if intersection point is
+           inside this line segment and/or the given line
+           segment; the segment intersection is not trusted
+           if the intersection point is too close to one
+           of the segment boundary points;
+
+           implementation notes:
+                `check_parallelism` flag
+                    not implemented
+                `check_segment_coincidence`
+                    not implemented
 
            intersection point = inner_point(r1)
                               = l.inner_point(r2)
@@ -255,23 +271,8 @@ namespace geom
             return r;
         }
 
-        /* calculates an intersection point of two
-           line segments;
-
-           returns >0 if two line segments have
-           intersection point and fills r1 and r2
-           with parameters on this and given line
-           correspondingly;
-
-           returns 0 if intersection point is too
-           close to line segment boundaries (i.e.
-           r1, r2 ~ 0 or ~1);
-
-           intersection point = inner_point(r1)
-                              = l.inner_point(r2)
-
-           r1, r2 in range (~0, ~1)
-         */
+        /* adds `inside_segment` and `check_segment_coincidence`
+           flags to the `intersection` function */
         status_t segment_intersection(const line & l,
                                       double & r1,
                                       double & r2,
