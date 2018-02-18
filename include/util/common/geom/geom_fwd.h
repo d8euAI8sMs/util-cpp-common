@@ -21,6 +21,36 @@ namespace geom
     using fuzzy_geom_traits_t = math::fuzzy_weak_double_traits;
     using fuzzy_t = math::fuzzy < fuzzy_geom_traits_t > ;
 
+    using status_t = size_t;
+
+    namespace status
+    {
+        enum : status_t
+        {
+            ok = 1 << 0
+        };
+
+        inline bool is(status_t s, status_t bits)
+        {
+            return (s & bits) == bits;
+        }
+
+        inline bool is_any(status_t s, status_t bits)
+        {
+            return (s & bits) != 0;
+        }
+
+        inline bool is_not(status_t s, status_t bits)
+        {
+            return (s & bits) == 0;
+        }
+
+        inline bool is_ok(status_t s)
+        {
+            return is(s, ok);
+        }
+    }
+
     enum class convex_type
     {
         no,
