@@ -14,6 +14,43 @@ namespace geom
 {
 
     /*****************************************************/
+    /*             status codes and flags                */
+    /*****************************************************/
+
+    namespace status
+    {
+        namespace line
+        {
+            enum : status_t
+            {
+                contains_point       = 1 << 2,
+                self_segment         = 1 << 4,
+                other_segment        = 1 << 6,
+                both_segments        = self_segment | other_segment,
+                coincides            = 1 << 8,
+                parallel             = 1 << 12,
+                intersects           = 1 << 14,
+                contains_segment     = 1 << 16,
+                contained_by_segment = 1 << 18,
+            };
+        }
+    }
+
+    namespace flags
+    {
+        namespace line
+        {
+            enum : flags_t
+            {
+                inside_segment            = 1 << 0,
+                check_coincidence         = 1 << 1,
+                check_segment_coincidence = 1 << 2,
+                check_parallelism         = 1 << 3,
+            };
+        }
+    }
+
+    /*****************************************************/
     /*                     line                          */
     /*****************************************************/
 
