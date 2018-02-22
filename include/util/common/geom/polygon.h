@@ -425,8 +425,8 @@ namespace geom
 
             for (;;)
             {
-                pivot.x = p.x + (1 + rand() / (RAND_MAX + 1.)) * d;
-                pivot.y = p.y + (1 + rand() / (RAND_MAX + 1.)) * d;
+                pivot.x = p.x + ((rand() % 2) * 2 - 1) * (1 + rand() / (RAND_MAX + 1.)) * d;
+                pivot.y = p.y + ((rand() % 2) * 2 - 1) * (1 + rand() / (RAND_MAX + 1.)) * d;
 
                 size_t c = 0;
                 size_t i, j;
