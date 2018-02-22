@@ -386,9 +386,11 @@ namespace geom
          * implemented for generic concave polygon without
          * self intersections;
          */
-        virtual math::confidence_t contains(const point2d_t & p) const
+        virtual status_t contains(const point2d_t & p, flags_t flg = 0) const
         {
-            if (points.size() < 3) return math::confidence::negative;
+            if (points.size() < 3) return 0;
+
+            status_t r = status::trusted(status::ok);
 
             double min_x, max_x, min_y, max_y;
             double d;
@@ -399,8 +401,13 @@ namespace geom
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                if (line(points[i], points[j]).segment_contains(p) >= 0)
-                    return math::confidence::zero;
+                auto sc = line(points[i], points[j]).segment_contains(p);
+                if (sc >= 0)
+                    r |= status::polygon::contains_point;
+                if (sc > 0)
+                    return r | status::trusted(status::polygon::edge_contains_point);
+                if (sc == 0)
+                    return r | status::polygon::edge_contains_point;
                 if (points[i].x < min_x) min_x = points[i].x;
                 if (points[i].y < min_y) min_y = points[i].y;
                 if (points[i].x > max_x) max_x = points[i].x;
@@ -408,7 +415,7 @@ namespace geom
             }
 
             if ((p.x < min_x) || (p.x > max_x) || (p.y < min_y) || (p.y > max_y))
-                return math::confidence::negative;
+                return r;
 
             d = 2 * (max_x + max_y - min_x - min_y);
 
@@ -427,7 +434,9 @@ namespace geom
                 for (i = 0, j = 1; i < points.size(); ++i, ++j)
                 {
                     if (j == points.size()) j = 0;
-                    auto has_int = line(points[i], points[j]).segment_intersects({ p, pivot });
+                    auto has_int = status::get(
+                        line(points[i], points[j]).segment_intersects({ p, pivot }),
+                        status::line::intersects | status::line::both_segments);
                     if (has_int == 0)
                         break;
                     if (has_int > 0)
@@ -436,8 +445,8 @@ namespace geom
 
                 if (i != points.size()) continue;
 
-                return ((c % 2) == 1) ? math::confidence::positive
-                                      : math::confidence::negative;
+                return ((c % 2) == 1) ? r | status::trusted(status::polygon::contains_point)
+                                      : r;
             }
         }
 
