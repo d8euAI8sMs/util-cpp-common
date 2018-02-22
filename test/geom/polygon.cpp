@@ -120,7 +120,7 @@ namespace geom
                              p1.intersects(make_line(1, 1, 4, 4)), L"p1 - l12", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line) | status::polygon::contains_line,
                              p1.intersects(make_line(2, 2, 4, 4)), L"p1 - l13", LINE_INFO());
-            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line) | status::polygon::contains_line,
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line | status::polygon::contains_point),
                              p1.intersects(make_line(3, 3, 4, 4)), L"p1 - l14", LINE_INFO());
 
             auto p2 = make_polygon < vect_t > ({ { { 2, 2 }, { 2.5, 2.5 }, { 3, 3 }, { 2.5, 3.5 }, { 2, 4 }, { 1.5, 3.5 }, { 1, 3 }, { 1.5, 2.5 } } });
@@ -154,7 +154,7 @@ namespace geom
                              p2.intersects(make_line(1, 1, 4, 4)), L"p2 - l12", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line) | status::polygon::contains_line,
                              p2.intersects(make_line(2, 2, 4, 4)), L"p2 - l13", LINE_INFO());
-            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line) | status::polygon::contains_line,
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line | status::polygon::contains_point),
                              p2.intersects(make_line(3, 3, 4, 4)), L"p2 - l14", LINE_INFO());
 
             auto p3 = make_polygon < vect_t > ({ { { 2, 2 }, { 2.25, 2.25 }, { 3, 2 }, { 2.75, 2.75 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
@@ -188,7 +188,7 @@ namespace geom
                              p3.intersects(make_line(1, 1, 4, 4)), L"p3 - l12", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok | status::polygon::intersects),
                              p3.intersects(make_line(2, 2, 4, 4)), L"p3 - l13", LINE_INFO());
-            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line) | status::polygon::contains_line,
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_line | status::polygon::contains_point),
                              p3.intersects(make_line(3, 3, 4, 4)), L"p3 - l14", LINE_INFO());
         }
 
