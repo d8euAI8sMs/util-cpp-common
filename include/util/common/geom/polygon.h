@@ -171,9 +171,11 @@ namespace geom
          * very close to polygon vertex (special
          * intersection case);
          */
-        virtual math::confidence_t intersects(const line & l) const
+        virtual status_t intersects(const line & l, flags_t flg = 0) const
         {
-            if (points.size() < 3) return math::confidence::negative;
+            if (points.size() < 3) return 0;
+
+            status_t r = trusted(status::ok);
 
             double q1, q2;
 
@@ -185,16 +187,17 @@ namespace geom
                 if (j == points.size()) j = 0;
                 auto l0 = line(points[i], points[j]);
                 auto it = l.segment_intersection(l0, q1, q2);
-                if (it > 0)
-                    return math::confidence::positive;
-                else if (it == 0)
+                if (status::is_trusted(it,
+                        status::line::intersects | status::line::both_segments))
+                    return r | status::trusted(status::polygon::intersects);
+                else if (status::is(it, status::line::both_segments))
                 {
                     /* no checking if lines are parallel since
                        if it is the case, segment_intersection
                        will return -1 */
                     possible_intersection_points.push_back(q1);
                 }
-                else if (it < 0)
+                else if (status::is_not(it, status::line::both_segments))
                 {
                     /* due to previous comment, if points lie on
                        an edge of a polygon and no other intersection
@@ -210,12 +213,18 @@ namespace geom
                  c2 = contains(l.p2);
 
             bool possible_contains_line = false;
+            bool possible_touches_line = false;
 
-            if (c1 * c2 < 0)
-                return math::confidence::positive;
-            if ((c1 > 0) && (c2 > 0))
-                return math::confidence::negative;
-            if ((c1 <= 0) && (c2 <= 0))
+            if (status::is_trusted(c1, status::polygon::contains_point) &&
+                status::is_not(c2, status::polygon::contains_point) ||
+                status::is_trusted(c2, status::polygon::contains_point) &&
+                status::is_not(c1, status::polygon::contains_point))
+                return r | status::trusted(status::polygon::intersects);
+            if (status::is_trusted(c1, status::polygon::contains_point) &&
+                status::is_trusted(c2, status::polygon::contains_point))
+                return r | status::trusted(status::polygon::contains_line);
+            if ((status::get(c1, status::polygon::contains_point) <= 0) &&
+                (status::get(c2, status::polygon::contains_point) <= 0))
             {
                 if (!possible_intersection_points.empty())
                 {
@@ -228,32 +237,43 @@ namespace geom
                         q1 = ((q * s) - 2 * fuzzy_t::traits::tolerance()) / s;
                         q2 = ((q * s) + 2 * fuzzy_t::traits::tolerance()) / s;
                         auto c3 = contains(l.inner_point(q1));
-                        if (c3 > 0)
+                        if (status::is_trusted(c3, status::polygon::contains_point))
                         {
                             if (fuzzy_t::eq(0, q * s))
-                                return math::confidence::zero;
-                            if ((c1 == 0) && (c2 == 0))
-                                possible_contains_line = true;
-                            return math::confidence::positive;
+                            {
+                                possible_touches_line = true;
+                                continue;
+                            }
+                            return r | status::trusted(status::polygon::intersects);
                         }
                         auto c4 = contains(l.inner_point(q2));
-                        if (c4 > 0)
+                        if (status::is_trusted(c4, status::polygon::contains_point))
                         {
                             if (fuzzy_t::eq(s, q * s))
-                                return math::confidence::zero;
-                            if ((c1 == 0) && (c2 == 0))
-                                possible_contains_line = true;
-                            return math::confidence::positive;
+                            {
+                                possible_touches_line = true;
+                                continue;
+                            }
+                            return r | status::trusted(status::polygon::intersects);
                         }
                     }
                 }
-                if (possible_contains_line)
-                    return math::confidence::zero;
+
+                if (status::is(c1, status::polygon::edge_contains_point) &&
+                    status::is(c2, status::polygon::edge_contains_point))
+                {
+                    r |= status::trusted(status::polygon::contains_line);
+                }
+                if (possible_touches_line)
+                {
+                    r |= status::trusted(status::polygon::contains_point);
+                }
                 if (possible_edge_coincide)
-                    return math::confidence::zero;
+                    r |= status::polygon::contains_line |
+                         status::trusted(status::polygon::coincides_with_line);
             }
 
-            return math::confidence::negative;
+            return r;
         }
 
         /**
