@@ -170,14 +170,14 @@ namespace geom
         {
             auto d = distance(p);
             if (d.confidence <= 0) return d.confidence;
-            return fuzzy_t::equals(0, d);
+            return fuzzy_t::eq(0, d) ? math::confidence::positive : math::confidence::negative;
         }
 
         math::confidence_t segment_contains(const point2d_t & p) const
         {
             auto d = segment_distance(p);
             if (d.confidence <= 0) return d.confidence;
-            return fuzzy_t::equals(0, d);
+            return fuzzy_t::eq(0, d) ? math::confidence::positive : math::confidence::negative;
         }
 
         /* calculates an intersection point;
