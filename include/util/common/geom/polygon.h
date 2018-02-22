@@ -163,13 +163,25 @@ namespace geom
          * line segment;
          *
          * if number of vertices in this polygon is < 3,
-         * returns false;
+         * returns 0;
          *
-         * the function also checks if one point of line
-         * is in and other is out of this polygon; it may
-         * be helpful in case if intersection point is
-         * very close to polygon vertex (special
-         * intersection case);
+         * implemented for generic concave polygon without
+         * self intersections;
+         *
+         * statuses:
+         *      `intersects` - if this polygon is intersected
+         *          by the given line
+         *      `contains_line` - if the line is inside
+         *          the polygon
+         *      `contains_point` - if the line starts or ends
+         *          at the polygon edge but does not coincide
+         *          or intersect with the polygon
+         *      `coincides_with_line` - if the given line
+         *          coincides with the polygon but does not
+         *          intersect it
+         *
+         * implementation notes:
+         *      flag `edge_intersection_only` is not implemented
          */
         virtual status_t intersects(const line & l, flags_t flg = 0) const
         {
