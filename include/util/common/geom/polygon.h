@@ -249,23 +249,23 @@ namespace geom
                         q1 = ((q * s) - 2 * fuzzy_t::traits::tolerance()) / s;
                         q2 = ((q * s) + 2 * fuzzy_t::traits::tolerance()) / s;
                         auto c3 = contains(l.inner_point(q1));
-                        if (status::is_trusted(c3, status::polygon::contains_point))
+                        if (status::is(c3, status::polygon::contains_point) &&
+                            fuzzy_t::eq(0, q * s))
                         {
-                            if (fuzzy_t::eq(0, q * s))
-                            {
-                                possible_touches_line = true;
-                                continue;
-                            }
+                            possible_touches_line = true;
+                        }
+                        else if (status::is_trusted(c3, status::polygon::contains_point))
+                        {
                             return r | status::trusted(status::polygon::intersects);
                         }
                         auto c4 = contains(l.inner_point(q2));
-                        if (status::is_trusted(c4, status::polygon::contains_point))
+                        if (status::is(c4, status::polygon::contains_point) &&
+                            fuzzy_t::eq(s, q * s))
                         {
-                            if (fuzzy_t::eq(s, q * s))
-                            {
-                                possible_touches_line = true;
-                                continue;
-                            }
+                            possible_touches_line = true;
+                        }
+                        else if (status::is_trusted(c4, status::polygon::contains_point))
+                        {
                             return r | status::trusted(status::polygon::intersects);
                         }
                     }
@@ -276,13 +276,22 @@ namespace geom
                 {
                     r |= status::trusted(status::polygon::contains_line);
                 }
-                if (possible_touches_line)
+                if (possible_touches_line &&
+                    ((status::get(c1, status::polygon::edge_contains_point) == 0) &&
+                    (status::get(c2, status::polygon::contains_point) < 0) ||
+                    (status::get(c2, status::polygon::edge_contains_point) == 0) &&
+                    (status::get(c1, status::polygon::contains_point) < 0)))
                 {
                     r |= status::trusted(status::polygon::contains_point);
                 }
                 if (possible_edge_coincide)
-                    r |= status::polygon::contains_line |
-                         status::trusted(status::polygon::coincides_with_line);
+                {
+                    r |= status::trusted(status::polygon::coincides_with_line);
+                    if (status::is_not(r, status::polygon::contains_point))
+                    {
+                        r |= status::polygon::contains_line;
+                    }
+                }
             }
 
             return r;
