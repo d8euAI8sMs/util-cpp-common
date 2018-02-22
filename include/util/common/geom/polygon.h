@@ -385,6 +385,15 @@ namespace geom
          *
          * implemented for generic concave polygon without
          * self intersections;
+         *
+         * statuses:
+         *      `edge_contains_point` - if point is on edge
+         *          trusted if edge represented by the line
+         *          segment surely contains the point
+         *      `contains_point` - if point is on edge or
+         *          inside the polygon. trusted if the point
+         *          is exactly inside
+         *
          */
         virtual status_t contains(const point2d_t & p, flags_t flg = 0) const
         {
