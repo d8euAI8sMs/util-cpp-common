@@ -21,6 +21,38 @@ namespace geom
 {
 
     /*****************************************************/
+    /*             status codes and flags                */
+    /*****************************************************/
+
+    namespace status
+    {
+        namespace polygon
+        {
+            enum : status_t
+            {
+                contains_point          = 1 << 2,
+                edge_contains_point     = 1 << 4,
+                intersects              = 1 << 6,
+                contains_line           = 1 << 8,
+                coincides_with_line     = 1 << 10,
+                contains_polygon        = 1 << 12,
+                coincides_with_polygon  = 1 << 14,
+            };
+        }
+    }
+
+    namespace flags
+    {
+        namespace polygon
+        {
+            enum : flags_t
+            {
+                edge_intersection_only = 1 << 0,
+            };
+        }
+    }
+
+    /*****************************************************/
     /*                     polygon                       */
     /*****************************************************/
 
