@@ -39,25 +39,9 @@ namespace geom
             return std::sqrt(sqradius);
         }
 
-        bool contains(const point2d_t & p) const
+        math::confidence_t contains(const point2d_t & p) const
         {
-            return (sqdistance(p, center) < sqradius);
-        }
-
-        bool border_contains(const point2d_t & p) const
-        {
-            return fuzzy_t::eq(0,
-                std::abs(sqdistance(p, center) - sqradius) / sqradius);
-        }
-
-        bool inner_contains(const point2d_t & p) const
-        {
-            return contains(p) && !border_contains(p);
-        }
-
-        bool outer_contains(const point2d_t & p) const
-        {
-            return contains(p) || border_contains(p);
+            return fuzzy_t::less(distance(p, center), radius());
         }
     };
 
@@ -117,6 +101,6 @@ namespace geom
         const circle & c, const point2d_t & p
     )
     {
-        return c.contains(p);
+        return c.contains(p) > 0;
     }
 }
