@@ -402,9 +402,9 @@ namespace geom
             Assert::IsTrue(p3.convexity() == convex_type::degenerate, L"p3 c", LINE_INFO());
 
             auto p32 = polygon < > ();
-            p1.points.emplace_back(2, 2);
-            p3.points.emplace_back(2.5, 2.5);
-            p1.points.emplace_back(3, 3);
+            p32.points.emplace_back(2, 2);
+            p32.points.emplace_back(2.5, 2.5);
+            p32.points.emplace_back(3, 3);
 
             Assert::IsFalse(p32.is_convex(), L"p32", LINE_INFO());
             Assert::IsTrue(p32.convexity() == convex_type::degenerate, L"p32 c", LINE_INFO());
