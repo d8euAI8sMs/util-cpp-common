@@ -425,13 +425,13 @@ namespace geom
             return status::is_trusted(t1.intersects(t2), status::polygon::intersects);
         }
 
-        void _triangulate(const std::vector < idx_t > & orphans, idx_t bound_to = SIZE_T_MAX)
+        void _triangulate(const std::vector < idx_t > & orphans,
+                          std::vector < idx_t > circle_collision_triangles,
+                          idx_t bound_to = SIZE_T_MAX)
         {
             ASSERT(orphans.size() >= 3);
 
             triangle_info info;
-
-            std::vector < idx_t > circle_collision_triangles;
 
             for (idx_t i = 0;     i < orphans.size(); ++i)
             for (idx_t j = i + 1; j < orphans.size(); ++j)
@@ -533,18 +533,20 @@ namespace geom
             }
 
             std::set < idx_t > orphans;
+            std::vector < idx_t > circle_collision_triangles;
 
             for (idx_t i = 0; i < _triangles.size(); ++i)
             {
                 if (_triangles[i].flags & phantom) continue;
-                if (_triangles[i].enclosing.contains(p) >= 0)
-                {
-                    auto & t = _triangles[i];
+                auto c = _triangles[i].enclosing.contains(p);
+                auto & t = _triangles[i];
+                if (c > 0)
                     _delete_triangle(i);
-                    orphans.insert(t.vertices[0]);
-                    orphans.insert(t.vertices[1]);
-                    orphans.insert(t.vertices[2]);
-                }
+                else if (c == 0)
+                    circle_collision_triangles.push_back(i);
+                orphans.insert(t.vertices[0]);
+                orphans.insert(t.vertices[1]);
+                orphans.insert(t.vertices[2]);
             }
 
             if (orphans.empty()) return SIZE_T_MAX;
@@ -553,7 +555,9 @@ namespace geom
 
             orphans.insert(_vertices.size() - 1);
 
-            _triangulate(std::vector < idx_t > (orphans.begin(), orphans.end()), _vertices.size() - 1);
+            _triangulate(std::vector < idx_t > (orphans.begin(), orphans.end()),
+                         std::move(circle_collision_triangles),
+                         _vertices.size() - 1);
 
             return _vertices.size() - 1;
         }
@@ -573,7 +577,7 @@ namespace geom
                 orphans[i] = i;
             }
 
-            _triangulate(orphans);
+            _triangulate(orphans, {});
         }
     };
 }
