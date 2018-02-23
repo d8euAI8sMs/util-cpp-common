@@ -372,11 +372,11 @@ namespace geom
             bool has_inner = false;
             bool has_coincidence = false;
 
-            for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
+            for (size_t i = 0, j = 1; i < p.points.size(); ++i, ++j)
             {
-                if (j == points.size()) j = 0;
-                auto l = line(points[i], points[j]);
-                auto has_int = p.intersects(l);
+                if (j == p.points.size()) j = 0;
+                auto l = line(p.points[i], p.points[j]);
+                auto has_int = intersects(l);
                 if (status::is_trusted(has_int, status::polygon::intersects))
                     return r | status::trusted(status::polygon::intersects);
                 if (status::is_trusted(has_int, status::polygon::coincides_with_line))
