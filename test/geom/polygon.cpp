@@ -223,6 +223,13 @@ namespace geom
             auto p3 = make_polygon < arr4_t > ({ { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } } });
             auto p4 = make_polygon < arr4_t > ({ { { 3, 1 }, { 3, 3 }, { 1, 3 }, { 1, 1 } } });
             auto p5 = make_polygon < arr4_t > ({ { { 1, 1 }, { 2, 2 }, { 1, 3 }, { 0, 2 } } });
+            auto p6 = make_polygon < vect_t > ({ { { 0, 0 }, { 7, 0 }, { 7, 3 }, { 0, 3 }, { 0, 2 }, { 6, 2 }, { 6, 1 }, { 0, 1 } } });
+            auto p7 = move(p3, { 1, 1 });
+            auto p8 = move(p3, { 0, 1 });
+            auto p9 = move(p3, { 6, 1 });
+            auto p10 = move(p3, { 6, 2 });
+            auto p11 = scale(move(p3, { 6, 2 }), 0.5, { 6.5, 2.5 });
+            auto p12 = scale(move(p3, { 1, 1 }), 0.5, { 1.5, 1.5 });
             auto l1 = make_line(1, 2, 3, 4);
             auto l2 = make_line(2, 3, 3, 4);
             auto l3 = make_line(4, 1, 5, 2);
@@ -322,6 +329,38 @@ namespace geom
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
                              p1.intersects(p1), L"p1 - p1 int", LINE_INFO());
             Assert::IsFalse(intersects(p1, p1), L"p1 - p1 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
+                             p6.intersects(p7), L"p6 - p7 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p7), L"p6 - p7 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
+                             p6.intersects(p8), L"p6 - p8 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p8), L"p6 - p8 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
+                             p6.intersects(p9), L"p6 - p9 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p9), L"p6 - p9 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
+                             p6.intersects(p9), L"p6 - p9 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p9), L"p6 - p9 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
+                             p6.intersects(p10), L"p6 - p10 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p10), L"p6 - p10 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
+                             p6.intersects(p3), L"p6 - p3 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p3), L"p6 - p3 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok | status::polygon::contains_polygon),
+                             p6.intersects(p11), L"p6 - p11 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p11), L"p6 - p11 int glob", LINE_INFO());
+
+            Assert::AreEqual(status::trusted(status::ok),
+                             p6.intersects(p12), L"p6 - p12 int", LINE_INFO());
+            Assert::IsFalse(intersects(p6, p12), L"p6 - p12 int glob", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_convex)
