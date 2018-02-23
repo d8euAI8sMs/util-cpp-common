@@ -563,22 +563,6 @@ namespace geom
                                       : r;
             }
         }
-
-    private:
-
-        /**
-         * checks if any point of the given line is
-         * contained by the polygon;
-         *
-         * checks points: q=0, q=0.45, q=0.5, q=0.55
-         */
-        bool _contains_any(const line & l) const
-        {
-            return (contains(l.p1) ||
-                    contains(l.inner_point(0.45)) ||
-                    contains(l.inner_point(0.5))  ||
-                    contains(l.inner_point(0.55)));
-        }
     };
 
     /*****************************************************/
