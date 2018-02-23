@@ -46,35 +46,20 @@ namespace geom
         {
             auto c = make_circle(2, 3, 1);
 
-            Assert::IsTrue(c.contains({ 2, 3 }), L"(2,3)", LINE_INFO());
+            Assert::AreEqual(1, c.contains({ 2, 3 }), L"(2,3)", LINE_INFO());
             Assert::IsTrue(contains(c, { 2, 3 }), L"(2,3) glob", LINE_INFO());
-            Assert::IsFalse(c.border_contains({ 2, 3 }), L"(2,3) border", LINE_INFO());
-            Assert::IsTrue(c.inner_contains({ 2, 3 }), L"(2,3) inn", LINE_INFO());
-            Assert::IsTrue(c.outer_contains({ 2, 3 }), L"(2,3) out", LINE_INFO());
 
-            Assert::IsFalse(c.contains({ 0, 0 }), L"(0,0)", LINE_INFO());
+            Assert::AreEqual(-1, c.contains({ 0, 0 }), L"(0,0)", LINE_INFO());
             Assert::IsFalse(contains(c, { 0, 0 }), L"(0,0) glob", LINE_INFO());
-            Assert::IsFalse(c.border_contains({ 0, 0 }), L"(0,0) border", LINE_INFO());
-            Assert::IsFalse(c.inner_contains({ 0, 0 }), L"(0,0) inn", LINE_INFO());
-            Assert::IsFalse(c.outer_contains({ 0, 0 }), L"(0,0) out", LINE_INFO());
 
-            Assert::IsFalse(c.contains({ 2, 2 }), L"(2,2)", LINE_INFO());
+            Assert::AreEqual(0, c.contains({ 2, 2 }), L"(2,2)", LINE_INFO());
             Assert::IsFalse(contains(c, { 2, 2 }), L"(2,2) glob", LINE_INFO());
-            Assert::IsTrue(c.border_contains({ 2, 2 }), L"(2,2) border", LINE_INFO());
-            Assert::IsFalse(c.inner_contains({ 2, 2 }), L"(2,2) inn", LINE_INFO());
-            Assert::IsTrue(c.outer_contains({ 2, 2 }), L"(2,2) out", LINE_INFO());
 
-            Assert::IsFalse(c.contains({ 2, 2 - 1e-12 }), L"(2,2-0)", LINE_INFO());
+            Assert::AreEqual(0, c.contains({ 2, 2 - 1e-12 }), L"(2,2-0)", LINE_INFO());
             Assert::IsFalse(contains(c, { 2, 2 - 1e-12 }), L"(2,2-0) glob", LINE_INFO());
-            Assert::IsTrue(c.border_contains({ 2, 2 - 1e-12 }), L"(2,2-0) border", LINE_INFO());
-            Assert::IsFalse(c.inner_contains({ 2, 2 - 1e-12 }), L"(2,2-0) inn", LINE_INFO());
-            Assert::IsTrue(c.outer_contains({ 2, 2 - 1e-12 }), L"(2,2-0) out", LINE_INFO());
 
-            Assert::IsTrue(c.contains({ 2, 2 + 1e-12 }), L"(2,2+0)", LINE_INFO());
-            Assert::IsTrue(contains(c, { 2, 2 + 1e-12 }), L"(2,2+0) glob", LINE_INFO());
-            Assert::IsTrue(c.border_contains({ 2, 2 + 1e-12 }), L"(2,2+0) border", LINE_INFO());
-            Assert::IsFalse(c.inner_contains({ 2, 2 + 1e-12 }), L"(2,2+0) inn", LINE_INFO());
-            Assert::IsTrue(c.outer_contains({ 2, 2 + 1e-12 }), L"(2,2+0) out", LINE_INFO());
+            Assert::AreEqual(0, c.contains({ 2, 2 + 1e-12 }), L"(2,2+0)", LINE_INFO());
+            Assert::IsFalse(contains(c, { 2, 2 + 1e-12 }), L"(2,2+0) glob", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
