@@ -422,7 +422,7 @@ namespace geom
                 _vertices[_triangles[t].vertices[1]].point,
                 _vertices[_triangles[t].vertices[2]].point
             };
-            return t1.intersects(t2);
+            return status::is_trusted(t1.intersects(t2), status::polygon::intersects);
         }
 
         void _triangulate(const std::vector < idx_t > & orphans)
