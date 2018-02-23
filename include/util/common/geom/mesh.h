@@ -425,7 +425,7 @@ namespace geom
             return status::is_trusted(t1.intersects(t2), status::polygon::intersects);
         }
 
-        void _triangulate(const std::vector < idx_t > & orphans)
+        void _triangulate(const std::vector < idx_t > & orphans, idx_t bound_to = SIZE_T_MAX)
         {
             ASSERT(orphans.size() >= 3);
 
@@ -437,6 +437,12 @@ namespace geom
             for (idx_t j = i + 1; j < orphans.size(); ++j)
             for (idx_t k = j + 1; k < orphans.size(); ++k)
             {
+                if ((bound_to != SIZE_T_MAX) &&
+                    (orphans[i] != bound_to) &&
+                    (orphans[j] != bound_to) &&
+                    (orphans[k] != bound_to))
+                    continue;
+
                 info = _make_triangle_info(orphans[i],
                                            orphans[j],
                                            orphans[k]);
@@ -490,32 +496,6 @@ namespace geom
                                 }
                             }
                         }
-                    }
-
-                    /* check that the current triangle does not
-                       intersect neighbor triangles */
-                    if (can_insert)
-                    {
-                        auto criteria = [this, &info] (idx_t l)
-                        {
-                            return _intersects(info, l);
-                        };
-                        can_insert = std::none_of
-                        (
-                            _vertices[orphans[i]].neighbor_triangles.begin(),
-                            _vertices[orphans[i]].neighbor_triangles.end(),
-                            criteria
-                        ) && std::none_of
-                        (
-                            _vertices[orphans[j]].neighbor_triangles.begin(),
-                            _vertices[orphans[j]].neighbor_triangles.end(),
-                            criteria
-                        ) && std::none_of
-                        (
-                            _vertices[orphans[k]].neighbor_triangles.begin(),
-                            _vertices[orphans[k]].neighbor_triangles.end(),
-                            criteria
-                        );
                     }
                     if (can_insert)
                     {
@@ -573,7 +553,7 @@ namespace geom
 
             orphans.insert(_vertices.size() - 1);
 
-            _triangulate(std::vector < idx_t > (orphans.begin(), orphans.end()));
+            _triangulate(std::vector < idx_t > (orphans.begin(), orphans.end()), _vertices.size() - 1);
 
             return _vertices.size() - 1;
         }
