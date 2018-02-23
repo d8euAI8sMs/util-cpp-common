@@ -228,7 +228,17 @@ namespace geom
             auto c1 = contains(l.p1),
                  c2 = contains(l.p2);
 
+            if (status::is(c1, status::polygon::edge_contains_point))
+                r |= c1 & status::trusted(status::polygon::edge_contains_point);
+            if (status::is(c2, status::polygon::edge_contains_point))
+            {
+                auto t = status::get(c2, status::polygon::edge_contains_point);
+                r |= ((t > 0) ? status::trusted(status::polygon::edge_contains_point_2)
+                              : status::polygon::edge_contains_point_2);
+            }
+
             bool possible_contains_line = false;
+            bool possible_contains_line_trust = false;
             bool possible_touches_line = false;
 
             if (status::is_trusted(c1, status::polygon::contains_point) &&
@@ -236,8 +246,10 @@ namespace geom
                 status::is_trusted(c2, status::polygon::contains_point) &&
                 status::is_not(c1, status::polygon::contains_point))
                 return r | status::trusted(status::polygon::intersects);
-            if (status::is_trusted(c1, status::polygon::contains_point) &&
-                status::is_trusted(c2, status::polygon::contains_point))
+            if ((status::get(c1, status::polygon::contains_point) >= 0) &&
+                (status::get(c2, status::polygon::contains_point) > 0) ||
+                (status::get(c1, status::polygon::contains_point) > 0) &&
+                (status::get(c2, status::polygon::contains_point) >= 0))
                 return r | status::trusted(status::polygon::contains_line);
             if ((status::get(c1, status::polygon::contains_point) <= 0) &&
                 (status::get(c2, status::polygon::contains_point) <= 0))
@@ -258,40 +270,54 @@ namespace geom
                         {
                             possible_touches_line = true;
                         }
-                        else if (status::is_trusted(c3, status::polygon::contains_point))
+                        else if (status::is(c3, status::polygon::contains_point) &&
+                                 status::is(r, status::polygon::edge_contains_both))
+                        {
+                            possible_contains_line = true;
+                            if (status::is_trusted(c3, status::polygon::contains_point))
+                            {
+                                possible_contains_line_trust = true;
+                            }
+                        }
+                        else if (status::is_trusted(c3, status::polygon::contains_point)
+                                 && !status::is(r, status::polygon::edge_contains_both))
                         {
                             return r | status::trusted(status::polygon::intersects);
                         }
+
                         auto c4 = contains(l.inner_point(q2));
                         if (status::is(c4, status::polygon::contains_point) &&
                             fuzzy_t::eq(s, q * s))
                         {
                             possible_touches_line = true;
                         }
-                        else if (status::is_trusted(c4, status::polygon::contains_point))
+                        else if (status::is(c4, status::polygon::contains_point) &&
+                                 status::is(r, status::polygon::edge_contains_both))
+                        {
+                            possible_contains_line = true;
+                            if (status::is_trusted(c4, status::polygon::contains_point))
+                            {
+                                possible_contains_line_trust = true;
+                            }
+                        }
+                        else if (status::is_trusted(c4, status::polygon::contains_point)
+                                 && !status::is(r, status::polygon::edge_contains_both))
                         {
                             return r | status::trusted(status::polygon::intersects);
                         }
                     }
                 }
 
-                if (status::is(c1, status::polygon::edge_contains_point) &&
-                    status::is(c2, status::polygon::edge_contains_point))
-                {
+                if (possible_contains_line && possible_contains_line_trust)
                     r |= status::trusted(status::polygon::contains_line);
-                }
-                if (possible_touches_line &&
-                    ((status::get(c1, status::polygon::edge_contains_point) == 0) &&
-                    (status::get(c2, status::polygon::contains_point) < 0) ||
-                    (status::get(c2, status::polygon::edge_contains_point) == 0) &&
-                    (status::get(c1, status::polygon::contains_point) < 0)))
-                {
-                    r |= status::trusted(status::polygon::contains_point);
-                }
+                else if (possible_contains_line)
+                    r |= status::polygon::contains_line;
+                if (possible_touches_line)
+                    r |= status::trusted(status::polygon::touches_line);
                 if (possible_edge_coincide)
                 {
                     r |= status::trusted(status::polygon::coincides_with_line);
-                    if (status::is_not(r, status::polygon::contains_point))
+                    if (status::is_not(r, status::polygon::touches_line))
                     {
                         r |= status::polygon::contains_line;
                     }
