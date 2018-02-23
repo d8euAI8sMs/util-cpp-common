@@ -533,8 +533,6 @@ namespace geom
 
             d = 2 * (max_x + max_y - min_x - min_y);
 
-            double q1, q2;
-
             point2d_t pivot;
 
             for (;;)
