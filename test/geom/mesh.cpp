@@ -288,13 +288,13 @@ namespace geom
             auto t1 = m.triangle_at(0);
             t1.sort(true, false);
 
-            auto t1e = make_triangle(0, 0, 1, 0, 0, 1);
+            auto t1e = make_triangle(0, 0, 1, 0, 1, 1);
             t1e.sort(true, false);
 
             auto t2 = m.triangle_at(1);
             t2.sort(true, false);
 
-            auto t2e = make_triangle(1, 0, 1, 1, 0, 1);
+            auto t2e = make_triangle(1, 1, 0, 1, 0, 0);
             t2e.sort(true, false);
 
             Assert::AreEqual(t1e.points[0], t1.points[0], L"t1[0]", LINE_INFO());
@@ -305,26 +305,26 @@ namespace geom
             Assert::AreEqual(t2e.points[1], t2.points[1], L"t2[1]", LINE_INFO());
             Assert::AreEqual(t2e.points[2], t2.points[2], L"t2[2]", LINE_INFO());
 
-            Assert::AreEqual(size_t(1), m.vertices()[0].neighbor_triangles.size(), L"v0 neighbor triangles", LINE_INFO());
-            Assert::AreEqual(size_t(2), m.vertices()[0].neighbor_vertices.size(),  L"v0 neighbor vertices", LINE_INFO());
-            Assert::AreEqual(size_t(2), m.vertices()[1].neighbor_triangles.size(), L"v1 neighbor triangles", LINE_INFO());
-            Assert::AreEqual(size_t(3), m.vertices()[1].neighbor_vertices.size(),  L"v1 neighbor vertices", LINE_INFO());
-            Assert::AreEqual(size_t(1), m.vertices()[2].neighbor_triangles.size(), L"v2 neighbor triangles", LINE_INFO());
-            Assert::AreEqual(size_t(2), m.vertices()[2].neighbor_vertices.size(),  L"v2 neighbor vertices", LINE_INFO());
-            Assert::AreEqual(size_t(2), m.vertices()[3].neighbor_triangles.size(), L"v3 neighbor triangles", LINE_INFO());
-            Assert::AreEqual(size_t(3), m.vertices()[3].neighbor_vertices.size(),  L"v3 neighbor vertices", LINE_INFO());
+            Assert::AreEqual(size_t(2), m.vertices()[0].neighbor_triangles.size(), L"v0 neighbor triangles", LINE_INFO());
+            Assert::AreEqual(size_t(3), m.vertices()[0].neighbor_vertices.size(),  L"v0 neighbor vertices", LINE_INFO());
+            Assert::AreEqual(size_t(1), m.vertices()[1].neighbor_triangles.size(), L"v1 neighbor triangles", LINE_INFO());
+            Assert::AreEqual(size_t(2), m.vertices()[1].neighbor_vertices.size(),  L"v1 neighbor vertices", LINE_INFO());
+            Assert::AreEqual(size_t(2), m.vertices()[2].neighbor_triangles.size(), L"v2 neighbor triangles", LINE_INFO());
+            Assert::AreEqual(size_t(3), m.vertices()[2].neighbor_vertices.size(),  L"v2 neighbor vertices", LINE_INFO());
+            Assert::AreEqual(size_t(1), m.vertices()[3].neighbor_triangles.size(), L"v3 neighbor triangles", LINE_INFO());
+            Assert::AreEqual(size_t(2), m.vertices()[3].neighbor_vertices.size(),  L"v3 neighbor vertices", LINE_INFO());
 
-            Assert::IsTrue(contains(m.vertices()[0].neighbor_triangles, 0), L"v0 neighbor triangle 0", LINE_INFO());
-            Assert::IsTrue(contains(m.vertices()[0].neighbor_vertices, 1, 3),  L"v0 neighbor vertices 1, 3", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[0].neighbor_triangles, 0, 1), L"v0 neighbor triangle 0, 1", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[0].neighbor_vertices, 1, 2, 3),  L"v0 neighbor vertices 1, 2, 3", LINE_INFO());
 
-            Assert::IsTrue(contains(m.vertices()[1].neighbor_triangles, 0, 1), L"v1 neighbor triangle 0, 1", LINE_INFO());
-            Assert::IsTrue(contains(m.vertices()[1].neighbor_vertices, 0, 2, 3),  L"v1 neighbor vertices 0, 2, 3", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[1].neighbor_triangles, 0), L"v1 neighbor triangle 0", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[1].neighbor_vertices, 0, 2),  L"v1 neighbor vertices 0, 2", LINE_INFO());
 
-            Assert::IsTrue(contains(m.vertices()[2].neighbor_triangles, 1), L"v2 neighbor triangle 1", LINE_INFO());
-            Assert::IsTrue(contains(m.vertices()[2].neighbor_vertices, 1, 3),  L"v2 neighbor vertices 1, 3", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[2].neighbor_triangles, 0, 1), L"v2 neighbor triangle 0, 1", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[2].neighbor_vertices, 0, 1, 3),  L"v2 neighbor vertices 0, 1, 3", LINE_INFO());
 
-            Assert::IsTrue(contains(m.vertices()[3].neighbor_triangles, 0, 1), L"v3 neighbor triangle 0, 1", LINE_INFO());
-            Assert::IsTrue(contains(m.vertices()[3].neighbor_vertices, 0, 1, 2),  L"v3 neighbor vertices 0, 1, 2", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[3].neighbor_triangles, 1), L"v3 neighbor triangle 1", LINE_INFO());
+            Assert::IsTrue(contains(m.vertices()[3].neighbor_vertices, 0, 2),  L"v3 neighbor vertices 0, 2", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_add_2)
