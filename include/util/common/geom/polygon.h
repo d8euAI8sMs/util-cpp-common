@@ -176,16 +176,28 @@ namespace geom
          *      `intersects` - if this polygon is intersected
          *          by the given line
          *      `contains_line` - if the line is inside
-         *          the polygon
-         *      `contains_point` - if the line starts or ends
+         *          the polygon (trusted) or is contained
+         *          by the polygon edge(untrusted)
+         *      `touches_line` - if the line starts or ends (or both)
          *          at the polygon edge but does not coincide
          *          or intersect with the polygon
+         *      `edge_contains_point` - if the polygon edge
+         *          contains the starting point of the line.
+         *          trust level exactly matches the trust
+         *          level of contains(l.p1)
+         *      `edge_contains_point_2` - same as previous
+         *          but for the l.p2 point
          *      `coincides_with_line` - if the given line
          *          coincides with the polygon but does not
-         *          intersect it
+         *          intersect it. may also be set if the
+         *          starting (or end) point of the passed line
+         *          is the starting (or end) point of the
+         *          polygon edge and these lines coincide
          *
          * implementation notes:
          *      flag `edge_intersection_only` is not implemented
+         *      currently if the intersection status is set,
+         *          no further checks are performed
          */
         virtual status_t intersects(const line & l, flags_t flg = 0) const
         {
