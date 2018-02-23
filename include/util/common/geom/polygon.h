@@ -353,31 +353,43 @@ namespace geom
          * intersection case);
          */
         template < typename _C >
-        bool intersects(const polygon < _C > & p) const
+        status_t intersects(const polygon < _C > & p, flags_t flg = 0) const
         {
-            if (points.size() < 3) return false;
+            if (points.size() < 3) return 0;
 
-            bool contains_point = false;
-            bool contains_unknown = true;
+            status_t r = status::trusted(status::ok);
+
+            bool has_outer = false;
+            bool has_inner = false;
+            bool has_coincidence = false;
 
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
                 auto l = line(points[i], points[j]);
-                if (p.intersects(l))
+                auto has_int = p.intersects(l);
+                if (status::is_trusted(has_int, status::polygon::intersects))
+                    return r | status::trusted(status::polygon::intersects);
+                if (status::is_trusted(has_int, status::polygon::coincides_with_line))
+                    has_coincidence = true;
+                if (status::is_trusted(has_int, status::polygon::contains_line))
+                    has_inner = true;
+                else if (status::is_trusted(has_int, status::polygon::touches_line)
+                 || status::is_not(has_int, status::polygon::intersects)
+                 && status::is_not(has_int, status::polygon::contains_line))
+                    has_outer = true;
+                if (has_inner && has_outer)
                 {
-                    return true;
+                    return r | status::trusted(status::polygon::intersects);
                 }
-                bool contains_new = p._contains_any(l);
-                if (!contains_unknown && (contains_new != contains_point))
-                {
-                    return true;
-                }
-                contains_point = contains_new;
-                contains_unknown = false;
             }
 
-            return false;
+            if (has_coincidence)
+                r |= status::trusted(status::polygon::coincides_with_polygon);
+            if (has_inner)
+                r |= status::trusted(status::polygon::contains_polygon);
+
+            return r;
         }
 
         /**
