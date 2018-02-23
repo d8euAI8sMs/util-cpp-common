@@ -384,9 +384,9 @@ namespace geom
                     has_coincidence = true;
                 if (status::is_trusted(has_int, status::polygon::contains_line))
                     has_inner = true;
-                else if (status::is_trusted(has_int, status::polygon::touches_line)
-                 || status::is_not(has_int, status::polygon::intersects)
-                 && status::is_not(has_int, status::polygon::contains_line))
+                else if ((status::is_trusted(has_int, status::polygon::touches_line) ||
+                          status::is_not(has_int, status::polygon::intersects)) &&
+                         status::is_not(has_int, status::polygon::contains_line))
                     has_outer = true;
                 if (has_inner && has_outer)
                 {
