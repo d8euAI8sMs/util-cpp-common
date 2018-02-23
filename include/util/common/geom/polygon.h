@@ -153,7 +153,8 @@ namespace geom
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                if (l.segment_intersection(line(points[i], points[j]), q1, q2))
+                if (status::is(l.segment_intersection(line(points[i], points[j]), q1, q2),
+                    status::line::intersects | status::line::both_segments))
                 {
                     v.push_back(l.inner_point(q1));
                 }
@@ -725,7 +726,7 @@ namespace geom
         const polygon < _D > & p2
     )
     {
-        return p1.intersects(p2);
+        return status::is_trusted(p1.intersects(p2), status::polygon::intersects);
     }
 
     template < typename _C >
@@ -734,7 +735,7 @@ namespace geom
         const polygon < _C > & p, const line & l
     )
     {
-        return p.intersects(l);
+        return status::is_trusted(p.intersects(l), status::polygon::intersects);
     }
 
     template < typename _C >
@@ -743,7 +744,7 @@ namespace geom
         const line & l, const polygon < _C > & p
     )
     {
-        return p.intersects(l);
+        return status::is_trusted(p.intersects(l), status::polygon::intersects);
     }
 
     template < typename _C >
@@ -752,7 +753,7 @@ namespace geom
         const polygon < _C > & g, const point2d_t & p
     )
     {
-        return g.contains(p);
+        return status::is_trusted(g.contains(p), status::polygon::intersects);
     }
 
     /*****************************************************/
