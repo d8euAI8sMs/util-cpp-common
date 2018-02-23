@@ -37,6 +37,10 @@ namespace geom
                 coincides_with_line     = 1 << 10,
                 contains_polygon        = 1 << 12,
                 coincides_with_polygon  = 1 << 14,
+                edge_contains_point_2   = 1 << 16,
+                edge_contains_both      = edge_contains_point
+                                        | edge_contains_point_2,
+                touches_line            = 1 << 18,
             };
         }
     }
