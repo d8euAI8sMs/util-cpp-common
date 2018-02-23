@@ -538,13 +538,16 @@ namespace geom
                 if (_triangles[i].flags & phantom) continue;
                 auto c = _triangles[i].enclosing.contains(p);
                 auto & t = _triangles[i];
-                if (c > 0)
-                    _delete_triangle(i);
-                else if (c == 0)
-                    circle_collision_triangles.push_back(i);
-                orphans.insert(t.vertices[0]);
-                orphans.insert(t.vertices[1]);
-                orphans.insert(t.vertices[2]);
+                if (c >= 0)
+                {
+                    if (c > 0)
+                        _delete_triangle(i);
+                    else if (c == 0)
+                        circle_collision_triangles.push_back(i);
+                    orphans.insert(t.vertices[0]);
+                    orphans.insert(t.vertices[1]);
+                    orphans.insert(t.vertices[2]);
+                }
             }
 
             if (orphans.empty()) return SIZE_T_MAX;
