@@ -344,13 +344,22 @@ namespace geom
          * polygon;
          *
          * if number of vertices in this polygon is < 3,
-         * returns false;
+         * returns 0;
          *
-         * the function also checks if some points of polygon
-         * are in and some are out of this polygon; it may
-         * be helpful in case if intersection point is
-         * very close to polygon vertex (special
-         * intersection case);
+         * statuses:
+         *      `intersects` - if this polygon is intersected
+         *          by the given one
+         *      `contains_polygon` - if the given polygon is
+         *          exactly inside this one
+         *      `coincides_with_polygon` - if the given polygon
+         *          has lines that coincide with this one
+         *
+         * implementation notes:
+         *      flag `edge_intersection_only` is not implemented
+         *      currently if the intersection status is set,
+         *          no further checks are performed
+         *      see implementation notes to polygon-line
+         *          intersection for more details
          */
         template < typename _C >
         status_t intersects(const polygon < _C > & p, flags_t flg = 0) const
