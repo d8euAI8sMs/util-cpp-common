@@ -410,19 +410,17 @@ namespace geom
 
         bool _intersects(const triangle_info & info, idx_t t)
         {
-            auto t1 = triangle
+            for (size_t i = 0, j = 1; i < 3; ++i, j = (i + 1) % 3)
+            for (size_t k = 0, l = 1; k < 3; ++k, l = (k + 1) % 3)
             {
-                _vertices[info.vertices[0]].point,
-                _vertices[info.vertices[1]].point,
-                _vertices[info.vertices[2]].point
-            };
-            auto t2 = triangle
-            {
-                _vertices[_triangles[t].vertices[0]].point,
-                _vertices[_triangles[t].vertices[1]].point,
-                _vertices[_triangles[t].vertices[2]].point
-            };
-            return status::is_trusted(t1.intersects(t2), status::polygon::intersects);
+                auto s = line(_vertices[info.vertices[i]].point,
+                              _vertices[info.vertices[j]].point)
+                    .segment_intersects(line(_vertices[_triangles[t].vertices[k]].point,
+                                            _vertices[_triangles[t].vertices[l]].point));
+                if (status::is_trusted(s, status::line::intersects | status::line::both_segments))
+                    return true;
+            }
+            return false;
         }
 
         void _triangulate(const std::vector < idx_t > & orphans,
