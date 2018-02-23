@@ -485,9 +485,9 @@ namespace geom
                              ++l)
                         {
                             auto & c2 = _triangles[circle_collision_triangles[l]].enclosing;
-                            if ((std::abs(c1.center.x - c2.center.x) <= 1e-8) &&
-                                (std::abs(c1.center.y - c2.center.y) <= 1e-8) &&
-                                (std::abs(c1.sqradius - c2.sqradius) <= 1e-8))
+                            if (fuzzy_t::eq(c1.center.x, c2.center.x) &&
+                                fuzzy_t::eq(c1.center.y, c2.center.y) &&
+                                fuzzy_t::eq(c1.radius(), c2.radius()))
                             {
                                 if (_intersects(info, circle_collision_triangles[l]))
                                 {
@@ -525,8 +525,8 @@ namespace geom
 
             for (idx_t i = 0; i < _vertices.size(); ++i)
             {
-                if ((std::abs(p.x - _vertices[i].point.x) <= 1e-8) &&
-                    (std::abs(p.y - _vertices[i].point.y) <= 1e-8))
+                if (fuzzy_t::eq(p.x, _vertices[i].point.x) &&
+                    fuzzy_t::eq(p.y, _vertices[i].point.y))
                 {
                     return i;
                 }
