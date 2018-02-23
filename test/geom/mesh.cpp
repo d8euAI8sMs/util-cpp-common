@@ -198,7 +198,7 @@ namespace geom
                     if (m.triangles()[j].flags & mesh::phantom) continue;
                     auto t2 = m.triangle_at(j);
                     auto info = std::to_wstring(i) + L"-" + std::to_wstring(j) + L" intersection";
-                    Assert::IsFalse(t1.intersects(t2), info.c_str(), LINE_INFO());
+                    Assert::IsFalse(status::is(t1.intersects(t2), status::polygon::intersects), info.c_str(), LINE_INFO());
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace geom
                     if (m.triangles()[j].flags & mesh::phantom) continue;
                     auto t2 = m.triangle_at(j);
                     auto info = std::to_wstring(i) + L"-" + std::to_wstring(j) + L" intersection";
-                    Assert::IsFalse(t1.intersects(t2), info.c_str(), LINE_INFO());
+                    Assert::IsFalse(status::is(t1.intersects(t2), status::polygon::intersects), info.c_str(), LINE_INFO());
                 }
             }
 
@@ -374,7 +374,7 @@ namespace geom
                     if (m.triangles()[j].flags & mesh::phantom) continue;
                     auto t2 = m.triangle_at(j);
                     auto info = std::to_wstring(i) + L"-" + std::to_wstring(j) + L" intersection";
-                    Assert::IsFalse(t1.intersects(t2), info.c_str(), LINE_INFO());
+                    Assert::IsFalse(status::is(t1.intersects(t2), status::polygon::intersects), info.c_str(), LINE_INFO());
                 }
             }
         }
@@ -419,7 +419,7 @@ namespace geom
                     if (m.triangles()[j].flags & mesh::phantom) continue;
                     auto t2 = m.triangle_at(j);
                     auto info = std::to_wstring(i) + L"-" + std::to_wstring(j) + L" intersection";
-                    Assert::IsFalse(t1.intersects(t2), info.c_str(), LINE_INFO());
+                    Assert::IsFalse(status::is(t1.intersects(t2), status::polygon::intersects), info.c_str(), LINE_INFO());
                 }
             }
 
