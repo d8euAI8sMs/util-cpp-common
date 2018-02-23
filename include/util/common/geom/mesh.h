@@ -452,12 +452,12 @@ namespace geom
                 for (idx_t l = 0; l < _vertices.size(); ++l)
                 {
                     if ((l == orphans[i]) || (l == orphans[j]) || (l == orphans[k])) continue;
-                    if (info.enclosing.inner_contains(_vertices[l].point))
+                    if (info.enclosing.contains(_vertices[l].point) > 0)
                     {
                         satisfies = false;
                         break;
                     }
-                    if (info.enclosing.border_contains(_vertices[l].point))
+                    if (info.enclosing.contains(_vertices[l].point) == 0)
                     {
                         circle_collision = true;
                         continue;
@@ -557,7 +557,7 @@ namespace geom
             for (idx_t i = 0; i < _triangles.size(); ++i)
             {
                 if (_triangles[i].flags & phantom) continue;
-                if (_triangles[i].enclosing.outer_contains(p))
+                if (_triangles[i].enclosing.contains(p) >= 0)
                 {
                     auto & t = _triangles[i];
                     _delete_triangle(i);
