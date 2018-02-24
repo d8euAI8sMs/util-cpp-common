@@ -83,6 +83,14 @@ namespace geom
 
         container_type points;
 
+    private:
+
+        mutable std::vector < line_view > _lines;
+        mutable point2d_t _extent_min;
+        mutable point2d_t _extent_max;
+
+    public:
+
         polygon(const container_type & c)
             : points(c)
         {
@@ -102,6 +110,13 @@ namespace geom
         polygon(polygon < _C > const & o)
             : polygon(o.points)
         {
+        }
+
+        void invalidate()
+        {
+            _lines.clear();
+            _extent_min = {};
+            _extent_max = {};
         }
 
         bool empty() const
@@ -153,7 +168,8 @@ namespace geom
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                if (status::is(l.segment_intersection(line(points[i], points[j]), q1, q2),
+                if (i == _lines.size()) _lines.emplace_back(points[i], points[j]);
+                if (status::is(l.segment_intersection(_lines[i], q1, q2),
                     status::line::intersects | status::line::both_segments))
                 {
                     v.push_back(l.inner_point(q1));
@@ -214,7 +230,8 @@ namespace geom
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                auto l0 = line(points[i], points[j]);
+                if (i == _lines.size()) _lines.emplace_back(points[i], points[j]);
+                auto &l0 = _lines[i];
                 auto it = l.segment_intersection(l0, q1, q2);
                 if (status::is_trusted(it,
                         status::line::intersects | status::line::both_segments))
@@ -379,7 +396,8 @@ namespace geom
             for (size_t i = 0, j = 1; i < p.points.size(); ++i, ++j)
             {
                 if (j == p.points.size()) j = 0;
-                auto l = line(p.points[i], p.points[j]);
+                if (i == p._lines.size()) p._lines.emplace_back(p.points[i], p.points[j]);
+                auto &l = p._lines[i];
                 auto has_int = intersects(l);
                 if (status::is_trusted(has_int, status::polygon::intersects))
                     return r | status::trusted(status::polygon::intersects);
@@ -512,13 +530,21 @@ namespace geom
             double min_x, max_x, min_y, max_y;
             double d;
 
+            if (!(_extent_min.empty() && _extent_max.empty()))
+            {
+                if ((p.x < _extent_min.x) || (p.x > _extent_max.x) ||
+                    (p.y < _extent_min.y) || (p.y > _extent_max.y))
+                    return r;
+            }
+
             min_x = max_x = points[0].x;
             min_y = max_y = points[0].y;
 
             for (size_t i = 0, j = 1; i < points.size(); ++i, ++j)
             {
                 if (j == points.size()) j = 0;
-                auto sc = line(points[i], points[j]).segment_contains(p);
+                if (i == _lines.size()) _lines.emplace_back(points[i], points[j]);
+                auto sc = _lines[i].segment_contains(p);
                 if (sc >= 0)
                     r |= status::polygon::contains_point;
                 if (sc > 0)
@@ -530,6 +556,9 @@ namespace geom
                 if (points[i].x > max_x) max_x = points[i].x;
                 if (points[i].y > max_y) max_y = points[i].y;
             }
+
+            _extent_min = { min_x - 2 * sqrt_tolerance(), min_y - 2 * sqrt_tolerance() };
+            _extent_max = { max_x + 2 * sqrt_tolerance(), max_y + 2 * sqrt_tolerance() };
 
             if ((p.x < min_x) || (p.x > max_x) || (p.y < min_y) || (p.y > max_y))
                 return r;
@@ -549,8 +578,9 @@ namespace geom
                 for (i = 0, j = 1; i < points.size(); ++i, ++j)
                 {
                     if (j == points.size()) j = 0;
+                    if (i == _lines.size()) _lines.emplace_back(points[i], points[j]);
                     auto has_int = status::get(
-                        line(points[i], points[j]).segment_intersects({ p, pivot }),
+                        _lines[i].segment_intersects(make_line_view(p, pivot)),
                         status::line::intersects | status::line::both_segments);
                     if (has_int == 0)
                         break;
