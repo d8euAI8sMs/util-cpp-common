@@ -53,6 +53,23 @@ namespace geom
         {
         }
 
+        template < typename _C >
+        convex_polygon & operator = (convex_polygon < _C > const & o)
+        {
+            invalidate();
+            points = o.points;
+            return *this;
+        }
+
+        template < typename _C >
+        convex_polygon & operator = (convex_polygon < _C > && o)
+        {
+            invalidate();
+            o.invalidate();
+            points = std::move(o.points);
+            return *this;
+        }
+
         /**
          * calculates the polygon convexity;
          *

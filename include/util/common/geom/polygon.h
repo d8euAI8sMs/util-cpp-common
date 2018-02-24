@@ -112,6 +112,23 @@ namespace geom
         {
         }
 
+        template < typename _C >
+        polygon & operator = (polygon < _C > const & o)
+        {
+            invalidate();
+            points = o.points;
+            return *this;
+        }
+
+        template < typename _C >
+        polygon & operator = (polygon < _C > && o)
+        {
+            invalidate();
+            o.invalidate();
+            points = std::move(o.points);
+            return *this;
+        }
+
         void invalidate()
         {
             _lines.clear();
