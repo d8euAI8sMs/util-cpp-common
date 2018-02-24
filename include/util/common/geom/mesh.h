@@ -483,9 +483,6 @@ namespace geom
                              ++l)
                         {
                             auto & c2 = _triangles[circle_collision_triangles[l]].enclosing;
-                            if (fuzzy_t::eq(c1.center.x, c2.center.x) &&
-                                fuzzy_t::eq(c1.center.y, c2.center.y) &&
-                                fuzzy_t::eq(c1.radius(), c2.radius()))
                             {
                                 if (_intersects(info, circle_collision_triangles[l]))
                                 {
