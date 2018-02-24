@@ -172,14 +172,14 @@ namespace geom
                close to line, so return 0 */
             if (i < 0) return math::fuzzy_values::zero_confidence(0.0);
             /* check if intersection is inside the line segment */
-            double d1 = length(), s1 = d1 * min(q1, 1 - q1);
+            double d1 = sqlength(), s1 = d1 * min(q1, 1 - q1);
             auto i1 = fuzzy_t::greater(s1, 0);
             if (i1 > 0)
                 return math::fuzzy_values::positive_confidence(
                     math::sqnorm(inner_point(q1) - p));
             if (i1 < 0)
                 return math::fuzzy_values::negative_confidence(0.0);
-            d1 = math::norm(inner_point(q1) - p);
+            d1 = math::sqnorm(inner_point(q1) - p);
             if (fuzzy_t::eq(0, d1))
                 return math::fuzzy_values::zero_confidence(0.0);
             return math::fuzzy_values::negative_confidence(0.0);
@@ -199,14 +199,14 @@ namespace geom
 
         math::confidence_t contains(const point2d_t & p) const
         {
-            auto d = distance(p);
+            auto d = sqdistance(p);
             if (d.confidence <= 0) return d.confidence;
             return fuzzy_t::eq(0, d) ? math::confidence::positive : math::confidence::negative;
         }
 
         math::confidence_t segment_contains(const point2d_t & p) const
         {
-            auto d = segment_distance(p);
+            auto d = segment_sqdistance(p);
             if (d.confidence <= 0) return d.confidence;
             return fuzzy_t::eq(0, d) ? math::confidence::positive : math::confidence::negative;
         }
@@ -282,7 +282,7 @@ namespace geom
                 if (flags::has_none(flg, flags::line::inside_segment))
                     return r;
 
-                double d1 = length(), d2 = l.length();
+                double d1 = sqlength(), d2 = l.sqlength();
                 double s1 = d1 * min(q1, 1 - q1),
                        s2 = d2 * min(q2, 1 - q2);
 
@@ -339,7 +339,7 @@ namespace geom
          */
         convex_type convexity(const point2d_t & p3) const
         {
-            if ((contains(p3) >= 0) || fuzzy_t::eq(0, geom::distance(p1, p2)))
+            if ((contains(p3) >= 0) || fuzzy_t::eq(0, geom::sqdistance(p1, p2)))
             {
                 return convex_type::degenerate;
             }

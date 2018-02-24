@@ -269,15 +269,18 @@ namespace geom
             {
                 if (!possible_intersection_points.empty())
                 {
-                    auto s = l.length();
+                    auto s = l.sqlength();
                     for(size_t i = 0; i < possible_intersection_points.size(); ++i)
                     {
                         auto q = possible_intersection_points[i];
                         /* skip l.p1 or l.p2 as an algorithm may
                            report incorrect results */
-                        q1 = ((q * s) - 2 * fuzzy_t::traits::tolerance()) / s;
-                        q2 = ((q * s) + 2 * fuzzy_t::traits::tolerance()) / s;
-                        auto c3 = contains(l.inner_point(q1));
+                        auto p0 = l.inner_point(q);
+                        auto p1 = p0 - point2d_t{ (l.p2.x - l.p1.x) * 2 * sqrt_tolerance(),
+                                         (l.p2.y - l.p1.y) * 2 * sqrt_tolerance() };
+                        auto p2 = p0 + point2d_t{ (l.p2.x - l.p1.x) * 2 * sqrt_tolerance(),
+                                         (l.p2.y - l.p1.y) * 2 * sqrt_tolerance() };
+                        auto c3 = contains(p1);
                         if (status::is(c3, status::polygon::contains_point) &&
                             fuzzy_t::eq(0, q * s))
                         {
@@ -298,7 +301,7 @@ namespace geom
                             return r | status::trusted(status::polygon::intersects);
                         }
 
-                        auto c4 = contains(l.inner_point(q2));
+                        auto c4 = contains(p2);
                         if (status::is(c4, status::polygon::contains_point) &&
                             fuzzy_t::eq(s, q * s))
                         {

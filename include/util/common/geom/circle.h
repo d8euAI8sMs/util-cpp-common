@@ -50,7 +50,7 @@ namespace geom
 
         math::confidence_t contains(const point2d_t & p) const
         {
-            return fuzzy_t::less(distance(p, center), radius());
+            return fuzzy_t::less(sqdistance(p, center), sqradius);
         }
 
         void invalidate()
