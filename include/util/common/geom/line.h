@@ -411,9 +411,9 @@ namespace geom
     /*                geometry operations                */
     /*****************************************************/
 
-    template < typename _P2 > inline line rotate
+    template <> inline line rotate
     (
-        const line_base < _P2 > & geometry,
+        const line & geometry,
         double radians,
         point2d_t at
     )
@@ -425,9 +425,9 @@ namespace geom
         };
     }
 
-    template < typename _P2 > inline line scale
+    template <> inline line scale
     (
-        const line_base < _P2 > & geometry,
+        const line & geometry,
         double n,
         point2d_t at
     )
@@ -439,9 +439,9 @@ namespace geom
         };
     }
 
-    template < typename _P2 > inline line move
+    template <> inline line move
     (
-        const line_base < _P2 > & geometry,
+        const line & geometry,
         point2d_t value
     )
     {
