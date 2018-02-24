@@ -89,6 +89,8 @@ namespace geom
         mutable point2d_t _extent_min;
         mutable point2d_t _extent_max;
 
+        template < typename _C > friend struct polygon;
+
     public:
 
         polygon(const container_type & c)
