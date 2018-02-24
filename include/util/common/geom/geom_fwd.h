@@ -21,6 +21,12 @@ namespace geom
     using fuzzy_geom_traits_t = math::fuzzy_weak_double_traits;
     using fuzzy_t = math::fuzzy < fuzzy_geom_traits_t > ;
 
+    inline double sqrt_tolerance()
+    {
+        static double tol = std::sqrt(fuzzy_geom_traits_t::tolerance());
+        return tol;
+    }
+
     using status_t = size_t;
 
     namespace status
