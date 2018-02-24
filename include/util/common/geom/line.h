@@ -71,20 +71,36 @@ namespace geom
 
         point_t p1, p2;
 
+    private:
+
+        mutable double _length;
+        mutable double _sqlength;
+
+    public:
+
         line_base(point_t p1, point_t p2)
             : p1(p1), p2(p2)
+            , _length(0), _sqlength(0)
         {
         }
 
         line_base()
             : line_base(point_t{}, point_t{})
+            , _length(0), _sqlength(0)
         {
         }
 
         template < typename _P2 >
         line_base(line_base < _P2 > const & o)
             : line_base(o.p1, o.p2)
+            , _length(0), _sqlength(0)
         {
+        }
+
+        void invalidate()
+        {
+            _length = 0;
+            _sqlength = 0;
         }
 
         bool empty() const
@@ -106,6 +122,9 @@ namespace geom
 
         /* points to math::norm specialized below */
         double length() const;
+
+        /* points to math::sqnorm specialized below */
+        double sqlength() const;
 
         /* angle between OX and this line;
            >0 for counterclockwise rotation */
@@ -493,5 +512,12 @@ namespace math
 
 template < typename _P2 > inline double geom::line_base < _P2 > ::length() const
 {
-    return math::norm(*this);
+    if (_length != 0) return _length;
+    return _length = math::norm(*this);
+}
+
+template < typename _P2 > inline double geom::line_base < _P2 > ::sqlength() const
+{
+    if (_sqlength != 0) return _sqlength;
+    return _sqlength = math::sqnorm(*this);
 }
