@@ -22,8 +22,15 @@ namespace geom
         point2d_t center;
         double sqradius;
 
+    private:
+
+        mutable double _radius;
+
+    public:
+
         circle()
             : sqradius(0)
+            , _radius(0)
         {
         }
 
@@ -31,17 +38,24 @@ namespace geom
                double sqr)
                : center(c)
                , sqradius(sqr)
+               , _radius(0)
         {
         }
 
         double radius() const
         {
-            return std::sqrt(sqradius);
+            if (_radius != 0) return _radius;
+            return _radius = std::sqrt(sqradius);
         }
 
         math::confidence_t contains(const point2d_t & p) const
         {
             return fuzzy_t::less(distance(p, center), radius());
+        }
+
+        void invalidate()
+        {
+            _radius = 0;
         }
     };
 
