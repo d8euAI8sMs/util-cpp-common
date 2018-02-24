@@ -54,26 +54,36 @@ namespace geom
     /*                     line                          */
     /*****************************************************/
 
-    struct line
+    template < typename _Point >
+    struct line_base;
+
+    using line = line_base < point2d_t > ;
+    using line_view = line_base < const point2d_t & > ;
+
+    template < typename _Point >
+    struct line_base
     {
-        using ptr_t = util::ptr_t < line > ;
+        using ptr_t = util::ptr_t < line_base > ;
 
         template < class ... T > static ptr_t create(T && ... t) { return util::create < typename ptr_t::element_type > (std::forward < T > (t) ...); }
 
-        point2d_t p1, p2;
+        using point_t = _Point;
 
-        line(point2d_t p1, point2d_t p2)
+        point_t p1, p2;
+
+        line_base(point_t p1, point_t p2)
             : p1(p1), p2(p2)
         {
         }
 
-        line()
-            : line(point2d_t{}, point2d_t{})
+        line_base()
+            : line_base(point_t{}, point_t{})
         {
         }
 
-        line(line const & o)
-            : line(o.p1, o.p2)
+        template < typename _P2 >
+        line_base(line_base < _P2 > const & o)
+            : line_base(o.p1, o.p2)
         {
         }
 
@@ -82,12 +92,14 @@ namespace geom
             return p1 == p2;
         }
 
-        bool operator == (line const & o) const
+        template < typename _P2 >
+        bool operator == (line_base < _P2 > const & o) const
         {
             return (p1 == o.p1) && (p2 == o.p2);
         }
 
-        bool operator != (line const & o) const
+        template < typename _P2 >
+        bool operator != (line_base < _P2 > const & o) const
         {
             return (p1 != o.p1) || (p2 != o.p2);
         }
@@ -119,7 +131,7 @@ namespace geom
             auto d = p2 - p1;
             auto v = point2d_t(p.x + d.y, p.y - d.x);
             double q1, q2;
-            auto l = line(p, v);
+            auto l = line_view(p, v);
             auto i = intersection(l, q1, q2);
             /* should not occur, possible only in case
                if line segment is too small or point is too
@@ -134,7 +146,7 @@ namespace geom
             auto d = p2 - p1;
             auto v = point2d_t(p.x + d.y, p.y - d.x);
             double q1, q2;
-            auto l = line(p, v);
+            auto l = line_view(p, v);
             auto i = intersection(l, q1, q2);
             /* should not occur, possible only in case
                if line segment is too small or point is too
@@ -208,7 +220,8 @@ namespace geom
 
            r1, r2 - any numbers
          */
-        status_t intersection(const line & l,
+        template < typename _P2 >
+        status_t intersection(const line_base < _P2 > & l,
                               double & r1,
                               double & r2,
                               flags_t flg = 0) const
@@ -273,7 +286,8 @@ namespace geom
 
         /* adds `inside_segment` and `check_segment_coincidence`
            flags to the `intersection` function */
-        status_t segment_intersection(const line & l,
+        template < typename _P2 >
+        status_t segment_intersection(const line_base < _P2 > & l,
                                       double & r1,
                                       double & r2,
                                       flags_t flg = 0) const
@@ -283,13 +297,15 @@ namespace geom
                                 flags::line::check_segment_coincidence);
         }
 
-        status_t intersects(const line & l, flags_t flg = 0) const
+        template < typename _P2 >
+        status_t intersects(const line_base < _P2 > & l, flags_t flg = 0) const
         {
             double q1, q2;
             return intersection(l, q1, q2, flg);
         }
 
-        status_t segment_intersects(const line & l, flags_t flg = 0) const
+        template < typename _P2 >
+        status_t segment_intersects(const line_base < _P2 > & l, flags_t flg = 0) const
         {
             double q1, q2;
             return segment_intersection(l, q1, q2, flg);
@@ -333,6 +349,12 @@ namespace geom
         return { p1, p2 };
     }
 
+    template < typename _P1, typename _P2 >
+    inline line_view make_line_view(_P1 & p1, _P2 & p2)
+    {
+        return { p1, p2 };
+    }
+
     template < typename _X1, typename _Y1,
                typename _X2, typename _Y2 >
     inline line make_line(_X1 x1, _Y1 y1, _X2 x2, _Y2 y2)
@@ -348,13 +370,13 @@ namespace geom
                                  const point2d_t & p2,
                                  const point2d_t & p3)
     {
-        return make_line(p1, p2).convexity(p3);
+        return make_line_view(p1, p2).convexity(p3);
     }
 
     inline double angle(const point2d_t & p1,
                         const point2d_t & p2)
     {
-        return make_line(p1, p2).angle();
+        return make_line_view(p1, p2).angle();
     }
 
     /*****************************************************/
@@ -370,9 +392,9 @@ namespace geom
     /*                geometry operations                */
     /*****************************************************/
 
-    template <> inline line rotate
+    template < typename _P2 > inline line rotate
     (
-        const line & geometry,
+        const line_base < _P2 > & geometry,
         double radians,
         point2d_t at
     )
@@ -384,9 +406,9 @@ namespace geom
         };
     }
 
-    template <> inline line scale
+    template < typename _P2 > inline line scale
     (
-        const line & geometry,
+        const line_base < _P2 > & geometry,
         double n,
         point2d_t at
     )
@@ -398,9 +420,9 @@ namespace geom
         };
     }
 
-    template <> inline line move
+    template < typename _P2 > inline line move
     (
-        const line & geometry,
+        const line_base < _P2 > & geometry,
         point2d_t value
     )
     {
@@ -411,26 +433,26 @@ namespace geom
         };
     }
 
-    template <> inline point2d_t center
+    template < typename _P2 > inline point2d_t center
     (
-        const line & geometry
+        const line_base < _P2 > & geometry
     )
     {
         return geometry.inner_point(0.5);
     }
 
-    template <> inline bool intersects
+    template < typename _P1, typename _P2 > inline bool intersects
     (
-        const line & l1, const line & l2
+        const line_base < _P1 > & l1, const line_base < _P2 > & l2
     )
     {
         return status::is_trusted(l1.segment_intersects(l2),
                                   status::line::both_segments);
     }
 
-    template <> inline bool contains
+    template < typename _P2 > inline bool contains
     (
-        const line & l, const point2d_t & p
+        const line_base < _P2 > & l, const point2d_t & p
     )
     {
         return l.contains(p) > 0;
@@ -440,11 +462,11 @@ namespace geom
     /*                formatting                         */
     /*****************************************************/
 
-    template < typename _Elem, typename _Traits >
+    template <  typename _P2, typename _Elem, typename _Traits >
     std::basic_ostream < _Elem, _Traits > & operator <<
     (
         std::basic_ostream < _Elem, _Traits > & os,
-        const line & l
+        const line_base < _P2 > & l
     )
     {
         return os << l.p1 << " - " << l.p2;
@@ -458,18 +480,18 @@ namespace math
     /*            scalar line operations                 */
     /*****************************************************/
 
-    template<>inline double norm(geom::line const & l)
+    template< typename _P2 >inline double norm(geom::line_base < _P2 > const & l)
     {
         return distance(l.p1, l.p2);
     }
 
-    template<>inline double sqnorm(geom::line const & l)
+    template< typename _P2 >inline double sqnorm(geom::line_base < _P2 > const & l)
     {
         return sqdistance(l.p1, l.p2);
     }
 }
 
-inline double geom::line::length() const
+template < typename _P2 > inline double geom::line_base < _P2 > ::length() const
 {
     return math::norm(*this);
 }
