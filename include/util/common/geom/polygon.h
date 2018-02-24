@@ -156,8 +156,9 @@ namespace geom
          * does not report special intersection points
          * (polygon vertices);
          */
-        virtual std::vector < point2d_t >
-        intersections(const line & l) const
+        template < typename _P2 >
+        std::vector < point2d_t >
+        intersections(const line_base < _P2 > & l) const
         {
             std::vector < point2d_t > v;
 
@@ -216,7 +217,8 @@ namespace geom
          *      currently if the intersection status is set,
          *          no further checks are performed
          */
-        virtual status_t intersects(const line & l, flags_t flg = 0) const
+        template < typename _P2 >
+        status_t intersects(const line_base < _P2 > & l, flags_t flg = 0) const
         {
             if (points.size() < 3) return 0;
 
@@ -744,19 +746,19 @@ namespace geom
         return status::is_trusted(p1.intersects(p2), status::polygon::intersects);
     }
 
-    template < typename _C >
+    template < typename _C, typename _P2 >
     inline bool intersects
     (
-        const polygon < _C > & p, const line & l
+        const polygon < _C > & p, const line_base < _P2 > & l
     )
     {
         return status::is_trusted(p.intersects(l), status::polygon::intersects);
     }
 
-    template < typename _C >
+    template < typename _C, typename _P2 >
     inline bool intersects
     (
-        const line & l, const polygon < _C > & p
+        const line_base < _P2 > & l, const polygon < _C > & p
     )
     {
         return status::is_trusted(p.intersects(l), status::polygon::intersects);
