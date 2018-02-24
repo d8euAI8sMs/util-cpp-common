@@ -413,9 +413,9 @@ namespace geom
             for (size_t i = 0, j = 1; i < 3; ++i, j = (i + 1) % 3)
             for (size_t k = 0, l = 1; k < 3; ++k, l = (k + 1) % 3)
             {
-                auto s = line(_vertices[info.vertices[i]].point,
+                auto s = make_line_view(_vertices[info.vertices[i]].point,
                               _vertices[info.vertices[j]].point)
-                    .segment_intersects(line(_vertices[_triangles[t].vertices[k]].point,
+                    .segment_intersects(make_line_view(_vertices[_triangles[t].vertices[k]].point,
                                             _vertices[_triangles[t].vertices[l]].point));
                 if (status::is_trusted(s, status::line::intersects | status::line::both_segments))
                     return true;
