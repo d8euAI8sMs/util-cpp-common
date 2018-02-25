@@ -38,6 +38,7 @@ namespace geom
         struct vertex_info
         {
             flags_t flags;
+            idx_t tree_idx;
             point2d_t point;
             std::set < idx_t > neighbor_vertices;
             std::set < idx_t > neighbor_triangles;
@@ -53,14 +54,62 @@ namespace geom
 
     private:
 
+        enum quadrant { NW, NE, SE, SW, NO };
+
+        struct rect
+        {
+            double xmin, xmax, ymin, ymax;
+        };
+
+        struct quad_node
+        {
+            flags_t flags;
+            idx_t nw, ne, se, sw;
+            idx_t parent;
+            std::set < idx_t > elems;
+
+            quad_node(idx_t _nw, idx_t _ne, idx_t _se, idx_t _sw) : flags(0), parent(0)
+            {
+                nw = _nw; ne = _ne; sw = _sw; se = _se;
+            }
+            quad_node() : quad_node(0, 0, 0, 0) { }
+
+            bool leaf() const
+            {
+                return (nw == 0) && (ne == 0) && (sw == 0) && (se == 0);
+            }
+            bool empty() const
+            {
+                return elems.empty() && leaf();
+            }
+            void clear()
+            {
+                elems.clear();
+                nw = ne = sw = se = 0;
+                flags = 0;
+                parent = 0;
+            }
+        };
+
+        struct quad_tree
+        {
+            idx_t root_node;
+            rect bounds;
+        };
+
+    private:
+
         std::vector < vertex_info >   _vertices;
         std::vector < triangle_info > _triangles;
         std::vector < idx_t >         _phantom_triangles;
+        std::vector < quad_node >     _quad_trees;
+        quad_tree                     _vertices_tree;
 
     public:
 
         const bool autocalculate_neighborhoods;
         const bool autocalculate_neighbor_vertices;
+        const size_t max_vertex_tree_deep;
 
     public:
 
@@ -117,13 +166,16 @@ namespace geom
         mesh()
             : autocalculate_neighbor_vertices(false)
             , autocalculate_neighborhoods(false)
+            , max_vertex_tree_deep(6)
         {
         }
 
         mesh(bool autocalculate_neighbor_vertices,
-             bool autocalculate_neighborhoods)
+             bool autocalculate_neighborhoods,
+             size_t max_vertex_tree_deep = 6)
             : autocalculate_neighbor_vertices(autocalculate_neighbor_vertices)
             , autocalculate_neighborhoods(autocalculate_neighborhoods)
+            , max_vertex_tree_deep(max_vertex_tree_deep)
         {
         }
 
@@ -133,6 +185,7 @@ namespace geom
         {
             _triangles.clear();
             _vertices.clear();
+            _quad_trees.clear();
             return *this;
         }
 
@@ -447,26 +500,13 @@ namespace geom
 
                 if (info.enclosing.sqradius == 0) continue;
 
-                bool satisfies = true;
-                bool circle_collision = false;
-
                 /* check if no other vertex is in enclosing
                    circle of the current triangle */
 
-                for (idx_t l = 0; l < _vertices.size(); ++l)
-                {
-                    if ((l == orphans[i]) || (l == orphans[j]) || (l == orphans[k])) continue;
-                    if (info.enclosing.contains(_vertices[l].point) > 0)
-                    {
-                        satisfies = false;
-                        break;
-                    }
-                    if (info.enclosing.contains(_vertices[l].point) == 0)
-                    {
-                        circle_collision = true;
-                        continue;
-                    }
-                }
+                auto cs = _tree_circle_contains_point(info.enclosing,
+                                                      orphans[i], orphans[j], orphans[k]);
+                bool satisfies = cs <= 0;
+                bool circle_collision = cs == 0;
 
                 if (satisfies)
                 {
@@ -518,14 +558,8 @@ namespace geom
         {
             flags = _safe_flags(flags);
 
-            for (idx_t i = 0; i < _vertices.size(); ++i)
-            {
-                if (fuzzy_t::eq(p.x, _vertices[i].point.x) &&
-                    fuzzy_t::eq(p.y, _vertices[i].point.y))
-                {
-                    return i;
-                }
-            }
+            auto f = _tree_find_v(p);
+            if (f != SIZE_T_MAX) return f;
 
             std::set < idx_t > orphans;
             std::vector < idx_t > circle_collision_triangles;
@@ -549,9 +583,11 @@ namespace geom
 
             if (orphans.empty()) return SIZE_T_MAX;
 
-            _vertices.push_back({ flags, p });
+            _vertices.push_back({ flags, 0, p });
 
             orphans.insert(_vertices.size() - 1);
+
+            _tree_add_v(_vertices.size() - 1);
 
             _triangulate(std::vector < idx_t > (orphans.begin(), orphans.end()),
                          std::move(circle_collision_triangles),
@@ -567,15 +603,335 @@ namespace geom
 
             std::vector < idx_t > orphans(ps.size());
 
+            _tree_init();
+
+            _vertices_tree.bounds.xmin = _vertices_tree.bounds.xmax = ps[0].x;
+            _vertices_tree.bounds.ymin = _vertices_tree.bounds.ymax = ps[0].y;
+
             _vertices.resize(ps.size());
             for (idx_t i = 0; i < ps.size(); ++i)
             {
                 _vertices[i].point = ps[i];
                 _vertices[i].flags = flags | superstruct;
                 orphans[i] = i;
+                if (_vertices_tree.bounds.xmin > ps[i].x)
+                    _vertices_tree.bounds.xmin = ps[i].x;
+                if (_vertices_tree.bounds.ymin > ps[i].y)
+                    _vertices_tree.bounds.ymin = ps[i].y;
+                if (_vertices_tree.bounds.xmax < ps[i].x)
+                    _vertices_tree.bounds.xmax = ps[i].x;
+                if (_vertices_tree.bounds.ymax < ps[i].y)
+                    _vertices_tree.bounds.ymax = ps[i].y;
+            }
+
+            for (idx_t i = 0; i < ps.size(); ++i)
+            {
+                _tree_add_v(orphans[i]);
             }
 
             _triangulate(orphans, {});
+        }
+
+        void _tree_init()
+        {
+            _quad_trees.resize(2);
+            _vertices_tree.root_node = 0;
+            _enclosing_circles_tree.root_node = 1;
+        }
+
+        void _tree_add_v(idx_t v)
+        {
+            rect bounds = _vertices_tree.bounds, old_bounds;
+            idx_t node = _vertices_tree.root_node, node2, old_node;
+            idx_t v2 = SIZE_T_MAX;
+            for (size_t d = 1; ; ++d)
+            {
+                if (_quad_trees[node].elems.empty() && (v2 == SIZE_T_MAX) ||
+                    (d == max_vertex_tree_deep))
+                {
+                    if (_quad_trees[node].leaf() || (d == max_vertex_tree_deep))
+                    {
+                        _quad_trees[node].elems.insert(v);
+                        _vertices[v].tree_idx = node;
+                        if (v2 != SIZE_T_MAX)
+                        {
+                            _quad_trees[node2].elems.insert(v2);
+                            _vertices[v2].tree_idx = node2;
+                        }
+                        return;
+                    }
+                    node = _tree_move_down_v(v, node, bounds);
+                    continue;
+                }
+                /* need to distribute existing node */
+                if ((_quad_trees[node].elems.size() == 1) && (v2 == SIZE_T_MAX))
+                {
+                    v2 = *_quad_trees[node].elems.begin();
+                    _quad_trees[node].elems.clear();
+                }
+                if (v2 != SIZE_T_MAX)
+                {
+                    old_bounds = bounds;
+                    old_node = node;
+                    node = _tree_move_down_v(v, old_node, bounds);
+                    node2 = _tree_move_down_v(v2, old_node, old_bounds);
+                    if (node != node2)
+                    {
+                        _quad_trees[node].elems.insert(v);
+                        _quad_trees[node2].elems.insert(v2);
+                        _vertices[v].tree_idx = node;
+                        _vertices[v2].tree_idx = node2;
+                        return;
+                    }
+                }
+            }
+        }
+
+        idx_t _tree_move_down_v(idx_t v, idx_t old_node, rect & b)
+        {
+            idx_t node;
+            switch (_tree_distribute_v(v, b))
+            {
+            case NW:
+                node = _quad_trees[old_node].nw = _tree_ensure_exists(_quad_trees[old_node].nw, old_node);
+                b.xmax -= (b.xmax - b.xmin) / 2; b.ymin += (b.ymax - b.ymin) / 2;
+                break;
+            case SW:
+                node = _quad_trees[old_node].sw = _tree_ensure_exists(_quad_trees[old_node].sw, old_node);
+                b.xmax -= (b.xmax - b.xmin) / 2; b.ymax -= (b.ymax - b.ymin) / 2;
+                break;
+            case NE:
+                node = _quad_trees[old_node].ne = _tree_ensure_exists(_quad_trees[old_node].ne, old_node);
+                b.xmin += (b.xmax - b.xmin) / 2; b.ymin += (b.ymax - b.ymin) / 2;
+                break;
+            case SE:
+                node = _quad_trees[old_node].se = _tree_ensure_exists(_quad_trees[old_node].se, old_node);
+                b.xmin += (b.xmax - b.xmin) / 2; b.ymax -= (b.ymax - b.ymin) / 2;
+                break;
+            case NO:
+            default:
+                node = _vertices_tree.root_node;
+                break;
+            }
+            return node;
+        }
+
+        quadrant _tree_distribute_v(idx_t v, const rect & b)
+        {
+            auto & p = point_at(v);
+            if (((p.x - b.xmin) < (b.xmax - b.xmin) / 2) &&
+                ((p.y - b.ymin) < (b.ymax - b.ymin) / 2))
+                return SW;
+            if (((p.x - b.xmin) < (b.xmax - b.xmin) / 2) &&
+                ((p.y - b.ymin) >= (b.ymax - b.ymin) / 2))
+                return NW;
+            if (((p.x - b.xmin) >= (b.xmax - b.xmin) / 2) &&
+                ((p.y - b.ymin) < (b.ymax - b.ymin) / 2))
+                return SE;
+            if (((p.x - b.xmin) >= (b.xmax - b.xmin) / 2) &&
+                ((p.y - b.ymin) >= (b.ymax - b.ymin) / 2))
+                return NE;
+            return NO;
+        }
+
+        idx_t _tree_make_node(idx_t parent)
+        {
+            if (!_phantom_tree_nodes.empty())
+            {
+                idx_t i = _phantom_tree_nodes.back();
+                _phantom_tree_nodes.pop_back();
+                _quad_trees[i].clear();
+                _quad_trees[i].parent = parent;
+                return i;
+            }
+            _quad_trees.emplace_back();
+            _quad_trees.back().parent = parent;
+            return _quad_trees.size() - 1;
+        }
+
+        idx_t _tree_ensure_exists(idx_t i, idx_t parent)
+        {
+            if (i == 0) return _tree_make_node(parent);
+            return i;
+        }
+
+        void _tree_delete_unused(idx_t i, idx_t root)
+        {
+            while ((i != root) && _quad_trees[i].empty())
+            {
+                _quad_trees[i].flags |= phantom;
+                _phantom_tree_nodes.push_back(i);
+                idx_t p = _quad_trees[i].parent;
+                if (_quad_trees[p].se == i) _quad_trees[p].se = 0;
+                else if (_quad_trees[p].sw == i) _quad_trees[p].sw = 0;
+                else if (_quad_trees[p].ne == i) _quad_trees[p].ne = 0;
+                else if (_quad_trees[p].nw == i) _quad_trees[p].nw = 0;
+                i = p;
+            }
+        }
+
+        int _tree_circle_contains_point(const circle & c,
+                                         idx_t ign1, idx_t ign2, idx_t ign3)
+        {
+            return _tree_circle_contains_point(
+                c, _vertices_tree.root_node, _vertices_tree.bounds, ign1, ign2, ign3);
+        }
+
+        int _tree_circle_contains_point(const circle & c, idx_t node, rect b,
+                                        idx_t ign1, idx_t ign2, idx_t ign3)
+        {
+            bool collision = false;
+            if (_quad_trees[node].empty()) return -1;
+            if (_quad_trees[node].leaf())
+            {
+                for (auto it = _quad_trees[node].elems.begin();
+                     it != _quad_trees[node].elems.end();
+                     ++it)
+                {
+                    if ((*it == ign1) || (*it == ign2) || (*it == ign3)) continue;
+                    auto conf = c.contains(point_at(*it));
+                    if (conf > 0) return 1;
+                    if (conf == 0) collision = true;
+                }
+                return collision ? 0 : -1;
+            }
+            double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+            double d1 = math::sqnorm(c.center.x - (b.xmin + w / 2)) - c.sqradius;
+            double d2 = math::sqnorm(c.center.y - (b.ymin + h / 2)) - c.sqradius;
+            bool north = true, east = true, south = true, west = true;
+            if (fuzzy_t::gt(d1, 0))
+            {
+                east = ((c.center.x - b.xmin) > w / 2);
+                west = !east;
+            }
+            if (fuzzy_t::gt(d2, 0))
+            {
+                north = ((c.center.y - b.ymin) > h / 2);
+                south = !north;
+            }
+            if (north && east)
+            {
+                if (_quad_trees[node].ne != 0)
+                {
+                    auto r = _tree_circle_contains_point(
+                        c, _quad_trees[node].ne,
+                        { b.xmin + w / 2, b.xmax, b.ymin + h / 2, b.ymax },
+                        ign1, ign2, ign3);
+                    if (r > 0) return 1;
+                    collision |= (r == 0);
+                }
+            }
+            if (north && west)
+            {
+                if (_quad_trees[node].nw != 0)
+                {
+                    auto r = _tree_circle_contains_point(
+                        c, _quad_trees[node].nw,
+                        { b.xmin, b.xmax - w / 2, b.ymin + h / 2, b.ymax },
+                        ign1, ign2, ign3);
+                    if (r > 0) return 1;
+                    collision |= (r == 0);
+                }
+            }
+            if (south && east)
+            {
+                if (_quad_trees[node].se != 0)
+                {
+                    auto r = _tree_circle_contains_point(
+                        c, _quad_trees[node].se,
+                        { b.xmin + w / 2, b.xmax, b.ymin, b.ymax - h / 2 },
+                        ign1, ign2, ign3);
+                    if (r > 0) return 1;
+                    collision |= (r == 0);
+                }
+            }
+            if (south && west)
+            {
+                if (_quad_trees[node].sw != 0)
+                {
+                    auto r = _tree_circle_contains_point(
+                        c, _quad_trees[node].sw,
+                        { b.xmin, b.xmax - w / 2, b.ymin, b.ymax - h / 2 },
+                        ign1, ign2, ign3);
+                    if (r > 0) return 1;
+                    collision |= (r == 0);
+                }
+            }
+            return collision ? 0 : -1;
+        }
+
+        idx_t _tree_find_v(const point2d_t & p)
+        {
+            return _tree_find_v(
+                p, _vertices_tree.root_node, _vertices_tree.bounds);
+        }
+
+        idx_t _tree_find_v(const point2d_t & p, idx_t node, rect b)
+        {
+            if (_quad_trees[node].empty()) return SIZE_T_MAX;
+            if (_quad_trees[node].leaf())
+            {
+                for (auto it = _quad_trees[node].elems.begin();
+                     it != _quad_trees[node].elems.end();
+                     ++it)
+                {
+                    if (fuzzy_t::eq(p.x, _vertices[*it].point.x) &&
+                        fuzzy_t::eq(p.y, _vertices[*it].point.y))
+                        return *it;
+                }
+                return SIZE_T_MAX;
+            }
+            bool north = true, east = true, south = true, west = true;
+            double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+            if (fuzzy_t::gt(p.x, b.xmin + w / 2))
+            {
+                east = true; west = false;
+            }
+            if (fuzzy_t::gt(p.y, b.ymin + h / 2))
+            {
+                north = true; south = false;
+            }
+            if (north && east)
+            {
+                if (_quad_trees[node].ne != 0)
+                {
+                    auto r = _tree_find_v(
+                        p, _quad_trees[node].ne,
+                        { b.xmin + w / 2, b.xmax, b.ymin + h / 2, b.ymax });
+                    if (r != SIZE_T_MAX) return r;
+                }
+            }
+            if (north && west)
+            {
+                if (_quad_trees[node].nw != 0)
+                {
+                    auto r = _tree_find_v(
+                        p, _quad_trees[node].nw,
+                        { b.xmin, b.xmax - w / 2, b.ymin + h / 2, b.ymax });
+                    if (r != SIZE_T_MAX) return r;
+                }
+            }
+            if (south && east)
+            {
+                if (_quad_trees[node].se != 0)
+                {
+                    auto r = _tree_find_v(
+                        p, _quad_trees[node].se,
+                        { b.xmin + w / 2, b.xmax, b.ymin, b.ymax - h / 2 });
+                    if (r != SIZE_T_MAX) return r;
+                }
+            }
+            if (south && west)
+            {
+                if (_quad_trees[node].sw != 0)
+                {
+                    auto r = _tree_find_v(
+                        p, _quad_trees[node].sw,
+                        { b.xmin, b.xmax - w / 2, b.ymin, b.ymax - h / 2 });
+                    if (r != SIZE_T_MAX) return r;
+                }
+            }
+            return SIZE_T_MAX;
         }
     };
 }
