@@ -48,6 +48,7 @@ namespace geom
         struct triangle_info
         {
             flags_t flags;
+            idx_t tree_idx;
             idx_t vertices[3];
             circle enclosing;
         };
@@ -103,13 +104,16 @@ namespace geom
         std::vector < triangle_info > _triangles;
         std::vector < idx_t >         _phantom_triangles;
         std::vector < quad_node >     _quad_trees;
+        std::vector < idx_t >         _phantom_tree_nodes;
         quad_tree                     _vertices_tree;
+        quad_tree                     _enclosing_circles_tree;
 
     public:
 
         const bool autocalculate_neighborhoods;
         const bool autocalculate_neighbor_vertices;
         const size_t max_vertex_tree_deep;
+        const size_t max_circle_tree_deep;
 
     public:
 
@@ -167,15 +171,18 @@ namespace geom
             : autocalculate_neighbor_vertices(false)
             , autocalculate_neighborhoods(false)
             , max_vertex_tree_deep(6)
+            , max_circle_tree_deep(6)
         {
         }
 
         mesh(bool autocalculate_neighbor_vertices,
              bool autocalculate_neighborhoods,
-             size_t max_vertex_tree_deep = 6)
+             size_t max_vertex_tree_deep = 6,
+             size_t max_circle_tree_deep = 6)
             : autocalculate_neighbor_vertices(autocalculate_neighbor_vertices)
             , autocalculate_neighborhoods(autocalculate_neighborhoods)
             , max_vertex_tree_deep(max_vertex_tree_deep)
+            , max_circle_tree_deep(max_circle_tree_deep)
         {
         }
 
@@ -456,6 +463,7 @@ namespace geom
             return
             {
                 flags,
+                0,
                 { i1, i2, i3 },
                 enclosing_circle(v1.point, v2.point, v3.point)
             };
@@ -535,6 +543,7 @@ namespace geom
                     if (can_insert)
                     {
                         idx_t idx = _add_triangle(info);
+                        _tree_add_c(idx);
                         if (circle_collision)
                         {
                             circle_collision_triangles.push_back(idx);
@@ -564,22 +573,7 @@ namespace geom
             std::set < idx_t > orphans;
             std::vector < idx_t > circle_collision_triangles;
 
-            for (idx_t i = 0; i < _triangles.size(); ++i)
-            {
-                if (_triangles[i].flags & phantom) continue;
-                auto c = _triangles[i].enclosing.contains(p);
-                auto & t = _triangles[i];
-                if (c >= 0)
-                {
-                    if (c > 0)
-                        _delete_triangle(i);
-                    else if (c == 0)
-                        circle_collision_triangles.push_back(i);
-                    orphans.insert(t.vertices[0]);
-                    orphans.insert(t.vertices[1]);
-                    orphans.insert(t.vertices[2]);
-                }
-            }
+            _tree_remove_circles_containing_point(p, orphans, circle_collision_triangles);
 
             if (orphans.empty()) return SIZE_T_MAX;
 
@@ -623,6 +617,8 @@ namespace geom
                 if (_vertices_tree.bounds.ymax < ps[i].y)
                     _vertices_tree.bounds.ymax = ps[i].y;
             }
+
+            _enclosing_circles_tree.bounds = _vertices_tree.bounds;
 
             for (idx_t i = 0; i < ps.size(); ++i)
             {
@@ -932,6 +928,142 @@ namespace geom
                 }
             }
             return SIZE_T_MAX;
+        }
+
+        void _tree_add_c(idx_t t)
+        {
+            auto & c = _triangles[t].enclosing;
+            rect b = _enclosing_circles_tree.bounds;
+            idx_t node = _enclosing_circles_tree.root_node;
+            for (size_t d = 1; ; ++d)
+            {
+                double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+                double d1 = math::sqnorm(c.center.x - (b.xmin + w / 2)) - c.sqradius;
+                double d2 = math::sqnorm(c.center.y - (b.ymin + h / 2)) - c.sqradius;
+                if (!(d == max_circle_tree_deep) &&
+                    fuzzy_t::gt(d1, 0) && fuzzy_t::gt(d2, 0))
+                {
+                    bool east = ((c.center.x - b.xmin) > w / 2);
+                    bool north = ((c.center.y - b.ymin) > h / 2);
+                    if (north && east)
+                    {
+                        node = _quad_trees[node].ne = _tree_ensure_exists(_quad_trees[node].ne, node);
+                        b.xmin += w / 2; b.ymin += h / 2;
+                    }
+                    else if (north && !east)
+                    {
+                        node = _quad_trees[node].nw = _tree_ensure_exists(_quad_trees[node].nw, node);
+                        b.xmax -= w / 2; b.ymin += h / 2;
+                    }
+                    else if (!north && east)
+                    {
+                        node = _quad_trees[node].se = _tree_ensure_exists(_quad_trees[node].se, node);
+                        b.xmin += w / 2; b.ymax -= h / 2;
+                    }
+                    else // if (!north && !east)
+                    {
+                        node = _quad_trees[node].sw = _tree_ensure_exists(_quad_trees[node].sw, node);
+                        b.xmax -= w / 2; b.ymax -= h / 2;
+                    }
+                }
+                else
+                {
+                    _quad_trees[node].elems.insert(t);
+                    _triangles[t].tree_idx = node;
+                    return;
+                }
+            }
+        }
+
+        void _tree_remove_circles_containing_point(
+            const point2d_t & p,
+            std::set < idx_t > & orphans,
+            std::vector < idx_t > & circle_collision_triangles)
+        {
+            _tree_remove_circles_containing_point(
+                p, orphans, circle_collision_triangles,
+                _enclosing_circles_tree.root_node,
+                _enclosing_circles_tree.bounds);
+        }
+
+        void _tree_remove_circles_containing_point(
+            const point2d_t & p,
+            std::set < idx_t > & orphans,
+            std::vector < idx_t > & circle_collision_triangles,
+            idx_t node, rect b)
+        {
+            for (auto it = _quad_trees[node].elems.begin();
+                 it != _quad_trees[node].elems.end();)
+            {
+                auto & t = _triangles[*it];
+                auto c = t.enclosing.contains(p);
+                if (c >= 0)
+                {
+                    if (c > 0)
+                    {
+                        _delete_triangle(*it);
+                        it = _quad_trees[node].elems.erase(it);
+                    }
+                    else if (c == 0)
+                    {
+                        circle_collision_triangles.push_back(*it);
+                        ++it;
+                    }
+                    orphans.insert(t.vertices[0]);
+                    orphans.insert(t.vertices[1]);
+                    orphans.insert(t.vertices[2]);
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+            if (_quad_trees[node].leaf())
+            {
+                _tree_delete_unused(node, _enclosing_circles_tree.root_node);
+                return;
+            }
+            double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+            if (((p.x - b.xmin) >= w / 2) && ((p.y - b.ymin) >= h / 2))
+            {
+                if (_quad_trees[node].ne != 0)
+                {
+                    _tree_remove_circles_containing_point(
+                        p, orphans, circle_collision_triangles,
+                        _quad_trees[node].ne,
+                        { b.xmin + w / 2, b.xmax, b.ymin + h / 2, b.ymax });
+                }
+            }
+            else if (((p.x - b.xmin) >= w / 2) && ((p.y - b.ymin) < h / 2))
+            {
+                if (_quad_trees[node].se != 0)
+                {
+                    _tree_remove_circles_containing_point(
+                        p, orphans, circle_collision_triangles,
+                        _quad_trees[node].se,
+                        { b.xmin + w / 2, b.xmax, b.ymin, b.ymax - h / 2 });
+                }
+            }
+            else if (((p.x - b.xmin) < w / 2) && ((p.y - b.ymin) >= h / 2))
+            {
+                if (_quad_trees[node].nw != 0)
+                {
+                    _tree_remove_circles_containing_point(
+                        p, orphans, circle_collision_triangles,
+                        _quad_trees[node].nw,
+                        { b.xmin, b.xmax - w / 2, b.ymin + h / 2, b.ymax });
+                }
+            }
+            else // if (((p.x - b.xmin) < w / 2) && ((p.y - b.ymin) < h / 2))
+            {
+                if (_quad_trees[node].sw != 0)
+                {
+                    _tree_remove_circles_containing_point(
+                        p, orphans, circle_collision_triangles,
+                        _quad_trees[node].sw,
+                        { b.xmin, b.xmax - w / 2, b.ymin, b.ymax - h / 2 });
+                }
+            }
         }
     };
 }
