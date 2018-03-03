@@ -32,31 +32,22 @@ namespace geom
         {
         }
 
-        template < typename _C >
-        triangle(const _C & c)
+        triangle(container_type && c)
+            : convex_polygon(std::move(c))
         {
-            if (c.size() <= 3)
-            {
-                for (size_t i = 0; i < c.size(); ++i)
-                {
-                    points[i] = c[i];
-                }
-            }
-            else
-            {
-                throw std::domain_error(
-                    "triangle cannot be created "
-                    "from polygon with n > 3");
-            }
+        }
+
+        triangle(const triangle & t)
+            : triangle(t.points)
+        {
+        }
+
+        triangle(triangle && t)
+            : triangle(std::move(t.points))
+        {
         }
 
         triangle()
-        {
-        }
-
-        template < typename _C >
-        triangle(polygon < _C > const & o)
-            : triangle(o.points)
         {
         }
 
@@ -65,6 +56,21 @@ namespace geom
                  const point2d_t & p3)
         {
             points = { { p1, p2, p3 } };
+        }
+
+        triangle & operator = (const triangle & t)
+        {
+            invalidate();
+            points = t.points;
+            return *this;
+        }
+
+        triangle & operator = (triangle && t)
+        {
+            invalidate();
+            t.invalidate();
+            points = std::move(t.points);
+            return *this;
         }
 
         /* calculates enclosing circle for

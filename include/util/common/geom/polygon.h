@@ -98,9 +98,8 @@ namespace geom
         {
         }
 
-        template < typename _C >
-        polygon(const _C & c)
-            : points(std::begin(c), std::end(c))
+        polygon(container_type && c)
+            : points(std::move(c))
         {
         }
 
@@ -108,22 +107,26 @@ namespace geom
         {
         }
 
-        template < typename _C >
-        polygon(polygon < _C > const & o)
+        polygon(const polygon & o)
             : polygon(o.points)
         {
         }
 
-        template < typename _C >
-        polygon & operator = (polygon < _C > const & o)
+        polygon(polygon && o)
+            : polygon(std::move(o.points))
+        {
+            o.invalidate();
+        }
+
+        polygon & operator = (const polygon & o)
         {
             invalidate();
+            o.invalidate();
             points = o.points;
             return *this;
         }
 
-        template < typename _C >
-        polygon & operator = (polygon < _C > && o)
+        polygon & operator = (polygon && o)
         {
             invalidate();
             o.invalidate();

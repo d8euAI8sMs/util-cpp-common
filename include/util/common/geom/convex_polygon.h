@@ -37,9 +37,8 @@ namespace geom
         {
         }
 
-        template < typename _C >
-        convex_polygon(const _C & c)
-            : polygon(c)
+        convex_polygon(container_type && c)
+            : polygon(std::move(c))
         {
         }
 
@@ -47,22 +46,24 @@ namespace geom
         {
         }
 
-        template < typename _C >
-        convex_polygon(polygon < _C > const & o)
+        convex_polygon(polygon const & o)
             : polygon(o.points)
         {
         }
 
-        template < typename _C >
-        convex_polygon & operator = (convex_polygon < _C > const & o)
+        convex_polygon(polygon && o)
+            : polygon(std::move(o))
+        {
+        }
+
+        convex_polygon & operator = (convex_polygon const & o)
         {
             invalidate();
             points = o.points;
             return *this;
         }
 
-        template < typename _C >
-        convex_polygon & operator = (convex_polygon < _C > && o)
+        convex_polygon & operator = (convex_polygon && o)
         {
             invalidate();
             o.invalidate();
