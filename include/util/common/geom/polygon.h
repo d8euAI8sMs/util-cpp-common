@@ -121,7 +121,6 @@ namespace geom
         polygon & operator = (const polygon & o)
         {
             invalidate();
-            o.invalidate();
             points = o.points;
             return *this;
         }
