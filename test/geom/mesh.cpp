@@ -462,6 +462,54 @@ namespace geom
             Assert::AreEqual(size_t(2), r, L"remapped - 2", LINE_INFO());
         }
 
+        BEGIN_TEST_METHOD_ATTRIBUTE(_add_5)
+            TEST_DESCRIPTION(L"mesh update works fine - test triangulation invariants")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_add_5)
+        {
+            std::vector < point2d_t > super = { { -2, -2 }, { 2, -2 }, { 2, 2 }, { -2, 2 } };
+            for (size_t i = 0; i < 10000; ++i)
+            {
+                mesh m(false, false);
+
+                double t = rand() / (RAND_MAX + 1.) - 0.5;
+
+                std::vector < point2d_t > points = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
+                for (size_t j = 0; j < points.size(); ++j)
+                {
+                    auto r1 = rand() % 4, r2 = rand() % 4;
+                    double d1 = ((r1 == 0) ? 0 : ((r1 == 1) ? 1e-4 : ((r1 == 2) ? 1e-6 : 1e-8)));
+                    double d2 = ((r2 == 0) ? 0 : ((r2 == 1) ? 1e-4 : ((r2 == 2) ? 1e-6 : 1e-8)));
+                    points[j].x += t + ((rand() % 2) * 2 - 1) * d1 * rand() / (RAND_MAX + 1.);
+                    points[j].y += t + ((rand() % 2) * 2 - 1) * d2 * rand() / (RAND_MAX + 1.);
+                }
+                std::random_shuffle(points.begin(), points.end());
+
+                m.init(super);
+                m.add(points);
+
+                CString fmt; fmt.Format(L"%d: ", i);
+
+                Assert::AreEqual(size_t(8), m.vertices().size(), fmt + L"vertices size", LINE_INFO());
+                Assert::AreEqual(size_t(10), m.triangles().size(), fmt + L"triangles size", LINE_INFO());
+
+                for (size_t t = 0; t < m.triangles().size(); ++t)
+                {
+                    for (size_t t2 = 0; t2 < m.triangles().size(); ++t2)
+                    {
+                        if (t == t2) continue;
+                        fmt.Format(L"%d: intersection (%d-%d)", i, t, t2);
+
+                        auto intersects = m.triangle_at(t).intersects(m.triangle_at(t2));
+
+                        Assert::IsFalse(status::is(intersects, status::polygon::intersects),
+                                        fmt, LINE_INFO());
+                    }
+                }
+            }
+        }
+
         BEGIN_TEST_METHOD_ATTRIBUTE(_user_flags)
             TEST_DESCRIPTION(L"user flags work fine")
         END_TEST_METHOD_ATTRIBUTE()
