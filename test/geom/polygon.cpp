@@ -224,12 +224,12 @@ namespace geom
             auto p4 = make_polygon < arr4_t > ({ { { 3, 1 }, { 3, 3 }, { 1, 3 }, { 1, 1 } } });
             auto p5 = make_polygon < arr4_t > ({ { { 1, 1 }, { 2, 2 }, { 1, 3 }, { 0, 2 } } });
             auto p6 = make_polygon < vect_t > ({ { { 0, 0 }, { 7, 0 }, { 7, 3 }, { 0, 3 }, { 0, 2 }, { 6, 2 }, { 6, 1 }, { 0, 1 } } });
-            auto p7 = move(p3, { 1, 1 });
-            auto p8 = move(p3, { 0, 1 });
-            auto p9 = move(p3, { 6, 1 });
-            auto p10 = move(p3, { 6, 2 });
-            auto p11 = scale(move(p3, { 6, 2 }), 0.5, { 6.5, 2.5 });
-            auto p12 = scale(move(p3, { 1, 1 }), 0.5, { 1.5, 1.5 });
+            auto p7 = make_polygon < arr4_t > ({ { { 1, 1 }, { 2, 1 }, { 2, 2 }, { 1, 2 } } }); // move(p3, { 1, 1 });
+            auto p8 = make_polygon < arr4_t > ({ { { 0, 1 }, { 1, 1 }, { 1, 2 }, { 0, 2 } } }); // move(p3, { 0, 1 });
+            auto p9 = make_polygon < arr4_t > ({ { { 6, 0 }, { 7, 0 }, { 7, 1 }, { 6, 1 } } }); // move(p3, { 6, 1 });
+            auto p10 = make_polygon < arr4_t > ({ { { 6, 2 }, { 7, 2 }, { 7, 3 }, { 6, 3 } } }); // move(p3, { 6, 2 });
+            auto p11 = make_polygon < arr4_t > ({ { { 6.25, 2.25 }, { 6.75, 2.25 }, { 6.75, 2.75 }, { 6.25, 2.75 } } }); // scale(move(p3, { 6, 2 }), 0.5, { 6.5, 2.5 });
+            auto p12 = make_polygon < arr4_t > ({ { { 1.25, 1.25 }, { 1.75, 1.25 }, { 1.75, 1.75 }, { 1.25, 1.75 } } }); // scale(move(p3, { 1, 1 }), 0.5, { 1.5, 1.5 });
             auto l1 = make_line(1, 2, 3, 4);
             auto l2 = make_line(2, 3, 3, 4);
             auto l3 = make_line(4, 1, 5, 2);
@@ -277,8 +277,6 @@ namespace geom
             Assert::AreEqual(2.5, i[1].y, 1e-8, L"p1 - l1 y2", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok | status::polygon::intersects),
                              p1.intersects(l1), L"p1 - l1 int", LINE_INFO());
-            Assert::IsTrue(intersects(p1, l1), L"p1 - l1 int glob", LINE_INFO());
-            Assert::IsTrue(intersects(l1, p1), L"l1 - p1 int glob", LINE_INFO());
 
             i = p1.intersections(l2);
 
@@ -287,80 +285,57 @@ namespace geom
             Assert::AreEqual(3.5, i[0].y, 1e-8, L"p1 - l2 y", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok | status::polygon::intersects),
                              p1.intersects(l2), L"p1 - l2 int", LINE_INFO());
-            Assert::IsTrue(intersects(p1, l2), L"p1 - l2 int glob", LINE_INFO());
-            Assert::IsTrue(intersects(l2, p1), L"l2 - p1 int glob", LINE_INFO());
 
             i = p1.intersections(l3);
 
             Assert::AreEqual(size_t(0), i.size(), L"p1 - l3", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok),
                              p1.intersects(l3), L"p1 - l3 int", LINE_INFO());
-            Assert::IsFalse(intersects(p1, l3), L"p1 - l3 int glob", LINE_INFO());
-            Assert::IsFalse(intersects(l3, p1), L"l3 - p1 int glob", LINE_INFO());
 
             i = p1.intersections(l4);
 
             Assert::AreEqual(size_t(0), i.size(), L"p1 - l4", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok),
                              p1.intersects(l4), L"p1 - l4 int", LINE_INFO());
-            Assert::IsFalse(intersects(p1, l4), L"p1 - l4 int glob", LINE_INFO());
-            Assert::IsFalse(intersects(l4, p1), L"l4 - p1 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::intersects),
                              p1.intersects(p2), L"p1 - p2 int", LINE_INFO());
-            Assert::IsTrue(intersects(p1, p2), L"p1 - p2 int glob", LINE_INFO());
-            Assert::IsTrue(intersects(p2, p1), L"p2 - p1 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok),
                              p1.intersects(p3), L"p1 - p3 int", LINE_INFO());
-            Assert::IsFalse(intersects(p1, p3), L"p1 - p3 int glob", LINE_INFO());
-            Assert::IsFalse(intersects(p3, p1), L"p3 - p1 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::intersects),
                              p1.intersects(p4), L"p1 - p4 int", LINE_INFO());
-            Assert::IsTrue(intersects(p1, p4), L"p1 - p4 int glob", LINE_INFO());
-            Assert::IsTrue(intersects(p4, p1), L"p4 - p1 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
                              p1.intersects(p5), L"p1 - p5 int", LINE_INFO());
-            Assert::IsFalse(intersects(p1, p5), L"p1 - p5 int glob", LINE_INFO());
-            Assert::IsFalse(intersects(p5, p1), L"p5 - p1 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
                              p1.intersects(p1), L"p1 - p1 int", LINE_INFO());
-            Assert::IsFalse(intersects(p1, p1), L"p1 - p1 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
                              p6.intersects(p7), L"p6 - p7 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p7), L"p6 - p7 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon),
                              p6.intersects(p8), L"p6 - p8 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p8), L"p6 - p8 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
                              p6.intersects(p9), L"p6 - p9 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p9), L"p6 - p9 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
                              p6.intersects(p9), L"p6 - p9 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p9), L"p6 - p9 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
                              p6.intersects(p10), L"p6 - p10 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p10), L"p6 - p10 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::coincides_with_polygon | status::polygon::contains_polygon),
                              p6.intersects(p3), L"p6 - p3 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p3), L"p6 - p3 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok | status::polygon::contains_polygon),
                              p6.intersects(p11), L"p6 - p11 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p11), L"p6 - p11 int glob", LINE_INFO());
 
             Assert::AreEqual(status::trusted(status::ok),
                              p6.intersects(p12), L"p6 - p12 int", LINE_INFO());
-            Assert::IsFalse(intersects(p6, p12), L"p6 - p12 int glob", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_convex)
@@ -507,85 +482,6 @@ namespace geom
 
             Assert::IsFalse(p9.is_convex(), L"p9", LINE_INFO());
             Assert::IsTrue(p9.convexity() == convex_type::no, L"p9 c", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
-            TEST_DESCRIPTION(L"rotation calculation is correct")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_rotate)
-        {
-            const double pi = 4 * std::atan(1);
-
-            auto p0 = make_polygon < arr4_t > ({ { { 2, 2 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
-            auto p1 = rotate(p0, pi);
-            auto p2 = rotate(p0, pi/2, { 2, 3 });
-
-            Assert::AreEqual(-2, p1.points[0].x, 1e-8, L"p1[0].x", LINE_INFO());
-            Assert::AreEqual(-2, p1.points[0].y, 1e-8, L"p1[0].y", LINE_INFO());
-            Assert::AreEqual(-3, p1.points[1].x, 1e-8, L"p1[1].x", LINE_INFO());
-            Assert::AreEqual(-3, p1.points[1].y, 1e-8, L"p1[1].y", LINE_INFO());
-            Assert::AreEqual(-2, p1.points[2].x, 1e-8, L"p1[2].x", LINE_INFO());
-            Assert::AreEqual(-4, p1.points[2].y, 1e-8, L"p1[2].y", LINE_INFO());
-            Assert::AreEqual(-1, p1.points[3].x, 1e-8, L"p1[3].x", LINE_INFO());
-            Assert::AreEqual(-3, p1.points[3].y, 1e-8, L"p1[3].y", LINE_INFO());
-
-            Assert::AreEqual(3, p2.points[0].x, 1e-8, L"2[0].x", LINE_INFO());
-            Assert::AreEqual(3, p2.points[0].y, 1e-8, L"2[0].y", LINE_INFO());
-            Assert::AreEqual(2, p2.points[1].x, 1e-8, L"2[1].x", LINE_INFO());
-            Assert::AreEqual(4, p2.points[1].y, 1e-8, L"2[1].y", LINE_INFO());
-            Assert::AreEqual(1, p2.points[2].x, 1e-8, L"2[2].x", LINE_INFO());
-            Assert::AreEqual(3, p2.points[2].y, 1e-8, L"2[2].y", LINE_INFO());
-            Assert::AreEqual(2, p2.points[3].x, 1e-8, L"2[3].x", LINE_INFO());
-            Assert::AreEqual(2, p2.points[3].y, 1e-8, L"2[3].y", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_scale)
-            TEST_DESCRIPTION(L"scale calculation is correct")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_scale)
-        {
-            auto p0 = make_polygon < arr4_t > ({ { { 2, 2 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
-            auto p1 = scale(p0, 10);
-            auto p2 = scale(p0, 10, { 2, 3 });
-
-            Assert::AreEqual(20, p1.points[0].x, 1e-8, L"p1[0].x", LINE_INFO());
-            Assert::AreEqual(20, p1.points[0].y, 1e-8, L"p1[0].y", LINE_INFO());
-            Assert::AreEqual(30, p1.points[1].x, 1e-8, L"p1[1].x", LINE_INFO());
-            Assert::AreEqual(30, p1.points[1].y, 1e-8, L"p1[1].y", LINE_INFO());
-            Assert::AreEqual(20, p1.points[2].x, 1e-8, L"p1[2].x", LINE_INFO());
-            Assert::AreEqual(40, p1.points[2].y, 1e-8, L"p1[2].y", LINE_INFO());
-            Assert::AreEqual(10, p1.points[3].x, 1e-8, L"p1[3].x", LINE_INFO());
-            Assert::AreEqual(30, p1.points[3].y, 1e-8, L"p1[3].y", LINE_INFO());
-
-            Assert::AreEqual(2, p2.points[0].x, 1e-8, L"2[0].x", LINE_INFO());
-            Assert::AreEqual(-7, p2.points[0].y, 1e-8, L"2[0].y", LINE_INFO());
-            Assert::AreEqual(12, p2.points[1].x, 1e-8, L"2[1].x", LINE_INFO());
-            Assert::AreEqual(3, p2.points[1].y, 1e-8, L"2[1].y", LINE_INFO());
-            Assert::AreEqual(2, p2.points[2].x, 1e-8, L"2[2].x", LINE_INFO());
-            Assert::AreEqual(13, p2.points[2].y, 1e-8, L"2[2].y", LINE_INFO());
-            Assert::AreEqual(-8, p2.points[3].x, 1e-8, L"2[3].x", LINE_INFO());
-            Assert::AreEqual(3, p2.points[3].y, 1e-8, L"2[3].y", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_move)
-            TEST_DESCRIPTION(L"move calculation is correct")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_move)
-        {
-            auto p0 = make_polygon < arr4_t > ({ { { 2, 2 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
-            auto p1 = move(p0, { 2, 3 });
-
-            Assert::AreEqual(4, p1.points[0].x, 1e-8, L"p1[0].x", LINE_INFO());
-            Assert::AreEqual(5, p1.points[0].y, 1e-8, L"p1[0].y", LINE_INFO());
-            Assert::AreEqual(5, p1.points[1].x, 1e-8, L"p1[1].x", LINE_INFO());
-            Assert::AreEqual(6, p1.points[1].y, 1e-8, L"p1[1].y", LINE_INFO());
-            Assert::AreEqual(4, p1.points[2].x, 1e-8, L"p1[2].x", LINE_INFO());
-            Assert::AreEqual(7, p1.points[2].y, 1e-8, L"p1[2].y", LINE_INFO());
-            Assert::AreEqual(3, p1.points[3].x, 1e-8, L"p1[3].x", LINE_INFO());
-            Assert::AreEqual(6, p1.points[3].y, 1e-8, L"p1[3].y", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_contains)
@@ -906,24 +802,6 @@ namespace geom
                              p4.contains({ 0, 1.99 }), L"p4 (0,1.99)", LINE_INFO());
             Assert::AreEqual(status::trusted(status::ok | status::polygon::contains_point),
                              p4.contains({ 0, 1.999 }), L"p4 (0,1.999)", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_center)
-            TEST_DESCRIPTION(L"center calculation is correct")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_center)
-        {
-            auto p1 = make_polygon < arr4_t > ({ { { 2, 2 }, { 3, 3 }, { 2, 4 }, { 1, 3 } } });
-            auto p2 = make_polygon < arr4_t > ({ { { 2, 1 }, { 4, 3 }, { 2, 5 }, { 1, 3 } } });
-
-            auto c1 = center(p1);
-            auto c2 = center(p2);
-
-            Assert::AreEqual(2, c1.x, 1e-8, L"c1.x", LINE_INFO());
-            Assert::AreEqual(3, c1.y, 1e-8, L"c1.y", LINE_INFO());
-            Assert::AreEqual(2.25, c2.x, 1e-8, L"c2.x", LINE_INFO());
-            Assert::AreEqual(3, c2.y, 1e-8, L"c2.y", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_clockwise_sort)

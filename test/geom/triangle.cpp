@@ -31,9 +31,6 @@ namespace geom
             // test that compilation succeeds :D
             auto t = make_triangle(points);
             auto t2 = make_triangle(2, 2, 3.0, 3.0, 2u, 4u);
-            auto t3 = rotate(t, 0);
-            auto t4 = scale(t, 1);
-            auto t5 = move(t, {});
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_constructor)

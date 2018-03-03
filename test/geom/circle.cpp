@@ -47,61 +47,14 @@ namespace geom
             auto c = make_circle(2, 3, 1);
 
             Assert::AreEqual(1, c.contains({ 2, 3 }), L"(2,3)", LINE_INFO());
-            Assert::IsTrue(contains(c, { 2, 3 }), L"(2,3) glob", LINE_INFO());
 
             Assert::AreEqual(-1, c.contains({ 0, 0 }), L"(0,0)", LINE_INFO());
-            Assert::IsFalse(contains(c, { 0, 0 }), L"(0,0) glob", LINE_INFO());
 
             Assert::AreEqual(0, c.contains({ 2, 2 }), L"(2,2)", LINE_INFO());
-            Assert::IsFalse(contains(c, { 2, 2 }), L"(2,2) glob", LINE_INFO());
 
             Assert::AreEqual(0, c.contains({ 2, 2 - 1e-12 }), L"(2,2-0)", LINE_INFO());
-            Assert::IsFalse(contains(c, { 2, 2 - 1e-12 }), L"(2,2-0) glob", LINE_INFO());
 
             Assert::AreEqual(0, c.contains({ 2, 2 + 1e-12 }), L"(2,2+0)", LINE_INFO());
-            Assert::IsFalse(contains(c, { 2, 2 + 1e-12 }), L"(2,2+0) glob", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
-            TEST_DESCRIPTION(L"rotate works fine")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_rotate)
-        {
-            auto c = make_circle(2, 3, 1);
-            auto r = rotate(c, 1);
-
-            Assert::AreEqual(2, r.center.x, 1e-8, L"c.x", LINE_INFO());
-            Assert::AreEqual(3, r.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(1, r.sqradius, 1e-8, L"r", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_scale)
-            TEST_DESCRIPTION(L"scale works fine")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_scale)
-        {
-            auto c = make_circle(2, 3, 1);
-            auto r = scale(c, 10, { 2, 0 });
-
-            Assert::AreEqual(2,  r.center.x, 1e-8, L"c.x", LINE_INFO());
-            Assert::AreEqual(30, r.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(100, r.sqradius, 1e-8, L"r", LINE_INFO());
-        }
-
-        BEGIN_TEST_METHOD_ATTRIBUTE(_move)
-            TEST_DESCRIPTION(L"move works fine")
-        END_TEST_METHOD_ATTRIBUTE()
-
-        TEST_METHOD(_move)
-        {
-            auto c = make_circle(2, 3, 1);
-            auto r = move(c, { 2, 3 });
-
-            Assert::AreEqual(4, r.center.x, 1e-8, L"c.x", LINE_INFO());
-            Assert::AreEqual(6, r.center.y, 1e-8, L"c.y", LINE_INFO());
-            Assert::AreEqual(1, r.sqradius, 1e-8, L"r", LINE_INFO());
         }
     };
 }
