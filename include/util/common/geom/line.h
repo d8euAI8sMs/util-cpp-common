@@ -283,8 +283,9 @@ namespace geom
                     return r;
 
                 double d1 = sqlength(), d2 = l.sqlength();
-                double s1 = d1 * min(q1, 1 - q1),
-                       s2 = d2 * min(q2, 1 - q2);
+                double q3 = min(q1, 1 - q1), q4 = min(q2, 1 - q2);
+                double s1 = d1 * q3 * q3 * ((q3 < 0) ? -1 : 1),
+                       s2 = d2 * q4 * q4 * ((q4 < 0) ? -1 : 1);
 
                 auto i1 = fuzzy_t::greater(s1, 0),
                      i2 = fuzzy_t::greater(s2, 0);

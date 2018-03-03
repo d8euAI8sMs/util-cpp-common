@@ -320,7 +320,7 @@ namespace geom
                                          (l.p2.y - l.p1.y) * 2 * sqrt_tolerance() };
                         auto c3 = contains(p1);
                         if (status::is(c3, status::polygon::contains_point) &&
-                            fuzzy_t::eq(0, q * s))
+                            fuzzy_t::eq(0, q * q * s))
                         {
                             possible_touches_line = true;
                         }
@@ -341,7 +341,7 @@ namespace geom
 
                         auto c4 = contains(p2);
                         if (status::is(c4, status::polygon::contains_point) &&
-                            fuzzy_t::eq(s, q * s))
+                            fuzzy_t::eq(s, q * q * s))
                         {
                             possible_touches_line = true;
                         }
