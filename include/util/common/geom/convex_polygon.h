@@ -121,37 +121,4 @@ namespace geom
         : std::integral_constant < bool, true >
     {
     };
-
-    /*****************************************************/
-    /*                geometry operations                */
-    /*****************************************************/
-
-    template < typename _C, typename _R = convex_polygon < _C > > inline _R rotate
-    (
-        const convex_polygon < _C > & geometry,
-        double radians,
-        point2d_t at = {}
-    )
-    {
-        return rotate < _C, _R > (static_cast < const polygon < _C > & > (geometry), radians, at);
-    }
-
-    template < typename _C, typename _R = convex_polygon < _C > > inline _R scale
-    (
-        const convex_polygon < _C > & geometry,
-        double n,
-        point2d_t at = {}
-    )
-    {
-        return scale < _C, _R > (static_cast < const polygon < _C > & > (geometry), n, at);
-    }
-
-    template < typename _C, typename _R = convex_polygon < _C > > inline _R move
-    (
-        const convex_polygon < _C > & geometry,
-        point2d_t value
-    )
-    {
-        return move < _C, _R > (static_cast < const polygon < _C > & > (geometry), value);
-    }
 }

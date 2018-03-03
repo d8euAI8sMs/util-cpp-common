@@ -178,37 +178,4 @@ namespace geom
     {
         return make_triangle(p1, p2, p3).enclosing_circle();
     }
-
-    /*****************************************************/
-    /*                geometry operations                */
-    /*****************************************************/
-
-    template < typename _R = triangle > inline _R rotate
-    (
-        const triangle & geometry,
-        double radians,
-        point2d_t at = {}
-    )
-    {
-        return rotate < triangle::container_type, _R > (geometry, radians, at);
-    }
-
-    template < typename _R = triangle > inline _R scale
-    (
-        const triangle & geometry,
-        double n,
-        point2d_t at = {}
-    )
-    {
-        return scale < triangle::container_type, _R > (geometry, n, at);
-    }
-
-    template < typename _R = triangle > inline _R move
-    (
-        const triangle & geometry,
-        point2d_t value
-    )
-    {
-        return move < triangle::container_type, _R > (geometry, value);
-    }
 }
