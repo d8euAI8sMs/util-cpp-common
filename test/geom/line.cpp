@@ -262,6 +262,10 @@ namespace geom
             auto l3 = make_line(0, 4, 2, 2);
             auto l4 = make_line(-1, 2, 1, 0);
             auto l5 = make_line(2, 1, 0, 3);
+            // real case test; lines are almost parallel; fail if l6.p1 *= ~10000
+            // coincidence check would be nice in such case
+            auto l6 = make_line(-2, 2, -3.9395141601562496e-007, 3.9297485351562499e-007);
+            auto l7 = make_line(2, -2, -3.9395141601562496e-007, 3.9297485351562499e-007);
 
             double q1, q2;
             status_t r;
@@ -350,6 +354,20 @@ namespace geom
             Assert::AreEqual(status::trusted(status::ok | status::line::intersects | status::line::other_segment) | status::line::self_segment,
                              l1.segment_intersects(l5), L"l1-l5 seg", LINE_INFO());
             Assert::IsFalse(intersects(l1, l5), L"l5-l1 int-seg", LINE_INFO());
+
+            r = l6.intersection(l7, q1, q2);
+
+            Assert::AreEqual(status::trusted(status::ok | status::line::intersects),
+                             r, L"l6-l7", LINE_INFO());
+            Assert::AreEqual(1, q1, 1e-4,
+                             L"l6-l7 q1", LINE_INFO());
+            Assert::AreEqual(1, q2, 1e-4,
+                             L"l6-l7 q2", LINE_INFO());
+            Assert::AreEqual(status::trusted(status::ok | status::line::intersects),
+                             l6.intersects(l7), L"l6-l7 int", LINE_INFO());
+            Assert::AreEqual(status::trusted(status::ok | status::line::intersects) | status::line::both_segments,
+                             l6.segment_intersects(l7), L"l6-l7 seg", LINE_INFO());
+            Assert::IsFalse(intersects(l7, l6), L"l7-l6 int-seg", LINE_INFO());
         }
 
         BEGIN_TEST_METHOD_ATTRIBUTE(_rotate)
