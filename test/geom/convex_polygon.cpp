@@ -30,7 +30,7 @@ namespace geom
         {
             // test that compilation succeeds :D
             auto p = make_convex_polygon(points); // array
-            auto p2 = convex_polygon < > (points); // vector
+            auto p2 = convex_polygon < > (std::vector < point2d_t > (points.begin(), points.end())); // vector
             auto p3 = rotate(p, 0);
             auto p4 = scale(p, 1);
             auto p5 = move(p, {});

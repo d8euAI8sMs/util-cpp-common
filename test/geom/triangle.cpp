@@ -42,11 +42,7 @@ namespace geom
 
         TEST_METHOD(_constructor)
         {
-            Assert::ExpectException < std::domain_error > ([] () {
-                auto t = make_triangle(std::vector < point2d_t > (4));
-            }, L"4", LINE_INFO());
-
-            auto t2 = make_triangle(std::vector < point2d_t > ({ { 1, 2 }, { 3, 4 } }));
+            auto t2 = make_triangle(arr3_t({ { { 1, 2 }, { 3, 4 } } }));
 
             Assert::AreEqual(1, t2.points[0].x, 1e-8, L"t2[0].x", LINE_INFO());
             Assert::AreEqual(2, t2.points[0].y, 1e-8, L"t2[0].y", LINE_INFO());

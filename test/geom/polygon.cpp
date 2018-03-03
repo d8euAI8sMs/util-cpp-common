@@ -32,7 +32,7 @@ namespace geom
         TEST_METHOD(_factory)
         {
             auto p = make_polygon(points); // array
-            auto p2 = polygon < > (points); // vector
+            auto p2 = polygon < > (std::vector < point2d_t > (points.begin(), points.end())); // vector
 
             Assert::AreEqual(points[0], p.points[0], L"p1[0]", LINE_INFO());
             Assert::AreEqual(points[1], p.points[1], L"p1[1]", LINE_INFO());
