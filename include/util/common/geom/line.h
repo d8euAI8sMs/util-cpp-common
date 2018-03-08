@@ -86,7 +86,6 @@ namespace geom
 
         line_base()
             : line_base(point_t{}, point_t{})
-            , _length(0), _sqlength(0)
         {
         }
 
