@@ -33,6 +33,7 @@ namespace geom
         struct dirichlet_cell
         {
             std::vector < idx_t > path;
+            convex_polygon < > poly;
         };
 
         struct vertex_info
@@ -116,6 +117,8 @@ namespace geom
         const size_t max_vertex_tree_deep;
         const size_t max_circle_tree_deep;
 
+        bool build_polygons;
+
     public:
 
         const std::vector < vertex_info > & vertices() const
@@ -151,7 +154,11 @@ namespace geom
             {
                 return _make_dirichlet_polygon(i);
             }
-            return _dirichlet_cell_to_polygon(v.neighborhood);
+            if (v.neighborhood.poly.empty())
+            {
+                return _dirichlet_cell_to_polygon(v.neighborhood);
+            }
+            return v.neighborhood.poly;
         }
 
         idx_t find_vertex(const point2d_t & p) const
@@ -183,6 +190,7 @@ namespace geom
             , autocalculate_neighborhoods(false)
             , max_vertex_tree_deep(6)
             , max_circle_tree_deep(6)
+            , build_polygons(false)
         {
         }
 
@@ -194,6 +202,7 @@ namespace geom
             , autocalculate_neighborhoods(autocalculate_neighborhoods)
             , max_vertex_tree_deep(max_vertex_tree_deep)
             , max_circle_tree_deep(max_circle_tree_deep)
+            , build_polygons(false)
         {
         }
 
@@ -369,10 +378,14 @@ namespace geom
             return angles;
         }
 
-        dirichlet_cell _make_dirichlet_cell(idx_t v) const
+        dirichlet_cell _make_dirichlet_cell(idx_t v,
+                                            bool make_polygon = false) const
         {
-            return _angle_map_to_dirichlet_cell(
+            dirichlet_cell dc = _angle_map_to_dirichlet_cell(
                 _make_dirichlet_cell_angle_map(v));
+            if (make_polygon)
+                dc.poly = _dirichlet_cell_to_polygon(dc);
+            return dc;
         }
 
         convex_polygon < > _make_dirichlet_polygon(idx_t v) const
@@ -405,7 +418,7 @@ namespace geom
                 }
                 if (neighborhoods)
                 {
-                    _vertices[i].neighborhood = _make_dirichlet_cell(i);
+                    _vertices[i].neighborhood = _make_dirichlet_cell(i, build_polygons);
                 }
             }
         }
@@ -574,7 +587,7 @@ namespace geom
                 for (size_t i = 0; i < orphans.size(); ++i)
                 {
                     _vertices[orphans[i]].neighborhood =
-                        _make_dirichlet_cell(orphans[i]);
+                        _make_dirichlet_cell(orphans[i], build_polygons);
                 }
             }
         }
@@ -1109,7 +1122,7 @@ namespace geom
         void _tree_add_dc(idx_t t)
         {
             if (_vertices[t].neighborhood.path.empty())
-                _vertices[t].neighborhood = _make_dirichlet_cell(t);
+                _vertices[t].neighborhood = _make_dirichlet_cell(t, true);
             auto & dc = _vertices[t].neighborhood;
             rect b = _enclosing_circles_tree.bounds;
             rect dcb = _dirichlet_cell_bounds(t);
