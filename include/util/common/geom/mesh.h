@@ -107,6 +107,7 @@ namespace geom
         std::vector < idx_t >         _phantom_tree_nodes;
         quad_tree                     _vertices_tree;
         quad_tree                     _enclosing_circles_tree;
+        quad_tree                     _dirichlet_cell_tree;
 
     public:
 
@@ -619,6 +620,7 @@ namespace geom
             }
 
             _enclosing_circles_tree.bounds = _vertices_tree.bounds;
+            _dirichlet_cell_tree.bounds = _vertices_tree.bounds;
 
             for (idx_t i = 0; i < ps.size(); ++i)
             {
@@ -630,9 +632,10 @@ namespace geom
 
         void _tree_init()
         {
-            _quad_trees.resize(2);
+            _quad_trees.resize(3);
             _vertices_tree.root_node = 0;
             _enclosing_circles_tree.root_node = 1;
+            _dirichlet_cell_tree.root_node = 2;
         }
 
         void _tree_add_v(idx_t v)
@@ -1063,6 +1066,146 @@ namespace geom
                         _quad_trees[node].sw,
                         { b.xmin, b.xmax - w / 2, b.ymin, b.ymax - h / 2 });
                 }
+            }
+        }
+
+        rect _dirichlet_cell_bounds(idx_t c) const
+        {
+            rect b;
+            auto & dc = _vertices[c].neighborhood;
+            b.xmin = b.xmax = _triangles[dc.path.front()].enclosing.center.x;
+            b.ymin = b.ymax = _triangles[dc.path.front()].enclosing.center.y;
+            for (size_t i = 0; i < dc.path.size(); ++i)
+            {
+                if (_triangles[dc.path[i]].enclosing.center.x < b.xmin)
+                    b.xmin = _triangles[dc.path[i]].enclosing.center.x;
+                if (_triangles[dc.path[i]].enclosing.center.x > b.xmax)
+                    b.xmax = _triangles[dc.path[i]].enclosing.center.x;
+                if (_triangles[dc.path[i]].enclosing.center.y < b.ymin)
+                    b.ymin = _triangles[dc.path[i]].enclosing.center.y;
+                if (_triangles[dc.path[i]].enclosing.center.y > b.ymax)
+                    b.ymax = _triangles[dc.path[i]].enclosing.center.y;
+            }
+            return b;
+        }
+
+        /* adapt addition algorithm of enclosing circle */
+        void _tree_add_dc(idx_t t)
+        {
+            if (_vertices[t].neighborhood.path.empty())
+                _vertices[t].neighborhood = _make_dirichlet_cell(t);
+            auto & dc = _vertices[t].neighborhood;
+            rect b = _enclosing_circles_tree.bounds;
+            rect dcb = _dirichlet_cell_bounds(t);
+            point2d_t c = { (dcb.xmin + dcb.xmax) / 2, (dcb.ymin + dcb.ymax) / 2 };
+            point2d_t s = { (dcb.xmax - dcb.xmin) / 2, (dcb.ymax - dcb.ymin) / 2 };
+            idx_t node = _dirichlet_cell_tree.root_node;
+            for (size_t d = 1; ; ++d)
+            {
+                double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+                double d1 = math::sqnorm(c.x - (b.xmin + w / 2)) - s.x * s.x;
+                double d2 = math::sqnorm(c.y - (b.ymin + h / 2)) - s.y * s.y;
+                if (!(d == max_circle_tree_deep) &&
+                    fuzzy_t::gt(d1, 0) && fuzzy_t::gt(d2, 0))
+                {
+                    bool east = ((c.x - b.xmin) > w / 2);
+                    bool north = ((c.y - b.ymin) > h / 2);
+                    if (north && east)
+                    {
+                        node = _quad_trees[node].ne = _tree_ensure_exists(_quad_trees[node].ne, node);
+                        b.xmin += w / 2; b.ymin += h / 2;
+                    }
+                    else if (north && !east)
+                    {
+                        node = _quad_trees[node].nw = _tree_ensure_exists(_quad_trees[node].nw, node);
+                        b.xmax -= w / 2; b.ymin += h / 2;
+                    }
+                    else if (!north && east)
+                    {
+                        node = _quad_trees[node].se = _tree_ensure_exists(_quad_trees[node].se, node);
+                        b.xmin += w / 2; b.ymax -= h / 2;
+                    }
+                    else // if (!north && !east)
+                    {
+                        node = _quad_trees[node].sw = _tree_ensure_exists(_quad_trees[node].sw, node);
+                        b.xmax -= w / 2; b.ymax -= h / 2;
+                    }
+                }
+                else
+                {
+                    _quad_trees[node].elems.insert(t);
+                    return;
+                }
+            }
+        }
+
+        /* adapt search algorithm of enclosing circle */
+        idx_t _tree_find_dc(const point2d_t & p) const
+        {
+            return _tree_find_dc(
+                p,
+                _dirichlet_cell_tree.root_node,
+                _dirichlet_cell_tree.bounds);
+        }
+
+        idx_t _tree_find_dc(
+            const point2d_t & p,
+            idx_t node, rect b) const
+        {
+            for (auto it = _quad_trees[node].elems.begin();
+                 it != _quad_trees[node].elems.end();
+                 ++it)
+            {
+                auto t = dirichlet_cell_at(*it);
+                auto c = t.contains(p);
+                if (status::is(c, status::polygon::contains_point))
+                    return *it;
+            }
+            double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+            if (((p.x - b.xmin) >= w / 2) && ((p.y - b.ymin) >= h / 2))
+            {
+                if (_quad_trees[node].ne != 0)
+                {
+                    return _tree_find_dc(
+                        p, _quad_trees[node].ne,
+                        { b.xmin + w / 2, b.xmax, b.ymin + h / 2, b.ymax });
+                }
+            }
+            else if (((p.x - b.xmin) >= w / 2) && ((p.y - b.ymin) < h / 2))
+            {
+                if (_quad_trees[node].se != 0)
+                {
+                    return _tree_find_dc(
+                        p, _quad_trees[node].se,
+                        { b.xmin + w / 2, b.xmax, b.ymin, b.ymax - h / 2 });
+                }
+            }
+            else if (((p.x - b.xmin) < w / 2) && ((p.y - b.ymin) >= h / 2))
+            {
+                if (_quad_trees[node].nw != 0)
+                {
+                    return _tree_find_dc(
+                        p, _quad_trees[node].nw,
+                        { b.xmin, b.xmax - w / 2, b.ymin + h / 2, b.ymax });
+                }
+            }
+            else // if (((p.x - b.xmin) < w / 2) && ((p.y - b.ymin) < h / 2))
+            {
+                if (_quad_trees[node].sw != 0)
+                {
+                    return _tree_find_dc(
+                        p, _quad_trees[node].sw,
+                        { b.xmin, b.xmax - w / 2, b.ymin, b.ymax - h / 2 });
+                }
+            }
+            return SIZE_T_MAX;
+        }
+
+        void _tree_build_dc_tree()
+        {
+            for (idx_t i = 0; i < _vertices.size(); ++i)
+            {
+                _tree_add_dc(i);
             }
         }
     };
