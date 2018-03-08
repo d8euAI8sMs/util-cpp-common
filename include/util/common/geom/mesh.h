@@ -154,6 +154,16 @@ namespace geom
             return _dirichlet_cell_to_polygon(v.neighborhood);
         }
 
+        idx_t find_vertex(const point2d_t & p) const
+        {
+            return _tree_find_v(p);
+        }
+
+        idx_t find_nearest(const point2d_t & p) const
+        {
+            return _tree_find_dc(p);
+        }
+
         flags_t flags_at(idx_t i) const
         {
             return _vertices[i].flags;
