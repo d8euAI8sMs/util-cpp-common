@@ -770,14 +770,14 @@ namespace geom
         }
 
         int _tree_circle_contains_point(const circle & c,
-                                         idx_t ign1, idx_t ign2, idx_t ign3)
+                                         idx_t ign1, idx_t ign2, idx_t ign3) const
         {
             return _tree_circle_contains_point(
                 c, _vertices_tree.root_node, _vertices_tree.bounds, ign1, ign2, ign3);
         }
 
         int _tree_circle_contains_point(const circle & c, idx_t node, rect b,
-                                        idx_t ign1, idx_t ign2, idx_t ign3)
+                                        idx_t ign1, idx_t ign2, idx_t ign3) const
         {
             bool collision = false;
             if (_quad_trees[node].empty()) return -1;
@@ -859,13 +859,13 @@ namespace geom
             return collision ? 0 : -1;
         }
 
-        idx_t _tree_find_v(const point2d_t & p)
+        idx_t _tree_find_v(const point2d_t & p) const
         {
             return _tree_find_v(
                 p, _vertices_tree.root_node, _vertices_tree.bounds);
         }
 
-        idx_t _tree_find_v(const point2d_t & p, idx_t node, rect b)
+        idx_t _tree_find_v(const point2d_t & p, idx_t node, rect b) const
         {
             if (_quad_trees[node].empty()) return SIZE_T_MAX;
             if (_quad_trees[node].leaf())
