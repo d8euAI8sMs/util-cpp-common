@@ -626,5 +626,87 @@ namespace geom
 
             Assert::IsTrue(m.vertices()[4].neighbor_vertices == m2.vertices()[4].neighbor_vertices, L"post equals auto", LINE_INFO());
         }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_find_vertex)
+            TEST_DESCRIPTION(L"neighborhood tree works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_find_vertex)
+        {
+            mesh m(true, true);
+
+            m.init(std::vector < point2d_t > ({
+                    { -50, -50 }, { 150, -50 },
+                    { 150, 150 }, { -50, 150 }
+            }));
+
+            std::vector < point2d_t > points;
+            for (size_t i = 0; i < 100; ++i)
+            {
+                points.emplace_back((double) rand() / RAND_MAX * 100,
+                                    (double) rand() / RAND_MAX * 100);
+            }
+
+            auto r = m.add(points);
+
+            for (size_t i = 0; i < points.size(); ++i)
+            {
+                CString fmt; fmt.Format(L"%d: ", i);
+
+                Assert::AreEqual(r[i], m.find_vertex(points[i]),
+                                 fmt + L"find_vertex", LINE_INFO());
+            }
+
+            Assert::AreEqual(SIZE_T_MAX, m.find_vertex({ 1000, 1000 }),
+                             L"find_vertex of outer point", LINE_INFO());
+        }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_neighborhood_tree)
+            TEST_DESCRIPTION(L"neighborhood tree works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_neighborhood_tree)
+        {
+            mesh m(true, true);
+
+            m.init(std::vector < point2d_t > ({
+                    { -50, -50 }, { 150, -50 },
+                    { 150, 150 }, { -50, 150 }
+            }));
+
+            std::vector < point2d_t > points;
+            for (size_t i = 0; i < 100; ++i)
+            {
+                points.emplace_back((double) rand() / RAND_MAX * 100,
+                                    (double) rand() / RAND_MAX * 100);
+            }
+
+            auto r = m.add(points);
+
+            m.build_neighborhood_tree();
+
+            for (size_t i = 0; i < points.size(); ++i)
+            {
+                CString fmt; fmt.Format(L"%d: ", i);
+
+                Assert::AreEqual(r[i], m.find_nearest(points[i]),
+                                 fmt + L"find_nearest", LINE_INFO());
+            }
+
+            for (size_t i = 0; i < 10000; ++i)
+            {
+                point2d_t p = { (double) rand() / RAND_MAX * 100,
+                                (double) rand() / RAND_MAX * 100 };
+
+                CString fmt; fmt.Format(L"%d (%lf, %lf): ", i, p.x, p.y);
+
+                auto v = m.find_nearest(p);
+
+                Assert::IsTrue(v != SIZE_T_MAX,
+                               fmt + L"nearest exists", LINE_INFO());
+                Assert::IsTrue(status::is(m.dirichlet_cell_at(v).contains(p), status::polygon::contains_point),
+                               fmt + L"contains", LINE_INFO());
+            }
+        }
     };
 }
