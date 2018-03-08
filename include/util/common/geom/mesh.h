@@ -215,6 +215,12 @@ namespace geom
             return *this;
         }
 
+        mesh & build_neighborhood_tree()
+        {
+            _tree_build_dc_tree();
+            return *this;
+        }
+
         mesh & init(const std::vector < point2d_t > & points,
                     flags_t flags = no_flags)
         {
