@@ -708,5 +708,69 @@ namespace geom
                                fmt + L"contains", LINE_INFO());
             }
         }
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(_find_triangle)
+            TEST_DESCRIPTION(L"triangle search works fine")
+        END_TEST_METHOD_ATTRIBUTE()
+
+        TEST_METHOD(_find_triangle)
+        {
+            mesh m(true, true);
+
+            m.init(std::vector < point2d_t > ({
+                    { -50, -50 }, { 150, -50 },
+                    { 150, 150 }, { -50, 150 }
+            }));
+
+            std::vector < point2d_t > points;
+            for (size_t i = 0; i < 100; ++i)
+            {
+                points.emplace_back((double) rand() / RAND_MAX * 100,
+                                    (double) rand() / RAND_MAX * 100);
+            }
+
+            m.add(points);
+
+            for (mesh::idx_t i = 0; i < m.triangles().size(); ++i)
+            {
+                if (m.triangles()[i].flags & mesh::phantom) continue;
+
+                CString fmt; fmt.Format(L"%d: ", i);
+
+                auto t = m.triangle_at(i);
+
+                Assert::AreEqual(i, m.find_triangle((t.points[0] + t.points[1] + t.points[2]) / 3),
+                                 fmt + L"find_triangle", LINE_INFO());
+            }
+
+            for (mesh::idx_t i = 0; i < m.vertices().size(); ++i)
+            {
+                CString fmt; fmt.Format(L"%d: ", i);
+
+                auto & p = m.point_at(i);
+
+                auto t = m.find_triangle(p);
+
+                Assert::IsTrue(t != SIZE_T_MAX,
+                               fmt + L"triangle found for vertex", LINE_INFO());
+                Assert::IsTrue(status::is(m.triangle_at(t).contains(p), status::polygon::contains_point),
+                               fmt + L"contains vertex", LINE_INFO());
+            }
+
+            for (size_t i = 0; i < 10000; ++i)
+            {
+                point2d_t p = { (double) rand() / RAND_MAX * 100,
+                                (double) rand() / RAND_MAX * 100 };
+
+                CString fmt; fmt.Format(L"%d (%lf, %lf): ", i, p.x, p.y);
+
+                auto v = m.find_triangle(p);
+
+                Assert::IsTrue(v != SIZE_T_MAX,
+                               fmt + L"triangle found", LINE_INFO());
+                Assert::IsTrue(status::is(m.triangle_at(v).contains(p), status::polygon::contains_point),
+                               fmt + L"contains", LINE_INFO());
+            }
+        }
     };
 }
