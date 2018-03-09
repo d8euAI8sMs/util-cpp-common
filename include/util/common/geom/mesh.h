@@ -171,6 +171,11 @@ namespace geom
             return _tree_find_dc(p);
         }
 
+        idx_t find_triangle(const point2d_t & p) const
+        {
+            return _tree_find_t(p);
+        }
+
         flags_t flags_at(idx_t i) const
         {
             return _vertices[i].flags;
@@ -1236,6 +1241,68 @@ namespace geom
             {
                 _tree_add_dc(i);
             }
+        }
+
+        /* adapt search algorithm of enclosing circle */
+        idx_t _tree_find_t(const point2d_t & p) const
+        {
+            return _tree_find_t(
+                p,
+                _enclosing_circles_tree.root_node,
+                _enclosing_circles_tree.bounds);
+        }
+
+        idx_t _tree_find_t(
+            const point2d_t & p,
+            idx_t node, rect b) const
+        {
+            for (auto it = _quad_trees[node].elems.begin();
+                 it != _quad_trees[node].elems.end();
+                 ++it)
+            {
+                auto t = triangle_at(*it);
+                auto c = t.contains(p);
+                if (status::is(c, status::polygon::contains_point))
+                    return *it;
+            }
+            double w = b.xmax - b.xmin, h = b.ymax - b.ymin;
+            if (((p.x - b.xmin) >= w / 2) && ((p.y - b.ymin) >= h / 2))
+            {
+                if (_quad_trees[node].ne != 0)
+                {
+                    return _tree_find_t(
+                        p, _quad_trees[node].ne,
+                        { b.xmin + w / 2, b.xmax, b.ymin + h / 2, b.ymax });
+                }
+            }
+            else if (((p.x - b.xmin) >= w / 2) && ((p.y - b.ymin) < h / 2))
+            {
+                if (_quad_trees[node].se != 0)
+                {
+                    return _tree_find_t(
+                        p, _quad_trees[node].se,
+                        { b.xmin + w / 2, b.xmax, b.ymin, b.ymax - h / 2 });
+                }
+            }
+            else if (((p.x - b.xmin) < w / 2) && ((p.y - b.ymin) >= h / 2))
+            {
+                if (_quad_trees[node].nw != 0)
+                {
+                    return _tree_find_t(
+                        p, _quad_trees[node].nw,
+                        { b.xmin, b.xmax - w / 2, b.ymin + h / 2, b.ymax });
+                }
+            }
+            else // if (((p.x - b.xmin) < w / 2) && ((p.y - b.ymin) < h / 2))
+            {
+                if (_quad_trees[node].sw != 0)
+                {
+                    return _tree_find_t(
+                        p, _quad_trees[node].sw,
+                        { b.xmin, b.xmax - w / 2, b.ymin, b.ymax - h / 2 });
+                }
+            }
+            return SIZE_T_MAX;
         }
     };
 }
