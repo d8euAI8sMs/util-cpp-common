@@ -1,10 +1,10 @@
 #pragma once
 
 #include <math.h>
-typedef struct cmplx { double real; double image; };
-//========================================================
 
-inline void fourier(struct cmplx *data, int n, int is)
+#include <util/common/math/complex.h>
+
+inline void fourier(math::complex <> * data, int n, int is)
 {
     int i, j, istep;
     int m, mmax;
@@ -17,12 +17,12 @@ inline void fourier(struct cmplx *data, int n, int is)
     {
         if (i < j)
         {
-            temp_r = data[j].real;
-            temp_i = data[j].image;
-            data[j].real = data[i].real;
-            data[j].image = data[i].image;
-            data[i].real = temp_r;
-            data[i].image = temp_i;
+            temp_r = data[j].re;
+            temp_i = data[j].im;
+            data[j].re = data[i].re;
+            data[j].im = data[i].im;
+            data[i].re = temp_r;
+            data[i].im = temp_i;
         }
         m = n >> 1;
         while (j >= m) { j -= m; m = (m + 1) / 2; }
@@ -41,12 +41,12 @@ inline void fourier(struct cmplx *data, int n, int is)
             for (i = m; i < n; i += istep)
             {
                 j = i + mmax;
-                temp_r = w_r*data[j].real - w_i*data[j].image;
-                temp_i = w_r*data[j].image + w_i*data[j].real;
-                data[j].real = data[i].real - temp_r;
-                data[j].image = data[i].image - temp_i;
-                data[i].real += temp_r;
-                data[i].image += temp_i;
+                temp_r = w_r*data[j].re - w_i*data[j].im;
+                temp_i = w_r*data[j].im + w_i*data[j].re;
+                data[j].re = data[i].re - temp_r;
+                data[j].im = data[i].im - temp_i;
+                data[i].re += temp_r;
+                data[i].im += temp_i;
             }
         }
         mmax = istep;
@@ -54,8 +54,8 @@ inline void fourier(struct cmplx *data, int n, int is)
     if (is > 0)
         for (i = 0; i < n; i++)
         {
-        data[i].real /= (double) n;
-        data[i].image /= (double) n;
+        data[i].re /= (double) n;
+        data[i].im /= (double) n;
         }
 
 }
