@@ -55,6 +55,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>glu32.lib;opengl32.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -73,6 +76,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>glu32.lib;opengl32.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\util\common\geom\circle.h" />
@@ -84,6 +90,7 @@
     <ClInclude Include="..\include\util\common\geom\point.h" />
     <ClInclude Include="..\include\util\common\geom\polygon.h" />
     <ClInclude Include="..\include\util\common\geom\triangle.h" />
+    <ClInclude Include="..\include\util\common\gui\OglControl.h" />
     <ClInclude Include="..\include\util\common\gui\SimulationDialog.h" />
     <ClInclude Include="..\include\util\common\math\complex.h" />
     <ClInclude Include="..\include\util\common\math\fuzzy.h" />
@@ -121,6 +128,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="OglControl.cpp" />
     <ClCompile Include="PlotControl.cpp" />
     <ClCompile Include="rpoly.cpp" />
     <ClCompile Include="SimulationDialog.cpp" />
