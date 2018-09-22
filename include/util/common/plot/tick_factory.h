@@ -221,7 +221,12 @@ namespace plot
 
             ticks->reserve(n_intervals + 2);
 
-            int d = (int) std::ceil((origin - min) / interval);
+            double _d = (origin - min) / interval;
+            if ((_d + 1) > INT_MAX || (_d - 1) < INT_MIN)
+            {
+                return ticks;
+            }
+            int d = (int) std::ceil(_d);
 
             double start = origin - d * interval;
 
