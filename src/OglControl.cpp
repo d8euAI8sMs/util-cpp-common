@@ -87,10 +87,8 @@ void COglControl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
     __try
     {
-        wglMakeCurrent(hDC, glRC);
         OnDrawItemOGL();
         SwapBuffers(hDC);
-        wglMakeCurrent(hDC, NULL);
     }
     __finally
     {
@@ -105,6 +103,11 @@ void COglControl::OnDestroy()
     if (!glRC) return;
 
     OnDestroyOGL();
+
+    CDC * pDC = GetDC();
+    HDC hDC = pDC->GetSafeHdc();
+    wglMakeCurrent(hDC, NULL);
+    ReleaseDC(pDC);
 
     wglDeleteContext(glRC);
 }
@@ -132,6 +135,11 @@ void COglControl::PreSubclassWindow()
         glRC = wglCreateContext(hDC);
         if (!glRC)
             return;
+
+        CDC * pDC = GetDC();
+        HDC hDC = pDC->GetSafeHdc();
+        wglMakeCurrent(hDC, glRC);
+        ReleaseDC(pDC);
 
         OnCreateOGL();
     }
