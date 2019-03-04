@@ -165,6 +165,9 @@
     <ClInclude Include="..\include\util\common\gui\OglControl.h">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util\common\math\raster.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
