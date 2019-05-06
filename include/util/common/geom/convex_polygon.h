@@ -51,6 +51,11 @@ namespace geom
         {
         }
 
+        convex_polygon(convex_polygon const & o)
+            : polygon(o.points)
+        {
+        }
+
         convex_polygon(polygon && o)
             : polygon(std::move(o))
         {

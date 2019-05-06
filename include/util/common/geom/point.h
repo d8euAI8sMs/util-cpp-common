@@ -96,7 +96,7 @@ namespace geom
             is_planar < point > :: value > >
         operator POINT () const
         {
-            return{ x, y };
+            return{ (LONG)x, (LONG)y };
         }
 
         /* to be precise, emptiness checking is incorrect;
